@@ -2310,12 +2310,12 @@ var PATHS = [
   { id:"banking",      label:"Banking",          color:PC.O,       goalLabel:"Investment Banking",
     skills:["s20","s22","s24","s28","s29","s21","s13","s8","s4","s19","s7","s11"],
     floor:{O:3.6, T:3.0, P:3.2} },
-  { id:"tech",         label:"Tech / PM",        color:PC.T,       goalLabel:"Product Management",
-    skills:["s13","s15","s17","s16","s22","s23","s10","s9","s27","s30","s14","s18"],
-    floor:{V:3.3, T:3.2, I:3.2} },
-  { id:"impact",       label:"Social Impact",    color:PC.V,       goalLabel:"Social Impact Leader",
-    skills:["s6","s3","s5","s4","s18","s14","s7","s11","s9","s19","s29","s25"],
-    floor:{P:3.4, I:3.3, V:3.0} },
+  { id:"tech",         label:"Tech",             color:PC.T,       goalLabel:"Technology Leader",
+    skills:["s13","s17","s20","s22","s23","s27","s28","s29","s30","s26","s10","s25"],
+    floor:{T:3.2, O:3.2, V:3.0} },
+  { id:"pm",           label:"Product Mgmt",     color:PC.V,       goalLabel:"Product Management",
+    skills:["s15","s16","s17","s11","s10","s9","s22","s13","s14","s18","s27","s12"],
+    floor:{V:3.3, I:3.3, O:3.2} },
   { id:"entrepreneur", label:"Entrepreneurship", color:PC.P,       goalLabel:"Founder",
     skills:["s15","s14","s17","s19","s20","s26","s27","s28","s29","s30","s25","s18"],
     floor:{V:3.4, T:3.3, O:3.2} },
@@ -2343,7 +2343,9 @@ function MBAJourney(props) {
     try{
       var saved=localStorage.getItem("mba_northstar");
       var skipped=localStorage.getItem("mba_onb_skipped");
-      if(saved){ setNs(saved); }
+      var validIds=PATHS.map(function(p){return p.id;});
+      if(saved && validIds.indexOf(saved)>=0){ setNs(saved); }
+      else if(saved){ localStorage.removeItem("mba_northstar"); if(!skipped)setTimeout(function(){setShowOnboarding(true);},400); }
       else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
     }catch(e){}
   },[]);
