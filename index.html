@@ -3599,12 +3599,6 @@ function MBATeam(props) {
             <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.5, marginBottom:6 }}>COHORT SNAPSHOT · ANONYMIZED</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.55)", marginBottom:12, lineHeight:1.45 }}>{cohortSize} students across the Full-Time MBA. All data aggregated — no individual scores surfaced.</div>
 
-            {/* Cohort readiness radar */}
-            <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"4px 0 12px" }}>
-              <PIVOTRadar size={240} dimData={cohortDimData(COHORT)} color={CB}/>
-              <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginTop:4 }}>COHORT SHAPE \u00b7 ATTRIBUTES + SKILLS</div>
-            </div>
-
             {/* Avg attrs */}
             <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.12), marginBottom:12 }}>
               <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:8 }}>COHORT AVERAGE · PIVOT</div>
