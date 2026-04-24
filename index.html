@@ -58,6 +58,71 @@ function rgba(hex, a) {
 }
 
 /* ── Shared Bottom Nav ── */
+/* ── Reusable Radar Chart (attributes + skills + optional career target) ── */
+/* Accepts either (attrs, earnedMap) OR precomputed dimData={P:{attrPct,skillPct,totalPct},...} */
+function PIVOTRadar(props){
+  var size = props.size || 240;
+  var attrs = props.attrs;
+  var earnedMap = props.earnedMap || {};
+  var precomputed = props.dimData;
+  var target = props.target || null;
+  var fillColor = props.color || "#7BAFD4";
+  var showLabels = props.showLabels !== false;
+  var cx = size/2, cy = size/2;
+  var radius = size/2 - 28;
+
+  var attrPts=[], combinedPts=[], targetPts=[], axisEnds=[], labelPos=[];
+  var dimData = [];
+  DIMS.forEach(function(d, i){
+    var ang = -Math.PI/2 + (i * 2*Math.PI/5);
+    var r = precomputed ? precomputed[d] : computeReadiness(d, earnedMap, attrs);
+    dimData.push(r);
+    var ax = cx + Math.cos(ang) * radius * (r.attrPct/100);
+    var ay = cy + Math.sin(ang) * radius * (r.attrPct/100);
+    var bx = cx + Math.cos(ang) * radius * (r.totalPct/100);
+    var by = cy + Math.sin(ang) * radius * (r.totalPct/100);
+    attrPts.push(ax+","+ay);
+    combinedPts.push(bx+","+by);
+    axisEnds.push({x:cx+Math.cos(ang)*radius, y:cy+Math.sin(ang)*radius});
+    if (target){
+      var tx = cx + Math.cos(ang) * radius * (target[d]/100);
+      var ty = cy + Math.sin(ang) * radius * (target[d]/100);
+      targetPts.push(tx+","+ty);
+    }
+    labelPos.push({x:cx+Math.cos(ang)*(radius+16), y:cy+Math.sin(ang)*(radius+16)+3, dim:d, ang:ang});
+  });
+
+  return (
+    <svg width={size} height={size} viewBox={"0 0 "+size+" "+size} style={{display:"block"}}>
+      {/* Concentric gridlines at 25/50/75/100 */}
+      {[0.25, 0.5, 0.75, 1.0].map(function(f, gi){
+        var pts = DIMS.map(function(d, i){ var ang=-Math.PI/2+i*2*Math.PI/5; return (cx+Math.cos(ang)*radius*f)+","+(cy+Math.sin(ang)*radius*f); }).join(" ");
+        return <polygon key={"grid"+gi} points={pts} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={f===0.5?1.2:0.6}/>;
+      })}
+      {/* 50% attribute ceiling highlighted */}
+      {/* Axis lines */}
+      {DIMS.map(function(d,i){
+        return <line key={"ax"+i} x1={cx} y1={cy} x2={axisEnds[i].x} y2={axisEnds[i].y} stroke="rgba(255,255,255,0.09)" strokeWidth={0.8}/>;
+      })}
+      {/* Target polygon (dashed) */}
+      {target && <polygon points={targetPts.join(" ")} fill="rgba(255,255,255,0.04)" stroke="rgba(255,220,130,0.85)" strokeWidth={1.4} strokeDasharray="4,3"/>}
+      {/* Combined polygon (attributes + skills) */}
+      <polygon points={combinedPts.join(" ")} fill={rgba(fillColor,0.18)} stroke={rgba(fillColor,0.75)} strokeWidth={1.6}/>
+      {/* Attribute polygon (darker, drawn on top to show the 'floor') */}
+      <polygon points={attrPts.join(" ")} fill={rgba(fillColor,0.38)} stroke={rgba(fillColor,0.95)} strokeWidth={1.2}/>
+      {/* Dim labels */}
+      {showLabels && labelPos.map(function(p,i){
+        return <g key={"lb"+i}>
+          <text x={p.x} y={p.y} textAnchor="middle" fontSize={11} fontWeight={700} fill={PC[p.dim]} fontFamily={FONT} letterSpacing="0.5">{p.dim}</text>
+          <text x={p.x} y={p.y+11} textAnchor="middle" fontSize={9} fontWeight={500} fill="rgba(255,255,255,0.55)" fontFamily={FONT}>{Math.round(dimData[i].totalPct)}%</text>
+        </g>;
+      })}
+      {/* Center dot */}
+      <circle cx={cx} cy={cy} r={2} fill="rgba(255,255,255,0.3)"/>
+    </svg>
+  );
+}
+
 /* Default nav (UBP legacy) */
 var DEFAULT_NAV_ITEMS = [
   { k: "journey", l: "Journey", i: "✦" },
@@ -1321,40 +1386,19 @@ function UBPIndex(props) {
             BSBA · Junior · AOE: Finance
           </div>
 
-          <div style={{ position: "relative", width: ringSize, height: ringSize }}>
-            <svg width={ringSize} height={ringSize} style={{ transform: "rotate(-90deg)" }}>
-              <circle cx={ringSize / 2} cy={ringSize / 2} r={ringR} fill="none" stroke={rgba(CB, 0.08)} strokeWidth={ringStroke} />
-              <circle cx={ringSize / 2} cy={ringSize / 2} r={ringR} fill="none" stroke={CB} strokeWidth={ringStroke}
-                strokeDasharray={ringCirc} strokeDashoffset={ringOffset}
-                strokeLinecap="round" style={{ transition: "stroke-dashoffset 1.5s ease" }} />
-            </svg>
-            <div style={{
-              position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            }}>
-              <div style={{ fontSize: 34, fontWeight: 700, color: "#fff" }}>{totalEarned}</div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>of {totalAll} tokens</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: rgba(CB, 0.7), marginTop: 2 }}>{overallPct}% complete</div>
-            </div>
-          </div>
+          {/* Readiness Radar — hero visual */}
+          <PIVOTRadar size={260} attrs={myAttrs} earnedMap={myEarned} target={radarTarget} color={radarColor}/>
 
-          {/* Mini dimension circles */}
-          <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-            {DIMS.map(function (d) {
-              var pct = dimPcts[d];
-              return (
-                <div key={d} style={{ textAlign: "center" }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    border: "2px solid " + rgba(PC[d], pct >= 60 ? 0.8 : 0.25),
-                    background: rgba(PC[d], 0.08),
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 14, fontWeight: 700, color: PC[d],
-                  }}>{d}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{pct}%</div>
-                </div>
-              );
-            })}
+          <div style={{ marginTop: 6, textAlign:"center" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.5 }}>READINESS FOR {selectedPath ? selectedPath.goalLabel.toUpperCase() : "LEADERSHIP"}</div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 4, maxWidth: 300 }}>
+              {selectedPath
+                ? "Inner shape is who you are (attributes). Outer fill is what you have practiced (skills). Dashed pentagon is the ideal profile for this career."
+                : "Pick a North Star on Journey to see your target profile."}
+            </div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginTop: 8 }}>
+              <span style={{ fontWeight: 700, color: "#fff" }}>{overallPct}%</span> of experience tokens earned · <span style={{ color: "rgba(255,255,255,0.55)" }}>{totalEarned}/{totalAll}</span>
+            </div>
           </div>
 
           {/* Semester context */}
@@ -2209,6 +2253,53 @@ var ATTRIBUTES = [
   { dim:"T", baseline:2.6, current:3.0 },
 ];
 
+/* ── Readiness math (attributes fill to 50%, skills fill remaining 50%) ── */
+/* computeReadiness returns {attrPct, skillPct, totalPct} where attrPct+skillPct = totalPct, all 0..100 */
+function computeReadiness(dim, earnedMap, attrs){
+  var attr = (attrs && attrs[dim] != null) ? attrs[dim] : 0;
+  var attrPct = Math.max(0, Math.min(50, (attr/5)*50));
+  var skillsInDim = SKILLS.filter(function(s){ return s.dim===dim && earnedMap && earnedMap[s.id]; }).length;
+  var skillPct = Math.max(0, Math.min(50, (skillsInDim/6)*50));
+  return { attrPct: attrPct, skillPct: skillPct, totalPct: attrPct+skillPct, skillsInDim: skillsInDim };
+}
+/* Target per dim from a path's emphasis dict (0..100 per dim) */
+function targetForPath(path){
+  var t = {};
+  DIMS.forEach(function(d){
+    var e = (path && path.emphasis && path.emphasis[d]) || 0;
+    t[d] = e>=0.25 ? 95 : (e>=0.15 ? 75 : 55);
+  });
+  return t;
+}
+/* Cohort readiness per dim (avg attribute + avg skill count across members) */
+function cohortReadiness(members, dim){
+  if (!members || !members.length) return {attrPct:0, skillPct:0, totalPct:0};
+  var sumAttr=0, sumSkills=0;
+  members.forEach(function(m){
+    sumAttr += (m.attrs && m.attrs[dim]) || 0;
+    sumSkills += (m.skills || []).filter(function(sid){var sk=null; for(var i=0;i<SKILLS.length;i++){ if(SKILLS[i].id===sid){sk=SKILLS[i];break;} } return sk && sk.dim===dim;}).length;
+  });
+  var avgAttr = sumAttr/members.length;
+  var avgSkills = sumSkills/members.length;
+  var attrPct = Math.max(0, Math.min(50, (avgAttr/5)*50));
+  var skillPct = Math.max(0, Math.min(50, (avgSkills/6)*50));
+  return {attrPct:attrPct, skillPct:skillPct, totalPct:attrPct+skillPct};
+}
+/* Build a full dimData map from members for radar input */
+function cohortDimData(members){
+  var out = {};
+  DIMS.forEach(function(d){ out[d] = cohortReadiness(members, d); });
+  return out;
+}
+
+/* Average attrs across a list of COHORT members */
+function avgAttrs(members){
+  var out = {P:0,I:0,V:0,O:0,T:0};
+  if (!members || !members.length) return out;
+  DIMS.forEach(function(d){ members.forEach(function(m){ out[d] += m.attrs[d]; }); out[d] = out[d]/members.length; });
+  return out;
+}
+
 /* ── Seeded star generation (background atmosphere) ── */
 function MBA_genStars(count, seed) {
   var stars = [], s = seed;
@@ -2600,29 +2691,41 @@ function MBAJourney(props) {
           <line x1={0} y1={MBA_SKY_BOT} x2={MBA_CW} y2={MBA_SKY_BOT} stroke="#F5A623" strokeWidth={1} opacity={0.55}/>
           <line x1={0} y1={MBA_SKY_BOT+1.5} x2={MBA_CW} y2={MBA_SKY_BOT+1.5} stroke="#D4710A" strokeWidth={2} opacity={0.35}/>
 
-          {/* Attribute foundation band (compact) */}
+          {/* Attribute + Skill readiness bars (new stacked model) */}
           <rect x={0} y={MBA_SKY_BOT+3} width={MBA_CW} height={MBA_ATTR_H} fill="#060412" style={{pointerEvents:"none"}}/>
-          <text x={16} y={MBA_SKY_BOT+20} fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.75)" fontFamily={FONT} letterSpacing="2">FOUNDATION</text>
+          <text x={16} y={MBA_SKY_BOT+20} fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.75)" fontFamily={FONT} letterSpacing="2">READINESS</text>
+          <text x={MBA_CW-16} y={MBA_SKY_BOT+20} textAnchor="end" fontSize={9} fontWeight={500} fill="rgba(255,255,255,0.4)" fontFamily={FONT} letterSpacing="1">ATTRIBUTES + SKILLS</text>
           {ATTRIBUTES.map(function(a,ai){
             var rowY=MBA_SKY_BOT+30+ai*17;
             var col=PC[a.dim];
             var labels={P:"PUR",I:"INT",V:"VIS",O:"OWN",T:"TRA"};
-            var barX=60, barW=MBA_CW-100, barH=8;
-            var curW=(a.current/5)*barW;
-            var baseX=barX+(a.baseline/5)*barW;
-            var floor = path && path.floor && path.floor[a.dim];
-            var floorX = floor ? barX+(floor/5)*barW : null;
-            var meetsFloor = floor ? a.current>=floor : true;
+            var barX=48, barW=MBA_CW-80, barH=8;
+            var myAttrs2={}; ATTRIBUTES.forEach(function(x){myAttrs2[x.dim]=x.current;});
+            var r = computeReadiness(a.dim, earnedState, myAttrs2);
+            var attrW = (r.attrPct/100)*barW;
+            var totalW = (r.totalPct/100)*barW;
+            var tgt = path ? targetForPath(path)[a.dim] : null;
+            var tgtX = tgt!==null ? barX+(tgt/100)*barW : null;
+            /* Midline: 50% marker showing attribute ceiling */
+            var midX = barX + 0.5*barW;
             return (
               <g key={"attr"+ai}>
-                <text x={16} y={rowY+8} fontSize={12} fontWeight={700} fill={col} fontFamily={FONT} letterSpacing="1">{labels[a.dim]}</text>
-                <rect x={barX} y={rowY} width={barW} height={barH} rx={4} ry={4} fill={rgba(col,0.12)}/>
-                <rect x={barX} y={rowY} width={curW} height={barH} rx={4} ry={4} fill={rgba(col,path&&!meetsFloor?0.45:0.85)}/>
-                {/* baseline tick */}
-                <line x1={baseX} y1={rowY-2} x2={baseX} y2={rowY+barH+2} stroke="rgba(255,255,255,0.7)" strokeWidth={1.2}/>
-                {/* floor tick (when career selected) */}
-                {floorX!==null&&<g><line x1={floorX} y1={rowY-4} x2={floorX} y2={rowY+barH+4} stroke={meetsFloor?"#50C878":"#FFCC44"} strokeWidth={2}/><text x={floorX} y={rowY-6} textAnchor="middle" fontSize={9} fontWeight={700} fill={meetsFloor?"#50C878":"#FFCC44"} fontFamily={FONT}>{floor.toFixed(1)}</text></g>}
-                <text x={MBA_CW-14} y={rowY+8} textAnchor="end" fontSize={12} fontWeight={700} fill="rgba(255,255,255,0.92)" fontFamily={FONT}>{a.current.toFixed(1)}</text>
+                <text x={14} y={rowY+8} fontSize={11} fontWeight={700} fill={col} fontFamily={FONT} letterSpacing="0.5">{labels[a.dim]}</text>
+                {/* Background track (full bar) */}
+                <rect x={barX} y={rowY} width={barW} height={barH} rx={4} ry={4} fill="rgba(255,255,255,0.05)"/>
+                {/* 50% attribute-ceiling mark */}
+                <line x1={midX} y1={rowY-1} x2={midX} y2={rowY+barH+1} stroke="rgba(255,255,255,0.22)" strokeWidth={1} strokeDasharray="1,2"/>
+                {/* Skills portion (lighter) from attr boundary to total */}
+                <rect x={barX+attrW} y={rowY} width={Math.max(0,totalW-attrW)} height={barH} rx={0} ry={0} fill={rgba(col,0.45)}/>
+                {/* Attribute portion (saturated) — drawn on top */}
+                <rect x={barX} y={rowY} width={attrW} height={barH} rx={4} ry={4} fill={rgba(col,0.95)}/>
+                {/* Target hash mark (when career selected) */}
+                {tgtX!==null && <g>
+                  <line x1={tgtX} y1={rowY-4} x2={tgtX} y2={rowY+barH+4} stroke="#FFCC44" strokeWidth={2}/>
+                  <text x={tgtX} y={rowY-6} textAnchor="middle" fontSize={8} fontWeight={700} fill="#FFCC44" fontFamily={FONT}>{tgt}</text>
+                </g>}
+                {/* Combined % on right */}
+                <text x={MBA_CW-14} y={rowY+8} textAnchor="end" fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.88)" fontFamily={FONT}>{Math.round(r.totalPct)}%</text>
               </g>
             );
           })}
@@ -3150,8 +3253,26 @@ function MBAProgress(props) {
   var selfOpen = _selfOpen[0], setSelfOpen = _selfOpen[1];
   var _anim = useState(false);
   var anim = _anim[0], setAnim = _anim[1];
+  var _pth = useState(null); var pathId = _pth[0], setPathId = _pth[1];
+  var _pre = useState("today"); var earnedPreset = _pre[0], setEarnedPreset = _pre[1];
 
-  useEffect(function () { setTimeout(function () { setAnim(true); }, 200); }, []);
+  useEffect(function () {
+    setTimeout(function () { setAnim(true); }, 200);
+    try {
+      var ns = localStorage.getItem("mba_northstar");
+      if (ns) setPathId(ns);
+      var pr = localStorage.getItem("mba_preset");
+      if (pr && EARNED_PRESETS[pr]) setEarnedPreset(pr);
+    } catch(e){}
+  }, []);
+
+  /* Radar inputs derived from persisted state */
+  var myAttrs = {};
+  ATTRIBUTES.forEach(function(a){ myAttrs[a.dim] = a.current; });
+  var myEarned = EARNED_PRESETS[earnedPreset] || EARNED_PRESETS["today"];
+  var selectedPath = pathId ? PATHS.filter(function(p){return p.id===pathId;})[0] : null;
+  var radarTarget = selectedPath ? targetForPath(selectedPath) : null;
+  var radarColor = selectedPath ? selectedPath.color : CB;
 
   var totalEarned = 0;
   var totalAll = 0;
@@ -3477,6 +3598,12 @@ function MBATeam(props) {
           <div>
             <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.5, marginBottom:6 }}>COHORT SNAPSHOT · ANONYMIZED</div>
             <div style={{ fontSize:13, color:"rgba(255,255,255,0.55)", marginBottom:12, lineHeight:1.45 }}>{cohortSize} students across the Full-Time MBA. All data aggregated — no individual scores surfaced.</div>
+
+            {/* Cohort readiness radar */}
+            <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"4px 0 12px" }}>
+              <PIVOTRadar size={240} dimData={cohortDimData(COHORT)} color={CB}/>
+              <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginTop:4 }}>COHORT SHAPE \u00b7 ATTRIBUTES + SKILLS</div>
+            </div>
 
             {/* Avg attrs */}
             <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.12), marginBottom:12 }}>
