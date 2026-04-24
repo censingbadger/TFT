@@ -2181,14 +2181,12 @@ function UBPAssistant(props) {
    MBA — JOURNEY (Skill Constellation)
    ══════════════════════════════════════════════════════════════ */
 
-var MBA_CW = 430, MBA_CH = 600;
-var MBA_GOAL_H = 90;        /* top goal-star zone */
+var MBA_CW = 430, MBA_CH = 1060;
+var MBA_GOAL_H = 130;        /* top goal-star zone */
 var MBA_SKY_TOP = MBA_GOAL_H;
-var MBA_SKY_H = 330;        /* sky area height (between goal and horizon) */
-var MBA_SKY_BOT = MBA_SKY_TOP + MBA_SKY_H;   /* y=420, horizon line */
-var MBA_ATTR_H = 82;        /* attribute foundation band */
-var MBA_TL_H = 58;          /* timeline strip (below attrs) */
-var MBA_TILE_W = 74, MBA_TILE_H = 32;
+var MBA_SKY_H = 780;         /* sky area height (taller for breathing room) */
+var MBA_SKY_BOT = MBA_SKY_TOP + MBA_SKY_H;   /* horizon line */
+var MBA_ATTR_H = 150;        /* attribute foundation band */
 var READY_THRESH = 8, FLUENT_THRESH = 10, MASTERY_THRESH = 12;
 
 /* ── Attribute foundation (PIVOT survey scores: baseline at orientation → current) ── */
@@ -2219,40 +2217,40 @@ var MBA_SN2 = MBA_genStars(40, 271);
 /* ── 30 Dynamic Leadership Skills (6 per PIVOT domain, with dynamic-lens definitions) ── */
 var SKILLS = [
   /* Purpose */
-  { id:"s1",  dim:"P", label:"Self-Insight",                     def:"Notices own patterns under shifting conditions and uses them to adjust.", x:18, y:40 },
+  { id:"s1",  dim:"P", label:"Self-Insight",                     def:"Notices own patterns under shifting conditions and uses them to adjust.", x:16, y:35 },
   { id:"s2",  dim:"P", label:"Emotional Self-Awareness",         def:"Identifies own emotional shifts as stakes rise, and how they shape judgment.", x:22, y:58 },
-  { id:"s3",  dim:"P", label:"Leader Identity in Action",        def:"Steps into leadership when conditions require direction and the path is unclear.", x:30, y:36 },
-  { id:"s4",  dim:"P", label:"Values-Anchored Decisions",        def:"Holds core values when changing conditions create pressure to compromise them.", x:12, y:52 },
-  { id:"s5",  dim:"P", label:"Moral Courage",                    def:"Takes principled stands when situations shift and others recalibrate positions.", x:28, y:48 },
-  { id:"s6",  dim:"P", label:"Purpose Articulation",             def:"Reconnects self and others to purpose when plans change or motivation wavers.", x:36, y:55 },
+  { id:"s3",  dim:"P", label:"Leader Identity in Action",        def:"Steps into leadership when conditions require direction and the path is unclear.", x:28, y:30 },
+  { id:"s4",  dim:"P", label:"Values-Anchored Decisions",        def:"Holds core values when changing conditions create pressure to compromise them.", x:10, y:50 },
+  { id:"s5",  dim:"P", label:"Moral Courage",                    def:"Takes principled stands when situations shift and others recalibrate positions.", x:26, y:45 },
+  { id:"s6",  dim:"P", label:"Purpose Articulation",             def:"Reconnects self and others to purpose when plans change or motivation wavers.", x:36, y:54 },
   /* Interrelating */
-  { id:"s7",  dim:"I", label:"Relational Investment",            def:"Invests in working relationships before disruption or need arises.", x:20, y:68 },
-  { id:"s8",  dim:"I", label:"Commitment Integrity",             def:"Renegotiates commitments openly rather than going silent when conditions change.", x:38, y:78 },
-  { id:"s9",  dim:"I", label:"Psychological Safety Creation",    def:"Creates space for dissent and bad news under pressure.", x:18, y:82 },
-  { id:"s10", dim:"I", label:"Developmental Feedback",           def:"Gives real-time feedback that helps others adjust as situations evolve.", x:38, y:62 },
-  { id:"s11", dim:"I", label:"Active Perspective-Taking",        def:"Engages perspectives that challenge own read of a shifting situation.", x:30, y:75 },
-  { id:"s12", dim:"I", label:"Conflict Engagement",              def:"Stays respectful and direct when stakes rise; surfaces and addresses conflict before it derails.", x:45, y:70 },
+  { id:"s7",  dim:"I", label:"Relational Investment",            def:"Invests in working relationships before disruption or need arises.", x:18, y:70 },
+  { id:"s8",  dim:"I", label:"Commitment Integrity",             def:"Renegotiates commitments openly rather than going silent when conditions change.", x:38, y:82 },
+  { id:"s9",  dim:"I", label:"Psychological Safety Creation",    def:"Creates space for dissent and bad news under pressure.", x:16, y:84 },
+  { id:"s10", dim:"I", label:"Developmental Feedback",           def:"Gives real-time feedback that helps others adjust as situations evolve.", x:42, y:64 },
+  { id:"s11", dim:"I", label:"Active Perspective-Taking",        def:"Engages perspectives that challenge own read of a shifting situation.", x:32, y:74 },
+  { id:"s12", dim:"I", label:"Conflict Engagement",              def:"Stays respectful and direct when stakes rise; surfaces and addresses conflict before it derails.", x:48, y:70 },
   /* Vision */
-  { id:"s13", dim:"V", label:"Strategic Foresight",              def:"Anticipates second- and third-order consequences under changing conditions.", x:50, y:18 },
+  { id:"s13", dim:"V", label:"Strategic Foresight",              def:"Anticipates second- and third-order consequences under changing conditions.", x:52, y:18 },
   { id:"s14", dim:"V", label:"Future-State Articulation",        def:"Describes a concrete future worth pursuing even as circumstances shift.", x:42, y:8 },
-  { id:"s15", dim:"V", label:"Opportunity Recognition",          def:"Spots opportunity in change that others read only as threat.", x:58, y:22 },
-  { id:"s16", dim:"V", label:"Generative Problem Framing",       def:"Reframes a problem when the original frame becomes wrong.", x:55, y:32 },
-  { id:"s17", dim:"V", label:"Adaptive Iteration",               def:"Changes approach in flight when the first approach isn't working.", x:45, y:28 },
-  { id:"s18", dim:"V", label:"Energizing Vision Communication",  def:"Rallies energy and conviction under low morale or uncertainty; connects daily work to larger purpose.", x:65, y:12 },
+  { id:"s15", dim:"V", label:"Opportunity Recognition",          def:"Spots opportunity in change that others read only as threat.", x:60, y:24 },
+  { id:"s16", dim:"V", label:"Generative Problem Framing",       def:"Reframes a problem when the original frame becomes wrong.", x:54, y:34 },
+  { id:"s17", dim:"V", label:"Adaptive Iteration",               def:"Changes approach in flight when the first approach isn't working.", x:46, y:26 },
+  { id:"s18", dim:"V", label:"Energizing Vision Communication",  def:"Rallies energy and conviction under low morale or uncertainty; connects daily work to larger purpose.", x:68, y:12 },
   /* Ownership */
   { id:"s19", dim:"O", label:"Proactive Initiative",             def:"Acts on emerging issues before they become crises.", x:72, y:52 },
-  { id:"s20", dim:"O", label:"Decision Velocity with Discipline", def:"Makes decisive calls under uncertainty with clear rationale and revision triggers.", x:82, y:58 },
-  { id:"s21", dim:"O", label:"Clean Attribution",                def:"Owns role in failure before analyzing external causes.", x:68, y:67 },
-  { id:"s22", dim:"O", label:"Dynamic Prioritization",           def:"Adjusts and re-communicates priorities as conditions change.", x:80, y:68 },
-  { id:"s23", dim:"O", label:"Delegation & Empowerment",         def:"Empowers others to act on their judgment when conditions preclude direct control.", x:85, y:50 },
-  { id:"s24", dim:"O", label:"Follow-Through Under Obstacles",   def:"Persists through setbacks by changing approach, not abandoning the goal.", x:75, y:78 },
+  { id:"s20", dim:"O", label:"Decision Velocity with Discipline", def:"Makes decisive calls under uncertainty with clear rationale and revision triggers.", x:84, y:60 },
+  { id:"s21", dim:"O", label:"Clean Attribution",                def:"Owns role in failure before analyzing external causes.", x:66, y:72 },
+  { id:"s22", dim:"O", label:"Dynamic Prioritization",           def:"Adjusts and re-communicates priorities as conditions change.", x:82, y:70 },
+  { id:"s23", dim:"O", label:"Delegation & Empowerment",         def:"Empowers others to act on their judgment when conditions preclude direct control.", x:88, y:50 },
+  { id:"s24", dim:"O", label:"Follow-Through Under Obstacles",   def:"Persists through setbacks by changing approach, not abandoning the goal.", x:76, y:82 },
   /* Transformation */
-  { id:"s25", dim:"T", label:"Learning from Failure",            def:"Extracts concrete lessons from failure and changes behavior accordingly.", x:62, y:32 },
-  { id:"s26", dim:"T", label:"Stretch-Seeking",                  def:"Steps into roles where success requires not-yet-developed abilities.", x:70, y:22 },
+  { id:"s25", dim:"T", label:"Learning from Failure",            def:"Extracts concrete lessons from failure and changes behavior accordingly.", x:62, y:36 },
+  { id:"s26", dim:"T", label:"Stretch-Seeking",                  def:"Steps into roles where success requires not-yet-developed abilities.", x:74, y:22 },
   { id:"s27", dim:"T", label:"Functioning in Ambiguity",         def:"Makes progress despite uncertainty and missing information.", x:80, y:30 },
-  { id:"s28", dim:"T", label:"Emotional Regulation",             def:"Stays composed and focused when conditions become volatile.", x:75, y:42 },
-  { id:"s29", dim:"T", label:"Resilient Persistence",            def:"Holds to long-horizon goals through multiple setbacks; recovers footing after disappointment.", x:86, y:40 },
-  { id:"s30", dim:"T", label:"Curiosity & Openness to Change",   def:"Approaches change with curiosity rather than defensiveness; updates position when evidence shifts.", x:88, y:20 },
+  { id:"s28", dim:"T", label:"Emotional Regulation",             def:"Stays composed and focused when conditions become volatile.", x:72, y:42 },
+  { id:"s29", dim:"T", label:"Resilient Persistence",            def:"Holds to long-horizon goals through multiple setbacks; recovers footing after disappointment.", x:86, y:42 },
+  { id:"s30", dim:"T", label:"Curiosity & Openness to Change",   def:"Approaches change with curiosity rather than defensiveness; updates position when evidence shifts.", x:90, y:20 },
 ];
 
 /* ── 15 earned skills (mid-Year-1 MBA persona, 3 per PIVOT domain) ── */
@@ -2307,17 +2305,23 @@ function expsTaggingSkill(sid){return MBA_EXPERIENCES.filter(function(e){return 
 /* TODO: replace with your real skill-to-career taxonomy once defined */
 var PATHS = [
   { id:"consulting",   label:"Consulting",       color:"#7BAFD4", goalLabel:"Management Consulting",
-    skills:["s13","s16","s17","s11","s10","s12","s20","s22","s27","s1","s19","s18"] },
+    skills:["s13","s16","s17","s11","s10","s12","s20","s22","s27","s1","s19","s18"],
+    floor:{V:3.5, O:3.3, I:3.2} },
   { id:"banking",      label:"Banking",          color:PC.O,       goalLabel:"Investment Banking",
-    skills:["s20","s22","s24","s28","s29","s21","s13","s8","s4","s19","s7","s11"] },
+    skills:["s20","s22","s24","s28","s29","s21","s13","s8","s4","s19","s7","s11"],
+    floor:{O:3.6, T:3.0, P:3.2} },
   { id:"tech",         label:"Tech / PM",        color:PC.T,       goalLabel:"Product Management",
-    skills:["s13","s15","s17","s16","s22","s23","s10","s9","s27","s30","s14","s18"] },
+    skills:["s13","s15","s17","s16","s22","s23","s10","s9","s27","s30","s14","s18"],
+    floor:{V:3.3, T:3.2, I:3.2} },
   { id:"impact",       label:"Social Impact",    color:PC.V,       goalLabel:"Social Impact Leader",
-    skills:["s6","s3","s5","s4","s18","s14","s7","s11","s9","s19","s29","s25"] },
+    skills:["s6","s3","s5","s4","s18","s14","s7","s11","s9","s19","s29","s25"],
+    floor:{P:3.4, I:3.3, V:3.0} },
   { id:"entrepreneur", label:"Entrepreneurship", color:PC.P,       goalLabel:"Founder",
-    skills:["s15","s14","s17","s19","s20","s26","s27","s28","s29","s30","s25","s18"] },
+    skills:["s15","s14","s17","s19","s20","s26","s27","s28","s29","s30","s25","s18"],
+    floor:{V:3.4, T:3.3, O:3.2} },
   { id:"realestate",   label:"Real Estate",      color:"#C9A96E",  goalLabel:"Real Estate Leader",
-    skills:["s13","s15","s20","s7","s8","s24","s22","s4","s21","s29","s19","s11"] },
+    skills:["s13","s15","s20","s7","s8","s24","s22","s4","s21","s29","s19","s11"],
+    floor:{O:3.3, V:3.1, I:3.0} },
 ];
 
 function MBAJourney(props) {
@@ -2391,65 +2395,97 @@ function MBAJourney(props) {
         {PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){setNs(on?null:p.id);setDimFilter(null);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.12):rgba(p.color,0.03),border:on?"2px solid "+rgba(p.color,0.5):"1px solid "+rgba(p.color,0.08),borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,color:on?p.color:rgba(p.color,0.45),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
       </div>
 
-      {/* Vertical sky map — goal at top, horizon + foundation at bottom */}
-      <div style={{flex:1,position:"relative",minHeight:0,overflow:"hidden",display:"flex",justifyContent:"center"}}>
-        <svg width={MBA_CW} height={MBA_CH} viewBox={"0 0 "+MBA_CW+" "+MBA_CH} preserveAspectRatio="xMidYMid meet" style={{display:"block",opacity:anim?1:0,transition:"opacity 1s ease",maxWidth:"100%",maxHeight:"100%"}}>
+      {/* Vertical sky map — full-bleed, scrollable */}
+      <div style={{flex:1,position:"relative",minHeight:0,overflowY:"auto",overflowX:"hidden",WebkitOverflowScrolling:"touch",background:"#020308"}}>
+        <svg width="100%" viewBox={"0 0 "+MBA_CW+" "+MBA_CH} preserveAspectRatio="xMidYMin slice" style={{display:"block",opacity:anim?1:0,transition:"opacity 1s ease"}}>
           <defs>
             <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
             <filter id="glow2"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
             <filter id="whiteGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="10"/></filter>
-            <filter id="goalGlow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur in="SourceGraphic" stdDeviation="14"/></filter>
+            <filter id="goalGlow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur in="SourceGraphic" stdDeviation="16"/></filter>
             <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#020308"/>
-              <stop offset="35%" stopColor="#080820"/>
-              <stop offset="70%" stopColor="#14203a"/>
-              <stop offset="92%" stopColor="#3a1838"/>
-              <stop offset="100%" stopColor="#6a2a18"/>
+              <stop offset="25%" stopColor="#070718"/>
+              <stop offset="55%" stopColor="#0e1632"/>
+              <stop offset="82%" stopColor="#2a1838"/>
+              <stop offset="97%" stopColor="#6a2a18"/>
+              <stop offset="100%" stopColor="#8a4a14"/>
             </linearGradient>
             <linearGradient id="dawn" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="transparent"/>
-              <stop offset="72%" stopColor="transparent"/>
-              <stop offset="88%" stopColor="#8B3A00" stopOpacity="0.22"/>
-              <stop offset="97%" stopColor="#F5A623" stopOpacity="0.38"/>
-              <stop offset="100%" stopColor="#FFCC44" stopOpacity="0.5"/>
+              <stop offset="78%" stopColor="transparent"/>
+              <stop offset="90%" stopColor="#8B3A00" stopOpacity="0.2"/>
+              <stop offset="98%" stopColor="#F5A623" stopOpacity="0.35"/>
+              <stop offset="100%" stopColor="#FFCC44" stopOpacity="0.45"/>
             </linearGradient>
           </defs>
 
-          {/* Sky gradient (space at top, dawn at horizon) */}
+          {/* Sky (edge-to-edge) */}
           <rect x={0} y={0} width={MBA_CW} height={MBA_SKY_BOT} fill="url(#skyGrad)"/>
           <rect x={0} y={0} width={MBA_CW} height={MBA_SKY_BOT} fill="url(#dawn)"/>
 
-          {/* Background stars (sky region only) */}
-          {MBA_SF.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;var x=(st.x/MBA_CW)*MBA_CW;return <circle key={"sf"+i} cx={x} cy={y} r={st.r*0.7} fill={"rgba(255,255,255,"+(st.op*0.9)+")"}/>;})}
-          {MBA_SM2.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;var x=(st.x/MBA_CW)*MBA_CW;return <circle key={"sm"+i} cx={x} cy={y} r={st.r*0.9} fill={"rgba(255,255,255,"+(st.op*1.5)+")"}/>;})}
-          {MBA_SN2.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;var x=(st.x/MBA_CW)*MBA_CW;return <circle key={"sn"+i} cx={x} cy={y} r={st.r*1.1} fill={"rgba(255,255,255,"+(st.op*2.2)+")"}/>;})}
+          {/* Background stars — scaled across sky */}
+          {MBA_SF.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;return <circle key={"sf"+i} cx={(st.x/MBA_CW)*MBA_CW} cy={y} r={st.r*0.7} fill={"rgba(255,255,255,"+(st.op*0.9)+")"}/>;})}
+          {MBA_SM2.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;return <circle key={"sm"+i} cx={(st.x/MBA_CW)*MBA_CW} cy={y} r={st.r*0.9} fill={"rgba(255,255,255,"+(st.op*1.5)+")"}/>;})}
+          {MBA_SN2.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;return <circle key={"sn"+i} cx={(st.x/MBA_CW)*MBA_CW} cy={y} r={st.r*1.1} fill={"rgba(255,255,255,"+(st.op*2.2)+")"}/>;})}
 
-          {/* Goal star zone (only when career selected) */}
+          {/* Roadmap rays — solid from earned career-skills to goal, dotted from latent */}
           {ns&&path&&(function(){
-            var gx=MBA_CW/2, gy=42;
+            var gx=MBA_CW/2, gy=62;
+            return path.skills.map(function(sid){
+              var sk=skillBy(sid); if(!sk) return null;
+              var sx=sk.x/100*MBA_CW, sy=MBA_SKY_TOP+sk.y/100*MBA_SKY_H;
+              var got=!!EARNED[sid];
+              return <line key={"ray"+sid} x1={sx} y1={sy} x2={gx} y2={gy}
+                stroke={got?rgba(pCol,0.38):rgba("#FFFFFF",0.14)}
+                strokeWidth={got?1.1:0.8}
+                strokeDasharray={got?"none":"2,5"}
+                strokeLinecap="round"/>;
+            });
+          })()}
+
+          {/* Constellation connections — earned skills within PIVOT domain */}
+          {MBA_CONNS.map(function(c,ci){
+            var a=skillBy(c[0]),b=skillBy(c[1]);if(!a||!b)return null;
+            var inDimA=!dimFilter||a.dim===dimFilter, inDimB=!dimFilter||b.dim===dimFilter;
+            if(dimFilter&&!(inDimA&&inDimB))return null;
+            var inCA=careerSet?!!careerSet[a.id]:true, inCB=careerSet?!!careerSet[b.id]:true;
+            var dimmed=(careerSet&&!(inCA&&inCB));
+            var col=PC[a.dim], op=dimmed?0.05:0.5, w=dimmed?0.8:2;
+            var ax=a.x/100*MBA_CW, ay=MBA_SKY_TOP+a.y/100*MBA_SKY_H;
+            var bx=b.x/100*MBA_CW, by=MBA_SKY_TOP+b.y/100*MBA_SKY_H;
+            return <line key={"c"+ci} x1={ax} y1={ay} x2={bx} y2={by} stroke={rgba(col,op)} strokeWidth={w} strokeLinecap="round" style={{transition:"all 0.4s ease"}}/>;
+          })}
+
+          {/* Goal star zone at top (only when career selected) */}
+          {ns&&path&&(function(){
+            var gx=MBA_CW/2, gy=62;
             var earnedOnPath=path.skills.filter(function(sid){return !!EARNED[sid];}).length;
             var total=path.skills.length;
-            var tier = earnedOnPath>=MASTERY_THRESH ? "Mastery" : (earnedOnPath>=FLUENT_THRESH ? "Fluent" : (earnedOnPath>=READY_THRESH ? "Ready" : "Building"));
-            var tierCol = tier==="Mastery"?"#FFFFFF":(tier==="Fluent"?"#FFE9A6":(tier==="Ready"?"#FFCC44":"rgba(255,255,255,0.5)"));
-            var subLabel = tier==="Building" ? (READY_THRESH-earnedOnPath)+" more to Ready" : tier+" \u00b7 "+earnedOnPath+"/"+total;
-            var els = [];
-            // goal star big halo
-            els.push(<circle key="ghalo" cx={gx} cy={gy} r={22} fill={pCol} filter="url(#goalGlow)" opacity={tier==="Building"?0.12:0.3}/>);
-            els.push(<circle key="gstar" cx={gx} cy={gy} r={8} fill={tier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={tier==="Building"?0.8:1.5} opacity={0.95}/>);
-            // inner sparkle for mastery
-            if(tier==="Mastery"||tier==="Fluent") els.push(<circle key="gcore" cx={gx} cy={gy} r={2.5} fill="#fff" opacity={1}/>);
-            // career name
-            els.push(<text key="gname" x={gx} y={gy-16} textAnchor="middle" fontSize={11} fontWeight={600} fill={rgba(pCol,0.9)} fontFamily={FONT} letterSpacing="2">{path.goalLabel.toUpperCase()}</text>);
-            // tier label
-            els.push(<text key="gtier" x={gx} y={gy+22} textAnchor="middle" fontSize={13} fontWeight={700} fill={tierCol} fontFamily={FONT} letterSpacing="1">{tier.toUpperCase()}</text>);
-            els.push(<text key="gsub" x={gx} y={gy+36} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.55)" fontFamily={FONT}>{subLabel}</text>);
-            // 12-dot readiness meter
-            var meterY=gy+54, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
+            // Attribute floor status
+            var floorKeys=Object.keys(path.floor||{});
+            var floorMet=floorKeys.filter(function(k){var a=ATTRIBUTES.find(function(x){return x.dim===k;});return a&&a.current>=path.floor[k];}).length;
+            var allFloor=floorMet===floorKeys.length;
+            var baseTier = earnedOnPath>=MASTERY_THRESH ? "Mastery" : (earnedOnPath>=FLUENT_THRESH ? "Fluent" : (earnedOnPath>=READY_THRESH ? "Ready" : "Building"));
+            var tier = (baseTier==="Building"||allFloor) ? baseTier : (baseTier+" *");
+            var tierCol = baseTier==="Mastery"?"#FFFFFF":(baseTier==="Fluent"?"#FFE9A6":(baseTier==="Ready"?"#FFCC44":"rgba(255,255,255,0.55)"));
+            var subLabel = baseTier==="Building" ? (READY_THRESH-earnedOnPath)+" skills to Ready" : (earnedOnPath+"/"+total+" critical skills");
+            var floorLabel = allFloor ? "Foundation complete" : ("Foundation: "+floorMet+"/"+floorKeys.length+" dimensions met");
+            var els=[];
+            els.push(<text key="gn" x={gx} y={gy-30} textAnchor="middle" fontSize={10} fontWeight={600} fill={rgba(pCol,0.75)} fontFamily={FONT} letterSpacing="2.5">{path.goalLabel.toUpperCase()}</text>);
+            els.push(<circle key="gh" cx={gx} cy={gy} r={26} fill={pCol} filter="url(#goalGlow)" opacity={baseTier==="Building"?0.14:0.32}/>);
+            els.push(<circle key="gs" cx={gx} cy={gy} r={9} fill={baseTier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={baseTier==="Building"?0.8:1.8} opacity={0.95}/>);
+            if(baseTier==="Mastery"||baseTier==="Fluent") els.push(<circle key="gc" cx={gx} cy={gy} r={3} fill="#fff"/>);
+            els.push(<text key="gt" x={gx} y={gy+24} textAnchor="middle" fontSize={14} fontWeight={700} fill={tierCol} fontFamily={FONT} letterSpacing="1.5">{tier.toUpperCase()}</text>);
+            els.push(<text key="gs2" x={gx} y={gy+40} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.55)" fontFamily={FONT}>{subLabel}</text>);
+            els.push(<text key="gf" x={gx} y={gy+54} textAnchor="middle" fontSize={9} fill={allFloor?"rgba(80,200,120,0.75)":"rgba(255,200,100,0.6)"} fontFamily={FONT}>{floorLabel}</text>);
+            // 12-dot meter
+            var meterY=gy+68, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
             for(var di=0; di<total; di++){
               var dx=startX+di*dotSpace;
               var sid=path.skills[di];
               var got=!!EARNED[sid];
-              var dotCol = got ? (di>=MASTERY_THRESH-1?"#fff":(di>=FLUENT_THRESH-1?"#FFE9A6":(di>=READY_THRESH-1?"#FFCC44":rgba(pCol,0.9)))) : "rgba(255,255,255,0.12)";
+              var dotCol = got ? (di>=MASTERY_THRESH-1?"#fff":(di>=FLUENT_THRESH-1?"#FFE9A6":(di>=READY_THRESH-1?"#FFCC44":rgba(pCol,0.95)))) : "rgba(255,255,255,0.1)";
               var strokeCol = got ? "#fff" : rgba(pCol,0.35);
               els.push(<circle key={"gd"+di} cx={dx} cy={meterY} r={3.2} fill={dotCol} stroke={strokeCol} strokeWidth={got?0.8:1}/>);
             }
@@ -2457,54 +2493,12 @@ function MBAJourney(props) {
           })()}
           {!ns&&(
             <g>
-              <text x={MBA_CW/2} y={30} textAnchor="middle" fontSize={11} fontWeight={600} fill="rgba(255,255,255,0.35)" fontFamily={FONT} letterSpacing="2">PICK A NORTH STAR</text>
-              <text x={MBA_CW/2} y={48} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.25)" fontFamily={FONT}>to light the path ahead</text>
+              <text x={MBA_CW/2} y={42} textAnchor="middle" fontSize={11} fontWeight={600} fill="rgba(255,255,255,0.38)" fontFamily={FONT} letterSpacing="2.5">PICK A NORTH STAR</text>
+              <text x={MBA_CW/2} y={62} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.28)" fontFamily={FONT}>tap a career above to light the path ahead</text>
             </g>
           )}
 
-          {/* Connections — earned skills within PIVOT domain */}
-          {MBA_CONNS.map(function(c,ci){
-            var a=skillBy(c[0]),b=skillBy(c[1]);if(!a||!b)return null;
-            var inDimA=!dimFilter||a.dim===dimFilter, inDimB=!dimFilter||b.dim===dimFilter;
-            if(dimFilter&&!(inDimA&&inDimB))return null;
-            var inCA=careerSet?!!careerSet[a.id]:true, inCB=careerSet?!!careerSet[b.id]:true;
-            var dimmed=(careerSet&&!(inCA&&inCB));
-            var col=PC[a.dim], op=dimmed?0.06:0.45, w=dimmed?1:2;
-            var ax=a.x/100*MBA_CW, ay=MBA_SKY_TOP+a.y/100*MBA_SKY_H;
-            var bx=b.x/100*MBA_CW, by=MBA_SKY_TOP+b.y/100*MBA_SKY_H;
-            return <line key={"c"+ci} x1={ax} y1={ay} x2={bx} y2={by} stroke={rgba(col,op)} strokeWidth={w} strokeLinecap="round" style={{transition:"all 0.4s ease"}}/>;
-          })}
-
-          {/* Cross-highlight lines (skill \u2194 experience) */}
-          {(function(){
-            var L=[];
-            function tileCenter(e){
-              var b=BUCKETS[e.bucket];
-              var bk=MBA_EXPERIENCES.filter(function(ee){return ee.bucket===e.bucket;});
-              var idx=bk.indexOf(e);
-              var cx=(b.x1+b.x2)/2/100*MBA_CW;
-              var spread=16; var offset=(idx-(bk.length-1)/2)*spread;
-              return {x:cx+offset, y:MBA_SKY_BOT+2+MBA_ATTR_H+20};
-            }
-            if(selSkill&&selSkillObj){
-              var sx=selSkillObj.x/100*MBA_CW, sy=MBA_SKY_TOP+selSkillObj.y/100*MBA_SKY_H, col=PC[selSkillObj.dim];
-              expsTaggingSkill(selSkill).forEach(function(e){
-                var tc=tileCenter(e);
-                L.push(<line key={"xhs"+e.id} x1={sx} y1={sy} x2={tc.x} y2={tc.y} stroke={rgba(col,e.done?0.55:0.28)} strokeWidth={1.2} strokeDasharray={e.done?"none":"3,4"} strokeLinecap="round"/>);
-              });
-            }
-            if(selExp&&selExpObj){
-              var tc2=tileCenter(selExpObj);
-              selExpObj.skills.forEach(function(sid){
-                var sk=skillBy(sid);if(!sk)return;
-                var col=PC[sk.dim], sx2=sk.x/100*MBA_CW, sy2=MBA_SKY_TOP+sk.y/100*MBA_SKY_H;
-                L.push(<line key={"xhe"+sid} x1={tc2.x} y1={tc2.y} x2={sx2} y2={sy2} stroke={rgba(col,selExpObj.done?0.55:0.3)} strokeWidth={1.2} strokeDasharray={selExpObj.done?"none":"3,4"} strokeLinecap="round"/>);
-              });
-            }
-            return L;
-          })()}
-
-          {/* Skill stars (30; earned = filled + dot, latent = outline) */}
+          {/* Skill stars */}
           {SKILLS.map(function(s){
             var x=s.x/100*MBA_CW, y=MBA_SKY_TOP+s.y/100*MBA_SKY_H, col=PC[s.dim];
             var earned=!!EARNED[s.id];
@@ -2513,89 +2507,55 @@ function MBAJourney(props) {
             var dimmed=(dimFilter&&!inDim)||(careerSet&&!inCareer);
             var isSel=selSkill===s.id;
             var isCrossHL=selExp&&selExpObj&&selExpObj.skills.indexOf(s.id)>=0;
-            var r=earned?9:5.5; if(isSel)r+=2;
-            var opacity=dimmed?0.08:(isSel||isCrossHL?1:(earned?0.95:0.5));
+            var r=earned?10:6; if(isSel)r+=2;
+            var opacity=dimmed?0.08:(isSel||isCrossHL?1:(earned?0.95:0.55));
             var fill=rgba(col,earned?0.25:0.04);
             var stroke=rgba(col,earned?0.9:0.4);
             var strokeW=isSel?2.5:(earned?1.8:1);
             var showWhite=careerSet&&inCareer&&!dimmed;
-            var lbl=s.label.length>22?s.label.slice(0,20)+"\u2026":s.label;
+            var lbl=s.label.length>24?s.label.slice(0,22)+"\u2026":s.label;
             return (
               <g key={s.id} style={{cursor:"pointer",transition:"opacity 0.4s ease"}} opacity={opacity} onClick={function(){toggleSkill(s.id);}}>
-                {showWhite&&<circle cx={x} cy={y} r={r+7} fill="#fff" filter="url(#whiteGlow)" opacity={0.28}/>}
-                {showWhite&&<circle cx={x} cy={y} r={r+2} fill="none" stroke="#fff" strokeWidth={1} opacity={0.45}/>}
+                {showWhite&&<circle cx={x} cy={y} r={r+8} fill="#fff" filter="url(#whiteGlow)" opacity={0.3}/>}
+                {showWhite&&<circle cx={x} cy={y} r={r+2.5} fill="none" stroke="#fff" strokeWidth={1} opacity={0.5}/>}
                 {earned&&!dimmed&&<circle cx={x} cy={y} r={r+6} fill={rgba(col,0.08)}/>}
                 {isSel&&<circle cx={x} cy={y} r={r+5} fill="none" stroke={col} strokeWidth={1.8} opacity={0.55} filter="url(#glow2)"/>}
                 <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={strokeW}/>
                 {earned&&<circle cx={x} cy={y} r={r*0.4} fill="#fff" opacity={0.85}/>}
-                <text x={x} y={y+r+11} textAnchor="middle" fontSize={earned?9.5:8.5} fontWeight={earned?600:400} fill={rgba(col,earned?0.85:0.5)} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>
+                <text x={x} y={y+r+12} textAnchor="middle" fontSize={earned?10:9} fontWeight={earned?600:400} fill={rgba(col,earned?0.9:0.55)} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>
               </g>
             );
           })}
 
           {/* Horizon line */}
-          <line x1={0} y1={MBA_SKY_BOT} x2={MBA_CW} y2={MBA_SKY_BOT} stroke="#F5A623" strokeWidth={1} opacity={0.6}/>
-          <line x1={0} y1={MBA_SKY_BOT+1} x2={MBA_CW} y2={MBA_SKY_BOT+1} stroke="#D4710A" strokeWidth={1.5} opacity={0.4}/>
+          <line x1={0} y1={MBA_SKY_BOT} x2={MBA_CW} y2={MBA_SKY_BOT} stroke="#F5A623" strokeWidth={1} opacity={0.55}/>
+          <line x1={0} y1={MBA_SKY_BOT+1.5} x2={MBA_CW} y2={MBA_SKY_BOT+1.5} stroke="#D4710A" strokeWidth={2} opacity={0.35}/>
 
-          {/* Attribute foundation band — 5 horizontal bars with baseline ticks */}
-          <rect x={0} y={MBA_SKY_BOT+2} width={MBA_CW} height={MBA_ATTR_H} fill="#0a0618" style={{pointerEvents:"none"}}/>
-          <text x={12} y={MBA_SKY_BOT+16} fontSize={9} fontWeight={700} fill="rgba(255,255,255,0.35)" fontFamily={FONT} letterSpacing="1.5">ATTRIBUTE FOUNDATION \u00b7 BASELINE \u2192 CURRENT</text>
+          {/* Attribute foundation band */}
+          <rect x={0} y={MBA_SKY_BOT+3} width={MBA_CW} height={MBA_ATTR_H} fill="#060412" style={{pointerEvents:"none"}}/>
+          <text x={16} y={MBA_SKY_BOT+20} fontSize={9} fontWeight={700} fill="rgba(255,255,255,0.45)" fontFamily={FONT} letterSpacing="1.8">FOUNDATION \u00b7 ATTRIBUTES YOU BROUGHT IN</text>
           {ATTRIBUTES.map(function(a,ai){
-            var rowY=MBA_SKY_BOT+22+ai*12;
+            var rowY=MBA_SKY_BOT+34+ai*22;
             var col=PC[a.dim];
-            var barX=44, barW=MBA_CW-90, barH=7;
+            var barX=70, barW=MBA_CW-110, barH=10;
             var curW=(a.current/5)*barW;
             var baseX=barX+(a.baseline/5)*barW;
+            var floor = path && path.floor && path.floor[a.dim];
+            var floorX = floor ? barX+(floor/5)*barW : null;
+            var meetsFloor = floor ? a.current>=floor : true;
             return (
               <g key={"attr"+ai}>
-                <text x={12} y={rowY+5} fontSize={10} fontWeight={700} fill={col} fontFamily={FONT}>{DIM_NAMES[a.dim].slice(0,4).toUpperCase()}</text>
-                <rect x={barX} y={rowY} width={barW} height={barH} rx={3} ry={3} fill={rgba(col,0.08)}/>
-                <rect x={barX} y={rowY} width={curW} height={barH} rx={3} ry={3} fill={rgba(col,0.7)}/>
-                <line x1={baseX} y1={rowY-1} x2={baseX} y2={rowY+barH+1} stroke="rgba(255,255,255,0.75)" strokeWidth={1}/>
-                <text x={MBA_CW-12} y={rowY+5} textAnchor="end" fontSize={10} fontWeight={600} fill="rgba(255,255,255,0.7)" fontFamily={FONT}>{a.current.toFixed(1)}</text>
+                <text x={16} y={rowY+7} fontSize={10} fontWeight={700} fill={col} fontFamily={FONT} letterSpacing="0.5">{DIM_NAMES[a.dim].toUpperCase().slice(0,4)}</text>
+                <rect x={barX} y={rowY} width={barW} height={barH} rx={4} ry={4} fill={rgba(col,0.08)}/>
+                <rect x={barX} y={rowY} width={curW} height={barH} rx={4} ry={4} fill={rgba(col,path&&!meetsFloor?0.4:0.75)}/>
+                {/* baseline tick */}
+                <line x1={baseX} y1={rowY-2} x2={baseX} y2={rowY+barH+2} stroke="rgba(255,255,255,0.6)" strokeWidth={1}/>
+                {/* floor tick (when career selected) */}
+                {floorX!==null&&<g><line x1={floorX} y1={rowY-3} x2={floorX} y2={rowY+barH+3} stroke={meetsFloor?"#50C878":"#FFCC44"} strokeWidth={1.8}/><text x={floorX} y={rowY-5} textAnchor="middle" fontSize={7} fontWeight={700} fill={meetsFloor?"#50C878":"#FFCC44"} fontFamily={FONT}>{floor.toFixed(1)}</text></g>}
+                <text x={MBA_CW-14} y={rowY+7} textAnchor="end" fontSize={10} fontWeight={600} fill="rgba(255,255,255,0.8)" fontFamily={FONT}>{a.current.toFixed(1)}</text>
               </g>
             );
           })}
-
-          {/* Timeline strip — bucket clusters of experience icons */}
-          <rect x={0} y={MBA_SKY_BOT+2+MBA_ATTR_H} width={MBA_CW} height={MBA_TL_H} fill="#080412" style={{pointerEvents:"none"}}/>
-          {BUCKETS.map(function(b,bi){
-            var bx1=b.x1/100*MBA_CW, bx2=b.x2/100*MBA_CW;
-            return <line key={"bd"+bi} x1={bx2} y1={MBA_SKY_BOT+2+MBA_ATTR_H+8} x2={bx2} y2={MBA_SKY_BOT+2+MBA_ATTR_H+MBA_TL_H-14} stroke="rgba(212,113,10,0.15)" strokeWidth={1} strokeDasharray="2,3"/>;
-          })}
-          {MBA_EXPERIENCES.map(function(e){
-            var b=BUCKETS[e.bucket];
-            var bk=MBA_EXPERIENCES.filter(function(ee){return ee.bucket===e.bucket;});
-            var idx=bk.indexOf(e);
-            var bcx=(b.x1+b.x2)/2/100*MBA_CW;
-            var spread=16;
-            var offset=(idx-(bk.length-1)/2)*spread;
-            var ix=bcx+offset;
-            var iy=MBA_SKY_BOT+2+MBA_ATTR_H+20;
-            var firstSkill=skillBy(e.skills[0]);
-            var col=firstSkill?PC[firstSkill.dim]:CB;
-            var isSel=selExp===e.id;
-            var isCross=selSkill&&e.skills.indexOf(selSkill)>=0;
-            var inDim=!dimFilter||e.skills.some(function(sid){var sk=skillBy(sid);return sk&&sk.dim===dimFilter;});
-            var dimmed=dimFilter&&!inDim;
-            var op=dimmed?0.2:(isCross||isSel?1:(e.done?0.92:0.55));
-            return (
-              <g key={e.id} style={{cursor:"pointer",transition:"opacity 0.3s ease"}} opacity={op} onClick={function(){toggleExp(e.id);}}>
-                {(isSel||isCross)&&<circle cx={ix} cy={iy} r={11} fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.5} filter="url(#glow2)"/>}
-                <circle cx={ix} cy={iy} r={8} fill={rgba(col,e.done?0.25:0.08)} stroke={rgba(col,e.done?0.85:0.4)} strokeWidth={isSel?1.8:1} strokeDasharray={e.done?"none":"2,2"}/>
-                <text x={ix} y={iy+1} textAnchor="middle" dominantBaseline="middle" fontSize={9} style={{pointerEvents:"none"}}>{MBA_EXP_ICON[e.type]||"\u2605"}</text>
-                {e.done&&<circle cx={ix+6} cy={iy-6} r={2.5} fill="#50C878"/>}
-              </g>
-            );
-          })}
-          {BUCKETS.map(function(b,bi){
-            var cx=(b.x1+b.x2)/2/100*MBA_CW;
-            return <text key={"bl"+bi} x={cx} y={MBA_SKY_BOT+2+MBA_ATTR_H+MBA_TL_H-5} textAnchor="middle" fontSize={8.5} fontWeight={600} fill="#D4710A" fontFamily={FONT} opacity={0.75}>{b.label}</text>;
-          })}
-
-          {/* NOW indicator line (between Y1 Spring and Summer) */}
-          <line x1={41/100*MBA_CW} y1={MBA_SKY_BOT-6} x2={41/100*MBA_CW} y2={MBA_SKY_BOT+2+MBA_ATTR_H+MBA_TL_H} stroke="rgba(245,166,35,0.2)" strokeWidth={1} strokeDasharray="2,3"/>
-          <text x={41/100*MBA_CW} y={MBA_SKY_BOT-9} textAnchor="middle" fontSize={8} fontWeight={700} fill="#F5A623" fontFamily={FONT} letterSpacing="1">NOW</text>
         </svg>
       </div>
 {/* Detail panel — skill info (with reflection) or experience info */}
