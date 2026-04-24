@@ -2262,12 +2262,21 @@ function computeReadiness(dim, earnedMap, attrs){
   var skillPct = Math.max(0, Math.min(50, (skillsInDim/6)*50));
   return { attrPct: attrPct, skillPct: skillPct, totalPct: attrPct+skillPct, skillsInDim: skillsInDim };
 }
-/* Target per dim from a path's emphasis dict (0..100 per dim) */
+/* Target per dim, derived from each career's 12 critical skills.
+   More skills in a dim => higher target. Linear mapping gives each career
+   a distinctive (lopsided) pentagon instead of a near-even polygon. */
 function targetForPath(path){
   var t = {};
+  if (!path) { DIMS.forEach(function(d){ t[d] = 55; }); return t; }
+  var counts = {P:0,I:0,V:0,O:0,T:0};
+  (path.skills||[]).forEach(function(sid){
+    var s = skillBy(sid); if (s) counts[s.dim]++;
+  });
+  var total = (path.skills||[]).length || 12;
   DIMS.forEach(function(d){
-    var e = (path && path.emphasis && path.emphasis[d]) || 0;
-    t[d] = e>=0.25 ? 95 : (e>=0.15 ? 75 : 55);
+    var e = counts[d]/total;          /* fraction of critical skills in this dim, 0..0.5 */
+    var pct = 45 + e * 160;           /* 45% baseline, +160 per full weight => varied profiles */
+    t[d] = Math.round(Math.max(40, Math.min(99, pct)));
   });
   return t;
 }
@@ -3052,10 +3061,18 @@ function MBA_TokenBar(props) {
   var data = props.data;
   var expanded = props.expanded;
   var onToggle = props.onToggle;
+  var attrs = props.attrs || {};
+  var earnedMap = props.earnedMap || {};
+  var path = props.path || null;
   var earned = data.earned.length;
   var total = data.total;
-  var pct = Math.round((earned / total) * 100);
   var color = PC[dim];
+  /* Readiness stack: attributes fill first 50%, skills the next 50% */
+  var r = computeReadiness(dim, earnedMap, attrs);
+  var target = path ? targetForPath(path)[dim] : null;
+  var floor = path && path.floor && path.floor[dim];
+  /* Floor as %: attribute-only threshold expressed on the 0..100 readiness scale */
+  var floorPct = floor ? (floor/5)*50 : null;
 
   return (
     <div style={{ marginBottom: 6 }}>
@@ -3076,17 +3093,34 @@ function MBA_TokenBar(props) {
           fontSize: 15, fontWeight: 700, color: color,
         }}>{dim}</div>
         <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-            <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>{DIM_NAMES[dim]}</span>
-            <span style={{ fontSize: 14, color: rgba(color, 0.7) }}>{earned}/{total}</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{DIM_NAMES[dim]}</span>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+              <span style={{ fontWeight: 700, color: "#fff" }}>{Math.round(r.totalPct)}%</span>
+              <span style={{ margin: "0 6px", color: "rgba(255,255,255,0.2)" }}>·</span>
+              <span>{earned}/{total} tokens</span>
+            </span>
           </div>
-          <div style={{ height: 6, background: rgba(color, 0.1), borderRadius: 3 }}>
-            <div style={{
-              height: "100%", borderRadius: 3, width: pct + "%",
-              background: "linear-gradient(90deg," + color + "," + rgba(color, 0.6) + ")",
-              transition: "width 1s ease",
-            }} />
+          {/* Readiness bar: background + skill fill + attribute fill + 50% attribute ceiling + floor tick + target tick */}
+          <div style={{ position: "relative", height: 10, background: "rgba(255,255,255,0.05)", borderRadius: 5 }}>
+            {/* 50% attribute-ceiling mark */}
+            <div style={{ position:"absolute", left:"50%", top:-2, bottom:-2, width:1, background:"rgba(255,255,255,0.22)" }}></div>
+            {/* Skills portion (lighter) from attribute boundary to total */}
+            <div style={{ position:"absolute", left:r.attrPct+"%", top:0, height:"100%", width:Math.max(0,(r.totalPct-r.attrPct))+"%", background: rgba(color,0.45), transition:"width 0.8s ease" }}></div>
+            {/* Attribute portion (saturated) */}
+            <div style={{ position:"absolute", left:0, top:0, height:"100%", width:r.attrPct+"%", borderRadius: "5px 0 0 5px", background: rgba(color,0.95), transition:"width 0.8s ease" }}></div>
+            {/* Attribute-floor tick (minimum threshold for this career) */}
+            {floorPct!==null && <div style={{ position:"absolute", left:floorPct+"%", top:-3, bottom:-3, width:2, background:"#FFCC44", opacity:0.9 }} title={"Minimum attribute floor " + floor}></div>}
+            {/* Target tick (career ideal) */}
+            {target!==null && <div style={{ position:"absolute", left:target+"%", top:-4, bottom:-4, width:2, background:"#50C878" }} title={"Target " + target + "%"}></div>}
           </div>
+          {/* Tiny legend under the bar when a career is picked */}
+          {path && (
+            <div style={{ display:"flex", gap:10, marginTop:4, fontSize:10, color:"rgba(255,255,255,0.45)" }}>
+              {floorPct!==null && <span style={{ display:"inline-flex", alignItems:"center", gap:4 }}><span style={{ display:"inline-block", width:2, height:8, background:"#FFCC44" }}></span>Floor {floor}</span>}
+              {target!==null && <span style={{ display:"inline-flex", alignItems:"center", gap:4 }}><span style={{ display:"inline-block", width:2, height:8, background:"#50C878" }}></span>Target {target}%</span>}
+            </div>
+          )}
         </div>
         <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</div>
       </div>
@@ -3454,7 +3488,7 @@ function MBAProgress(props) {
         <div style={{ padding: "0 16px 8px" }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
           {DIMS.map(function (d) {
-            return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
+            return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} attrs={myAttrs} earnedMap={myEarned} path={selectedPath} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
           })}
         </div>
 
