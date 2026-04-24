@@ -2186,7 +2186,7 @@ var MBA_GOAL_H = 130;        /* top goal-star zone */
 var MBA_SKY_TOP = MBA_GOAL_H;
 var MBA_SKY_H = 780;         /* sky area height (taller for breathing room) */
 var MBA_SKY_BOT = MBA_SKY_TOP + MBA_SKY_H;   /* horizon line */
-var MBA_ATTR_H = 150;        /* attribute foundation band */
+var MBA_ATTR_H = 118;        /* attribute foundation band */
 var READY_THRESH = 8, FLUENT_THRESH = 10, MASTERY_THRESH = 12;
 
 /* ── Attribute foundation (PIVOT survey scores: baseline at orientation → current) ── */
@@ -2254,16 +2254,34 @@ var SKILLS = [
 ];
 
 /* ── 15 earned skills (mid-Year-1 MBA persona, 3 per PIVOT domain) ── */
-var EARNED = {s1:1,s2:1,s3:1,s7:1,s11:1,s12:1,s13:1,s16:1,s17:1,s19:1,s22:1,s24:1,s25:1,s27:1,s30:1};
+/* ── Demo presets: snapshots at each journey milestone ── */
+var EARNED_PRESETS = {
+  "new":     {},
+  "y1fall":  {s1:1,s2:1,s3:1,s7:1,s11:1,s13:1,s16:1},
+  "today":   {s1:1,s2:1,s3:1,s7:1,s11:1,s12:1,s13:1,s16:1,s17:1,s19:1,s22:1,s24:1,s25:1,s27:1,s30:1},
+  "grad":    {s1:1,s2:1,s3:1,s4:1,s5:1,s6:1,s7:1,s8:1,s9:1,s10:1,s11:1,s12:1,s13:1,s14:1,s16:1,s17:1,s18:1,s19:1,s22:1,s23:1,s24:1,s25:1,s27:1,s29:1,s30:1},
+  "mastery": {s1:1,s2:1,s3:1,s4:1,s5:1,s6:1,s7:1,s8:1,s9:1,s10:1,s11:1,s12:1,s13:1,s14:1,s15:1,s16:1,s17:1,s18:1,s19:1,s20:1,s21:1,s22:1,s23:1,s24:1,s25:1,s26:1,s27:1,s28:1,s29:1,s30:1},
+};
+var DEMO_PRESETS_META = [
+  {id:"new",     label:"New student",    sub:"Pre-orientation"},
+  {id:"y1fall",  label:"End of Y1 Fall", sub:"7 skills"},
+  {id:"today",   label:"Today (Y2 start)", sub:"15 skills"},
+  {id:"grad",    label:"Graduation",     sub:"25 skills"},
+  {id:"mastery", label:"Mastery",        sub:"All 30"},
+];
+/* Experiences "done" cutoff per preset (by timeline bucket index, inclusive) */
+var DONE_CUTOFF = { "new":-1, "y1fall":0, "today":1, "grad":4, "mastery":5 };
+function isDone(e, preset){ return e.bucket <= (DONE_CUTOFF[preset] !== undefined ? DONE_CUTOFF[preset] : 1); }
+var EARNED = EARNED_PRESETS.today; /* default for any module-level refs */
 function skillBy(id){for(var i=0;i<SKILLS.length;i++)if(SKILLS[i].id===id)return SKILLS[i];return null;}
 
-/* ── Auto-connect earned skills within each PIVOT domain ── */
-var MBA_CONNS = (function(){
-  var c=[],byD={P:[],I:[],V:[],O:[],T:[]};
-  SKILLS.forEach(function(s){if(EARNED[s.id])byD[s.dim].push(s.id);});
+/* ── Build connections from an EARNED map (called inside the component) ── */
+function buildConns(earnedMap){
+  var c=[], byD={P:[],I:[],V:[],O:[],T:[]};
+  SKILLS.forEach(function(s){if(earnedMap[s.id])byD[s.dim].push(s.id);});
   Object.keys(byD).forEach(function(d){var a=byD[d];for(var i=1;i<a.length;i++)c.push([a[i-1],a[i]]);});
   return c;
-})();
+}
 
 /* ── Timeline buckets (Y1 Fall → Career) ── */
 var BUCKETS = [
@@ -2297,8 +2315,8 @@ var MBA_EXPERIENCES = [
 ];
 var MBA_EXP_ICON = { course:"📖", assessment:"📊", coaching:"🎯", club:"👥", immersion:"🌍", reflection:"✍️" };
 function expBy(id){for(var i=0;i<MBA_EXPERIENCES.length;i++)if(MBA_EXPERIENCES[i].id===id)return MBA_EXPERIENCES[i];return null;}
-function earnedVia(sid){return MBA_EXPERIENCES.filter(function(e){return e.done && e.skills.indexOf(sid)>=0;});}
-function willEarnVia(sid){return MBA_EXPERIENCES.filter(function(e){return !e.done && e.skills.indexOf(sid)>=0;});}
+function earnedVia(sid, preset){return MBA_EXPERIENCES.filter(function(e){return isDone(e,preset||"today") && e.skills.indexOf(sid)>=0;});}
+function willEarnVia(sid, preset){return MBA_EXPERIENCES.filter(function(e){return !isDone(e,preset||"today") && e.skills.indexOf(sid)>=0;});}
 function expsTaggingSkill(sid){return MBA_EXPERIENCES.filter(function(e){return e.skills.indexOf(sid)>=0;});}
 
 /* ── Career "north stars" — each illuminates its most-important skills ── */
@@ -2335,11 +2353,17 @@ function MBAJourney(props) {
   var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
   var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
   var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
+  var _preset=useState("today"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
+  var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
   var scrollRef=useRef(null);
 
   useEffect(function(){
     setTimeout(function(){setAnim(true);},300);
     try{var v=localStorage.getItem("mba_reflections");if(v)setReflections(JSON.parse(v));}catch(e){}
+    try{
+      var sp=localStorage.getItem("mba_preset");
+      if(sp && EARNED_PRESETS[sp]) setEarnedPreset(sp);
+    }catch(e){}
     try{
       var saved=localStorage.getItem("mba_northstar");
       var skipped=localStorage.getItem("mba_onb_skipped");
@@ -2349,6 +2373,15 @@ function MBAJourney(props) {
       else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
     }catch(e){}
   },[]);
+
+  var earnedState = EARNED_PRESETS[earnedPreset] || EARNED_PRESETS["today"];
+  var MBA_CONNS_LIVE = buildConns(earnedState);
+  var earnedCountState = Object.keys(earnedState).length;
+  function pickPreset(id){
+    setEarnedPreset(id);
+    setSelSkill(null); setSelExp(null);
+    try{ localStorage.setItem("mba_preset", id); }catch(e){}
+  }
 
   function pickNorthStar(id){
     setNs(id);
@@ -2393,14 +2426,27 @@ function MBAJourney(props) {
           <img src={UNC_LOGO} alt="UNC" style={{width:34,height:34,objectFit:"contain"}}/>
           <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:0.3}}>PIVOT <span style={{fontSize:15,fontWeight:400,color:rgba(CB,0.6),letterSpacing:2,textTransform:"uppercase",marginLeft:4}}>Journey</span></div>
         </div>
-        <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>MC</div>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <div onClick={function(){setShowDemo(!showDemo);}} style={{padding:"5px 10px",borderRadius:12,background:showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08),border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)),cursor:"pointer",fontSize:10,fontWeight:700,color:showDemo?"#FFCC44":"rgba(255,255,255,0.55)",letterSpacing:"1",fontFamily:FONT}}>DEMO</div>
+          <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>MC</div>
+        </div>
       </div>
 
       {/* Subheader */}
       <div style={{padding:"6px 20px 8px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{fontSize:14,fontWeight:500,color:ns?pCol:"rgba(255,255,255,0.65)"}}>{ns?"North Star: "+path.label:earnedCount+" of "+totalCount+" skills earned"}</div>
+        <div style={{fontSize:14,fontWeight:500,color:ns?pCol:"rgba(255,255,255,0.65)"}}>{ns?"North Star: "+path.label:earnedCountState+" of "+totalCount+" skills earned"}</div>
         {(ns||dimFilter)&&<div onClick={clearFilters} style={{padding:"5px 14px",borderRadius:10,background:rgba(ns?pCol:PC[dimFilter],0.1),border:"1px solid "+rgba(ns?pCol:PC[dimFilter],0.2),cursor:"pointer",fontSize:13,fontWeight:600,color:ns?pCol:PC[dimFilter]}}>✕ Clear</div>}
       </div>
+
+      {/* Demo preset picker (discreet; tap DEMO to open) */}
+      {showDemo&&(
+        <div style={{margin:"0 16px 10px",padding:"10px 12px",borderRadius:12,background:"rgba(255,204,68,0.06)",border:"1px solid rgba(255,204,68,0.25)"}}>
+          <div style={{fontSize:10,fontWeight:700,color:"#FFCC44",letterSpacing:"1.5",marginBottom:8}}>DEMO \u00b7 JUMP TO A MILESTONE</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(5, 1fr)",gap:5}}>
+            {DEMO_PRESETS_META.map(function(pr){var on=earnedPreset===pr.id;return <div key={pr.id} onClick={function(){pickPreset(pr.id);}} style={{padding:"7px 4px",borderRadius:8,background:on?"rgba(255,204,68,0.2)":"rgba(255,255,255,0.03)",border:"1px solid "+(on?"rgba(255,204,68,0.7)":"rgba(255,255,255,0.1)"),cursor:"pointer",textAlign:"center",fontFamily:FONT}}><div style={{fontSize:11,fontWeight:700,color:on?"#FFCC44":"rgba(255,255,255,0.85)",lineHeight:1.2}}>{pr.label}</div><div style={{fontSize:9,color:on?"rgba(255,204,68,0.75)":"rgba(255,255,255,0.4)",marginTop:2}}>{pr.sub}</div></div>;})}
+          </div>
+        </div>
+      )}
 
       {/* North Star (career) pills */}
       <div style={{display:"flex",gap:7,padding:"0 20px 10px",overflowX:"auto"}}>
@@ -2447,7 +2493,7 @@ function MBAJourney(props) {
             return path.skills.map(function(sid){
               var sk=skillBy(sid); if(!sk) return null;
               var sx=sk.x/100*MBA_CW, sy=MBA_SKY_TOP+sk.y/100*MBA_SKY_H;
-              var got=!!EARNED[sid];
+              var got=!!earnedState[sid];
               return <line key={"ray"+sid} x1={sx} y1={sy} x2={gx} y2={gy}
                 stroke={got?rgba(pCol,0.38):rgba("#FFFFFF",0.14)}
                 strokeWidth={got?1.1:0.8}
@@ -2457,7 +2503,7 @@ function MBAJourney(props) {
           })()}
 
           {/* Constellation connections — earned skills within PIVOT domain */}
-          {MBA_CONNS.map(function(c,ci){
+          {MBA_CONNS_LIVE.map(function(c,ci){
             var a=skillBy(c[0]),b=skillBy(c[1]);if(!a||!b)return null;
             var inDimA=!dimFilter||a.dim===dimFilter, inDimB=!dimFilter||b.dim===dimFilter;
             if(dimFilter&&!(inDimA&&inDimB))return null;
@@ -2469,34 +2515,28 @@ function MBAJourney(props) {
             return <line key={"c"+ci} x1={ax} y1={ay} x2={bx} y2={by} stroke={rgba(col,op)} strokeWidth={w} strokeLinecap="round" style={{transition:"all 0.4s ease"}}/>;
           })}
 
-          {/* Goal star zone at top (only when career selected) */}
+          {/* Goal star zone (compact) */}
           {ns&&path&&(function(){
-            var gx=MBA_CW/2, gy=62;
-            var earnedOnPath=path.skills.filter(function(sid){return !!EARNED[sid];}).length;
+            var gx=MBA_CW/2, gy=56;
+            var earnedOnPath=path.skills.filter(function(sid){return !!earnedState[sid];}).length;
             var total=path.skills.length;
-            // Attribute floor status
             var floorKeys=Object.keys(path.floor||{});
             var floorMet=floorKeys.filter(function(k){var a=ATTRIBUTES.find(function(x){return x.dim===k;});return a&&a.current>=path.floor[k];}).length;
             var allFloor=floorMet===floorKeys.length;
             var baseTier = earnedOnPath>=MASTERY_THRESH ? "Mastery" : (earnedOnPath>=FLUENT_THRESH ? "Fluent" : (earnedOnPath>=READY_THRESH ? "Ready" : "Building"));
-            var tier = (baseTier==="Building"||allFloor) ? baseTier : (baseTier+" *");
-            var tierCol = baseTier==="Mastery"?"#FFFFFF":(baseTier==="Fluent"?"#FFE9A6":(baseTier==="Ready"?"#FFCC44":"rgba(255,255,255,0.55)"));
-            var subLabel = baseTier==="Building" ? (READY_THRESH-earnedOnPath)+" skills to Ready" : (earnedOnPath+"/"+total+" critical skills");
-            var floorLabel = allFloor ? "Foundation complete" : ("Foundation: "+floorMet+"/"+floorKeys.length+" dimensions met");
+            var tierCol = baseTier==="Mastery"?"#FFFFFF":(baseTier==="Fluent"?"#FFE9A6":(baseTier==="Ready"?"#FFCC44":"rgba(255,255,255,0.6)"));
+            var statusLine = earnedOnPath+"/"+total+" skills \u00b7 "+(allFloor?"Foundation ready":floorMet+"/"+floorKeys.length+" foundations");
             var els=[];
-            els.push(<text key="gn" x={gx} y={gy-30} textAnchor="middle" fontSize={11} fontWeight={700} fill={rgba(pCol,0.92)} fontFamily={FONT} letterSpacing="2.5">{path.goalLabel.toUpperCase()}</text>);
-            els.push(<circle key="gh" cx={gx} cy={gy} r={26} fill={pCol} filter="url(#goalGlow)" opacity={baseTier==="Building"?0.14:0.32}/>);
-            els.push(<circle key="gs" cx={gx} cy={gy} r={9} fill={baseTier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={baseTier==="Building"?0.8:1.8} opacity={0.95}/>);
-            if(baseTier==="Mastery"||baseTier==="Fluent") els.push(<circle key="gc" cx={gx} cy={gy} r={3} fill="#fff"/>);
-            els.push(<text key="gt" x={gx} y={gy+26} textAnchor="middle" fontSize={16} fontWeight={800} fill={tierCol} fontFamily={FONT} letterSpacing="1.5">{tier.toUpperCase()}</text>);
-            els.push(<text key="gs2" x={gx} y={gy+43} textAnchor="middle" fontSize={12} fontWeight={500} fill="rgba(255,255,255,0.75)" fontFamily={FONT}>{subLabel}</text>);
-            els.push(<text key="gf" x={gx} y={gy+58} textAnchor="middle" fontSize={11} fontWeight={500} fill={allFloor?"rgba(100,220,140,0.88)":"rgba(255,210,120,0.8)"} fontFamily={FONT}>{floorLabel}</text>);
-            // 12-dot meter
-            var meterY=gy+68, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
+            els.push(<circle key="gh" cx={gx} cy={gy} r={26} fill={pCol} filter="url(#goalGlow)" opacity={baseTier==="Building"?0.14:0.35}/>);
+            els.push(<circle key="gs" cx={gx} cy={gy} r={10} fill={baseTier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={baseTier==="Building"?0.8:2} opacity={0.98}/>);
+            if(baseTier==="Mastery"||baseTier==="Fluent") els.push(<circle key="gc" cx={gx} cy={gy} r={3.2} fill="#fff"/>);
+            els.push(<text key="gt" x={gx} y={gy+32} textAnchor="middle" fontSize={18} fontWeight={800} fill={tierCol} fontFamily={FONT} letterSpacing="2">{baseTier.toUpperCase()}{!allFloor&&baseTier!=="Building"?" \u2217":""}</text>);
+            els.push(<text key="gsl" x={gx} y={gy+50} textAnchor="middle" fontSize={11} fontWeight={500} fill={allFloor?"rgba(255,255,255,0.72)":"rgba(255,210,120,0.8)"} fontFamily={FONT}>{statusLine}</text>);
+            var meterY=gy+66, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
             for(var di=0; di<total; di++){
               var dx=startX+di*dotSpace;
               var sid=path.skills[di];
-              var got=!!EARNED[sid];
+              var got=!!earnedState[sid];
               var dotCol = got ? (di>=MASTERY_THRESH-1?"#fff":(di>=FLUENT_THRESH-1?"#FFE9A6":(di>=READY_THRESH-1?"#FFCC44":rgba(pCol,0.95)))) : "rgba(255,255,255,0.1)";
               var strokeCol = got ? "#fff" : rgba(pCol,0.35);
               els.push(<circle key={"gd"+di} cx={dx} cy={meterY} r={3.2} fill={dotCol} stroke={strokeCol} strokeWidth={got?0.8:1}/>);
@@ -2513,7 +2553,7 @@ function MBAJourney(props) {
           {/* Skill stars */}
           {SKILLS.map(function(s){
             var x=s.x/100*MBA_CW, y=MBA_SKY_TOP+s.y/100*MBA_SKY_H, col=PC[s.dim];
-            var earned=!!EARNED[s.id];
+            var earned=!!earnedState[s.id];
             var inCareer=careerSet?!!careerSet[s.id]:false;
             var dimmed=(careerSet&&!inCareer);
             var isSel=selSkill===s.id;
@@ -2526,8 +2566,10 @@ function MBAJourney(props) {
             var strokeW=isSel?2.8:(earned?2:1.4);
             var showWhite=careerSet&&inCareer&&!dimmed;
             var lbl=s.label.length>24?s.label.slice(0,22)+"\u2026":s.label;
-            /* Label: white when latent (high contrast on sky), PIVOT-colored when earned */
-            var lblFill = earned ? rgba(col,1) : "rgba(255,255,255,0.88)";
+            /* Labels: show only on earned / selected / cross-highlighted / career-relevant stars.
+               Default latent stars are unlabeled to reduce visual noise. */
+            var showLabel = earned || isSel || isCrossHL || showWhite;
+            var lblFill = earned ? rgba(col,1) : "rgba(255,255,255,0.9)";
             var lblSize = earned ? 12 : 11;
             var lblWeight = earned ? 700 : 500;
             return (
@@ -2538,7 +2580,7 @@ function MBAJourney(props) {
                 {isSel&&<circle cx={x} cy={y} r={r+6} fill="none" stroke={col} strokeWidth={2} opacity={0.65} filter="url(#glow2)"/>}
                 <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={strokeW}/>
                 {earned&&<circle cx={x} cy={y} r={r*0.42} fill="#fff" opacity={0.92}/>}
-                <text x={x} y={y+r+14} textAnchor="middle" fontSize={lblSize} fontWeight={lblWeight} fill={lblFill} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>
+                {showLabel&&<text x={x} y={y+r+14} textAnchor="middle" fontSize={lblSize} fontWeight={lblWeight} fill={lblFill} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>}
               </g>
             );
           })}
@@ -2547,15 +2589,14 @@ function MBAJourney(props) {
           <line x1={0} y1={MBA_SKY_BOT} x2={MBA_CW} y2={MBA_SKY_BOT} stroke="#F5A623" strokeWidth={1} opacity={0.55}/>
           <line x1={0} y1={MBA_SKY_BOT+1.5} x2={MBA_CW} y2={MBA_SKY_BOT+1.5} stroke="#D4710A" strokeWidth={2} opacity={0.35}/>
 
-          {/* Attribute foundation band */}
+          {/* Attribute foundation band (compact) */}
           <rect x={0} y={MBA_SKY_BOT+3} width={MBA_CW} height={MBA_ATTR_H} fill="#060412" style={{pointerEvents:"none"}}/>
-          <text x={16} y={MBA_SKY_BOT+22} fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.75)" fontFamily={FONT} letterSpacing="2">YOUR FOUNDATION</text>
-          <text x={MBA_CW-16} y={MBA_SKY_BOT+22} textAnchor="end" fontSize={9} fontWeight={500} fill="rgba(255,255,255,0.4)" fontFamily={FONT} letterSpacing="1">BASELINE \u2192 CURRENT</text>
+          <text x={16} y={MBA_SKY_BOT+20} fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.75)" fontFamily={FONT} letterSpacing="2">FOUNDATION</text>
           {ATTRIBUTES.map(function(a,ai){
-            var rowY=MBA_SKY_BOT+40+ai*22;
+            var rowY=MBA_SKY_BOT+30+ai*17;
             var col=PC[a.dim];
             var labels={P:"PUR",I:"INT",V:"VIS",O:"OWN",T:"TRA"};
-            var barX=60, barW=MBA_CW-100, barH=11;
+            var barX=60, barW=MBA_CW-100, barH=8;
             var curW=(a.current/5)*barW;
             var baseX=barX+(a.baseline/5)*barW;
             var floor = path && path.floor && path.floor[a.dim];
@@ -2585,25 +2626,25 @@ function MBAJourney(props) {
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
                   <span style={{width:8,height:8,borderRadius:"50%",background:PC[selSkillObj.dim],display:"inline-block"}}></span>
                   <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selSkillObj.label}</span>
-                  {EARNED[selSkillObj.id]?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>EARNED</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),color:rgba(PC[selSkillObj.dim],0.8),fontWeight:600,letterSpacing:0.3}}>LATENT</span>}
+                  {earnedState[selSkillObj.id]?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>EARNED</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),color:rgba(PC[selSkillObj.dim],0.8),fontWeight:600,letterSpacing:0.3}}>LATENT</span>}
                 </div>
                 <div style={{fontSize:12,color:PC[selSkillObj.dim],fontWeight:600,opacity:0.85}}>{DIM_NAMES[selSkillObj.dim]}</div>
               </div>
               <div onClick={function(){setSelSkill(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
             </div>
             <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",lineHeight:1.5,marginBottom:10,fontStyle:"italic"}}>"{selSkillObj.def}"</div>
-            {EARNED[selSkillObj.id]?(
+            {earnedState[selSkillObj.id]?(
               <div style={{marginBottom:10}}>
                 <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Earned through</div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                  {earnedVia(selSkillObj.id).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.85)",cursor:"pointer"}}>{MBA_EXP_ICON[e.type]} {e.label}</span>;})}
+                  {earnedVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.85)",cursor:"pointer"}}>{MBA_EXP_ICON[e.type]} {e.label}</span>;})}
                 </div>
               </div>
             ):(
               <div style={{marginBottom:10}}>
                 <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Develop through</div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                  {willEarnVia(selSkillObj.id).length?willEarnVia(selSkillObj.id).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.05),border:"1px dashed "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.65)",cursor:"pointer"}}>{MBA_EXP_ICON[e.type]} {e.label}</span>;}):<span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>No tagged experiences yet — explore electives and immersions.</span>}
+                  {willEarnVia(selSkillObj.id, earnedPreset).length?willEarnVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.05),border:"1px dashed "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.65)",cursor:"pointer"}}>{MBA_EXP_ICON[e.type]} {e.label}</span>;}):<span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>No tagged experiences yet — explore electives and immersions.</span>}
                 </div>
               </div>
             )}
@@ -2616,7 +2657,7 @@ function MBAJourney(props) {
                 </div>
               ):(
                 <div>
-                  <textarea value={draft} onChange={function(ev){setDraft(ev.target.value);}} placeholder={EARNED[selSkillObj.id]?"When did you practice this skill? What did you notice about yourself?":"How might you develop this skill in the coming terms?"} style={{width:"100%",minHeight:60,background:rgba(CB,0.04),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),borderRadius:6,padding:"8px 10px",color:"#fff",fontSize:13,fontFamily:FONT,resize:"vertical",outline:"none"}}/>
+                  <textarea value={draft} onChange={function(ev){setDraft(ev.target.value);}} placeholder={earnedState[selSkillObj.id]?"When did you practice this skill? What did you notice about yourself?":"How might you develop this skill in the coming terms?"} style={{width:"100%",minHeight:60,background:rgba(CB,0.04),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),borderRadius:6,padding:"8px 10px",color:"#fff",fontSize:13,fontFamily:FONT,resize:"vertical",outline:"none"}}/>
                   <div style={{display:"flex",justifyContent:"flex-end",gap:8,marginTop:6}}>
                     {draft&&<div onClick={function(){setDraft("");}} style={{fontSize:12,padding:"5px 12px",borderRadius:6,cursor:"pointer",color:"rgba(255,255,255,0.5)"}}>Cancel</div>}
                     <div onClick={saveReflection} style={{fontSize:12,padding:"5px 14px",borderRadius:6,cursor:"pointer",background:draft.trim()?rgba(PC[selSkillObj.dim],0.2):rgba(CB,0.08),border:"1px solid "+rgba(PC[selSkillObj.dim],draft.trim()?0.5:0.2),color:draft.trim()?PC[selSkillObj.dim]:"rgba(255,255,255,0.3)",fontWeight:600}}>Save</div>
@@ -2632,15 +2673,15 @@ function MBAJourney(props) {
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
                   <span style={{fontSize:18}}>{MBA_EXP_ICON[selExpObj.type]||"★"}</span>
                   <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selExpObj.label}</span>
-                  {selExpObj.done?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>DONE</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(CB,0.12),color:rgba(CB,0.85),fontWeight:600,letterSpacing:0.3}}>UPCOMING</span>}
+                  {isDone(selExpObj, earnedPreset)?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>DONE</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(CB,0.12),color:rgba(CB,0.85),fontWeight:600,letterSpacing:0.3}}>UPCOMING</span>}
                 </div>
                 <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>{selExpObj.type.charAt(0).toUpperCase()+selExpObj.type.slice(1)} · {BUCKETS[selExpObj.bucket]?BUCKETS[selExpObj.bucket].label:""}</div>
               </div>
               <div onClick={function(){setSelExp(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
             </div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{selExpObj.done?"Developed these skills":"Will develop these skills"}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{isDone(selExpObj, earnedPreset)?"Developed these skills":"Will develop these skills"}</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-              {selExpObj.skills.map(function(sid){var sk=skillBy(sid);if(!sk)return null;var col=PC[sk.dim];var ear=!!EARNED[sid];return <span key={sid} onClick={function(){toggleSkill(sid);}} style={{fontSize:11,padding:"4px 10px",borderRadius:10,background:rgba(col,ear?0.15:0.05),border:"1px "+(ear?"solid":"dashed")+" "+rgba(col,ear?0.5:0.3),color:ear?"#fff":"rgba(255,255,255,0.7)",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:6,height:6,borderRadius:"50%",background:col,display:"inline-block"}}></span>{sk.label}</span>;})}
+              {selExpObj.skills.map(function(sid){var sk=skillBy(sid);if(!sk)return null;var col=PC[sk.dim];var ear=!!earnedState[sid];return <span key={sid} onClick={function(){toggleSkill(sid);}} style={{fontSize:11,padding:"4px 10px",borderRadius:10,background:rgba(col,ear?0.15:0.05),border:"1px "+(ear?"solid":"dashed")+" "+rgba(col,ear?0.5:0.3),color:ear?"#fff":"rgba(255,255,255,0.7)",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:6,height:6,borderRadius:"50%",background:col,display:"inline-block"}}></span>{sk.label}</span>;})}
             </div>
           </div>
         ):(
