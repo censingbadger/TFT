@@ -3300,6 +3300,12 @@ function MBAProgress(props) {
     } catch(e){}
   }, []);
 
+  /* Pathway switcher — also persists so other tabs read it on remount */
+  function pickNorthStar(id){
+    setPathId(id);
+    try { if (id) localStorage.setItem("mba_northstar", id); else localStorage.removeItem("mba_northstar"); } catch(e){}
+  }
+
   /* Radar inputs derived from persisted state */
   var myAttrs = {};
   ATTRIBUTES.forEach(function(a){ myAttrs[a.dim] = a.current; });
@@ -3382,7 +3388,15 @@ function MBAProgress(props) {
           <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>
             <span style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Mike Christian</span>
             <span style={{ margin: "0 8px", color: "rgba(255,255,255,0.15)" }}>|</span>
-            MBA · Class of 2026 · Consulting Pathway
+            MBA · Class of 2026{selectedPath ? " · " + selectedPath.label + " Pathway" : ""}
+          </div>
+
+          {/* Pathway switcher — same pills as Journey, synced via localStorage */}
+          <div style={{ display:"flex", gap:6, padding:"0 16px 12px", overflowX:"auto", flexWrap:"wrap", justifyContent:"center" }}>
+            {PATHS.map(function(p){
+              var on = pathId===p.id;
+              return <button key={p.id} onClick={function(){pickNorthStar(on?null:p.id);}} style={{ background:on?rgba(p.color,0.18):rgba(p.color,0.06), border:on?"2px solid "+rgba(p.color,0.7):"1px solid "+rgba(p.color,0.3), borderRadius:20, padding:"6px 12px", fontSize:12, fontWeight:700, color:on?p.color:rgba(p.color,0.85), cursor:"pointer", whiteSpace:"nowrap", fontFamily:FONT, flexShrink:0 }}>{p.label}</button>;
+            })}
           </div>
 
           <div style={{ position: "relative", width: ringSize, height: ringSize }}>
