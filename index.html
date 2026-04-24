@@ -45,7 +45,7 @@
 /* ── Shared Constants ── */
 var CN = "#13294B";
 var PC = { P: "#7B68EE", I: "#00CED1", V: "#FF6B6B", O: "#FFD93D", T: "#50C878" };
-var DIM_NAMES = { P: "Purpose", I: "Interpersonal", V: "Vision", O: "Ownership", T: "Transformation" };
+var DIM_NAMES = { P: "Purpose", I: "Interrelating", V: "Vision", O: "Ownership", T: "Transformation" };
 var DIMS = ["P", "I", "V", "O", "T"];
 var FONT = "'DM Sans',system-ui,sans-serif";
 var UNC_LOGO = "data:image/png;base64,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";
@@ -613,7 +613,7 @@ var UBP_FEED = [
     type: "opportunity",
     dim: "I",
     title: "STAR Project applications open",
-    body: "Apply to join a Spring 2027 STAR consulting team. Last year's teams worked with Lenovo, Red Hat, and Burt's Bees. Your STAR experience this year was your strongest Interpersonal token — leading a team would unlock even more growth.",
+    body: "Apply to join a Spring 2027 STAR consulting team. Last year's teams worked with Lenovo, Red Hat, and Burt's Bees. Your STAR experience this year was your strongest Interrelating token — leading a team would unlock even more growth.",
     action: "Apply",
     tag: "Experience",
     time: "Due Mar 15",
@@ -643,7 +643,7 @@ var UBP_FEED = [
 
 /* ── Recent Growth ── */
 var UBP_GROWTH = [
-  { dim: "I", change: "+0.4", label: "Interpersonal", note: "STAR project + peer feedback" },
+  { dim: "I", change: "+0.4", label: "Interrelating", note: "STAR project + peer feedback" },
   { dim: "P", change: "+0.3", label: "Purpose", note: "BUSI 200 identity essay" },
   { dim: "O", change: "+0.2", label: "Ownership", note: "Symposium + club involvement" },
 ];
@@ -1001,7 +1001,7 @@ var UBP_TOKENS = {
 var UBP_BADGES = [
   { id: "b1", label: "First Spark", desc: "Completed UBP Onboarding", earned: true, icon: "✦" },
   { id: "b2", label: "Self-Aware", desc: "Completed first PIVOT assessment", earned: true, icon: "◉" },
-  { id: "b3", label: "Team Player", desc: "Earned 3+ Interpersonal tokens", earned: true, icon: "◈" },
+  { id: "b3", label: "Team Player", desc: "Earned 3+ Interrelating tokens", earned: true, icon: "◈" },
   { id: "b4", label: "Globe Trotter", desc: "Completed a global experience", earned: false, icon: "◎" },
   { id: "b5", label: "Symposium Scholar", desc: "Attended UBP Symposium", earned: true, icon: "⬡" },
   { id: "b6", label: "STAR Contributor", desc: "Completed a STAR project", earned: true, icon: "★" },
@@ -1367,7 +1367,7 @@ function UBPIndex(props) {
               <span style={{ fontSize: 13, fontWeight: 600, color: rgba(CB, 0.8), textTransform: "uppercase", letterSpacing: 1 }}>PIVOT Insight</span>
             </div>
             <div style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
-              Your <span style={{ color: PC.I, fontWeight: 600 }}>Interpersonal</span> dimension is strongest at 33% — your STAR project and OB course are paying off. 
+              Your <span style={{ color: PC.I, fontWeight: 600 }}>Interrelating</span> dimension is strongest at 33% — your STAR project and OB course are paying off. 
               Next unlock opportunity: <span style={{ color: PC.V, fontWeight: 600 }}>Vision</span> is at 25% — consider signing up for a career trek or the Carolina Case Challenge this spring to build strategic thinking tokens.
             </div>
             <div style={{
@@ -1859,7 +1859,7 @@ var UBP_chatMessages = [
         type: "pivot-cards",
         cards: [
           { dim: "P", score: "3.8", label: "Purpose", note: "You scored high on self-awareness and values clarity. BofA interviewers love hearing why you chose finance — lead with your \"why,\" not just your skills." },
-          { dim: "I", score: "3.5", label: "Interpersonal", note: "Your STAR project with Lenovo is your best teamwork story. You navigated a team disagreement about the go-to-market strategy and found a compromise. That's gold for behavioral questions." },
+          { dim: "I", score: "3.5", label: "Interrelating", note: "Your STAR project with Lenovo is your best teamwork story. You navigated a team disagreement about the go-to-market strategy and found a compromise. That's gold for behavioral questions." },
           { dim: "O", score: "3.1", label: "Ownership", note: "Your Consulting Club membership is a start, but you'll want to emphasize initiative — talk about organizing the Symposium panel, not just attending it." }
         ]
       },
@@ -1890,7 +1890,7 @@ var UBP_chatMessages = [
       },
       {
         type: "text",
-        content: "This story hits Interpersonal (conflict navigation), Ownership (took initiative to structure the debate), and Purpose (sought outside perspective rather than forcing an outcome). Want me to help you practice the delivery, or prep another behavioral question?"
+        content: "This story hits Interrelating (conflict navigation), Ownership (took initiative to structure the debate), and Purpose (sought outside perspective rather than forcing an outcome). Want me to help you practice the delivery, or prep another behavioral question?"
       }
     ],
     time: "10:19 AM"
@@ -2178,19 +2178,20 @@ function UBPAssistant(props) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   MBA — JOURNEY (Constellation)
+   MBA — JOURNEY (Skill Constellation)
    ══════════════════════════════════════════════════════════════ */
 
-var MBA_TI = { course:"📖", assessment:"📊", coaching:"🎯", club:"👥", immersion:"🌍", reflection:"✍️" };
+var MBA_CW = 1400, MBA_CH = 520;
+var MBA_SKY_H = 340;       /* sky area height */
+var MBA_TIMELINE_Y = 360;  /* timeline band starts here */
+var MBA_TILE_W = 96, MBA_TILE_H = 40;
 
-var MBA_CW = 1400, MBA_CH = 420;
-
-/* ── Seeded star generation (matching UBP) ── */
+/* ── Seeded star generation (background atmosphere) ── */
 function MBA_genStars(count, seed) {
   var stars = [], s = seed;
   for (var i = 0; i < count; i++) {
     s = (s * 9301 + 49297) % 233280; var x = (s / 233280) * MBA_CW;
-    s = (s * 9301 + 49297) % 233280; var y = (s / 233280) * MBA_CH;
+    s = (s * 9301 + 49297) % 233280; var y = (s / 233280) * MBA_SKY_H;
     s = (s * 9301 + 49297) % 233280; var r = (s / 233280) * 1.5 + 0.3;
     s = (s * 9301 + 49297) % 233280; var op = (s / 233280) * 0.25 + 0.05;
     stars.push({ x: x, y: y, r: r, op: op });
@@ -2201,106 +2202,150 @@ var MBA_SF = MBA_genStars(120, 42);
 var MBA_SM2 = MBA_genStars(80, 137);
 var MBA_SN2 = MBA_genStars(40, 271);
 
-/* ── 8 COMPLETED experiences (Mike's journey so far) ── */
-var DONE_NODES = [
-  { id:"a1", type:"assessment", label:"PIVOT Assessment #1", pivot:"P", x:6, y:28, size:36, done:true },
-  { id:"c1", type:"course", label:"Leading & Managing", pivot:"I", x:14, y:42, size:34, done:true },
-  { id:"csf", type:"course", label:"Consulting Skills & Frameworks", pivot:"V", x:20, y:22, size:34, done:true },
-  { id:"co1", type:"coaching", label:"Executive Coaching", pivot:"P", x:24, y:56, size:28, done:true },
-  { id:"c4", type:"course", label:"Analytics for Decision Making", pivot:"O", x:32, y:36, size:34, done:true },
-  { id:"cl1", type:"club", label:"Consulting Club", pivot:"O", x:38, y:18, size:30, done:true },
-  { id:"im1", type:"immersion", label:"Global Immersion: Tokyo", pivot:"V", x:44, y:48, size:36, done:true },
-  { id:"a2", type:"assessment", label:"PIVOT Assessment #2", pivot:"P", x:50, y:30, size:36, done:true },
+/* ── 30 Dynamic Leadership Skills (6 per PIVOT domain, with dynamic-lens definitions) ── */
+var SKILLS = [
+  /* Purpose */
+  { id:"s1",  dim:"P", label:"Self-Insight",                     def:"Notices own patterns under shifting conditions and uses them to adjust.", x:6,  y:25 },
+  { id:"s2",  dim:"P", label:"Emotional Self-Awareness",         def:"Identifies own emotional shifts as stakes rise, and how they shape judgment.", x:11, y:42 },
+  { id:"s3",  dim:"P", label:"Leader Identity in Action",        def:"Steps into leadership when conditions require direction and the path is unclear.", x:16, y:18 },
+  { id:"s4",  dim:"P", label:"Values-Anchored Decisions",        def:"Holds core values when changing conditions create pressure to compromise them.", x:7,  y:55 },
+  { id:"s5",  dim:"P", label:"Moral Courage",                    def:"Takes principled stands when situations shift and others recalibrate positions.", x:18, y:32 },
+  { id:"s6",  dim:"P", label:"Purpose Articulation",             def:"Reconnects self and others to purpose when plans change or motivation wavers.", x:22, y:48 },
+  /* Interrelating */
+  { id:"s7",  dim:"I", label:"Relational Investment",            def:"Invests in working relationships before disruption or need arises.", x:26, y:22 },
+  { id:"s8",  dim:"I", label:"Commitment Integrity",             def:"Renegotiates commitments openly rather than going silent when conditions change.", x:32, y:38 },
+  { id:"s9",  dim:"I", label:"Psychological Safety Creation",    def:"Creates space for dissent and bad news under pressure.", x:28, y:58 },
+  { id:"s10", dim:"I", label:"Developmental Feedback",           def:"Gives real-time feedback that helps others adjust as situations evolve.", x:38, y:25 },
+  { id:"s11", dim:"I", label:"Active Perspective-Taking",        def:"Engages perspectives that challenge own read of a shifting situation.", x:42, y:48 },
+  { id:"s12", dim:"I", label:"Conflict Engagement",              def:"Stays respectful and direct when stakes rise; surfaces and addresses conflict before it derails.", x:36, y:12 },
+  /* Vision */
+  { id:"s13", dim:"V", label:"Strategic Foresight",              def:"Anticipates second- and third-order consequences under changing conditions.", x:46, y:30 },
+  { id:"s14", dim:"V", label:"Future-State Articulation",        def:"Describes a concrete future worth pursuing even as circumstances shift.", x:52, y:18 },
+  { id:"s15", dim:"V", label:"Opportunity Recognition",          def:"Spots opportunity in change that others read only as threat.", x:50, y:58 },
+  { id:"s16", dim:"V", label:"Generative Problem Framing",       def:"Reframes a problem when the original frame becomes wrong.", x:56, y:38 },
+  { id:"s17", dim:"V", label:"Adaptive Iteration",               def:"Changes approach in flight when the first approach isn't working.", x:48, y:10 },
+  { id:"s18", dim:"V", label:"Energizing Vision Communication",  def:"Rallies energy and conviction under low morale or uncertainty; connects daily work to larger purpose.", x:54, y:50 },
+  /* Ownership */
+  { id:"s19", dim:"O", label:"Proactive Initiative",             def:"Acts on emerging issues before they become crises.", x:62, y:22 },
+  { id:"s20", dim:"O", label:"Decision Velocity with Discipline", def:"Makes decisive calls under uncertainty with clear rationale and revision triggers.", x:68, y:42 },
+  { id:"s21", dim:"O", label:"Clean Attribution",                def:"Owns role in failure before analyzing external causes.", x:66, y:58 },
+  { id:"s22", dim:"O", label:"Dynamic Prioritization",           def:"Adjusts and re-communicates priorities as conditions change.", x:72, y:28 },
+  { id:"s23", dim:"O", label:"Delegation & Empowerment",         def:"Empowers others to act on their judgment when conditions preclude direct control.", x:70, y:15 },
+  { id:"s24", dim:"O", label:"Follow-Through Under Obstacles",   def:"Persists through setbacks by changing approach, not abandoning the goal.", x:74, y:52 },
+  /* Transformation */
+  { id:"s25", dim:"T", label:"Learning from Failure",            def:"Extracts concrete lessons from failure and changes behavior accordingly.", x:80, y:38 },
+  { id:"s26", dim:"T", label:"Stretch-Seeking",                  def:"Steps into roles where success requires not-yet-developed abilities.", x:84, y:22 },
+  { id:"s27", dim:"T", label:"Functioning in Ambiguity",         def:"Makes progress despite uncertainty and missing information.", x:82, y:55 },
+  { id:"s28", dim:"T", label:"Emotional Regulation",             def:"Stays composed and focused when conditions become volatile.", x:88, y:32 },
+  { id:"s29", dim:"T", label:"Resilient Persistence",            def:"Holds to long-horizon goals through multiple setbacks; recovers footing after disappointment.", x:92, y:50 },
+  { id:"s30", dim:"T", label:"Curiosity & Openness to Change",   def:"Approaches change with curiosity rather than defensiveness; updates position when evidence shifts.", x:90, y:18 },
 ];
 
-/* ── ~30 FLOATING possibilities (unconnected, scattered across the sky) ── */
-var FLOAT_NODES = [
-  /* Core courses */
-  { id:"f1", type:"course", label:"Strategy", pivot:"V", x:10, y:68, size:26, done:false },
-  { id:"f2", type:"course", label:"Negotiations", pivot:"I", x:17, y:8, size:24, done:false },
-  { id:"f3", type:"course", label:"Financial Accounting", pivot:"O", x:28, y:70, size:24, done:false },
-  { id:"f4", type:"course", label:"Finance", pivot:"O", x:8, y:45, size:22, done:false },
-  { id:"f5", type:"course", label:"Operations Management", pivot:"T", x:36, y:62, size:24, done:false },
-  { id:"f6", type:"course", label:"Marketing", pivot:"I", x:42, y:8, size:26, done:false },
-  /* Electives */
-  { id:"f7", type:"course", label:"People Analytics", pivot:"V", x:55, y:58, size:24, done:false },
-  { id:"f8", type:"course", label:"Leading Groups & Teams", pivot:"T", x:58, y:18, size:26, done:false },
-  { id:"f9", type:"course", label:"Data Analytics & AI", pivot:"O", x:62, y:42, size:24, done:false },
-  { id:"f10", type:"course", label:"Leading Change", pivot:"T", x:66, y:68, size:24, done:false },
-  { id:"f11", type:"course", label:"Strategy & Innovation", pivot:"V", x:70, y:22, size:26, done:false },
-  { id:"f12", type:"course", label:"Storytelling to Influence", pivot:"I", x:54, y:72, size:22, done:false },
-  { id:"f13", type:"course", label:"Corporate Financial Strategy", pivot:"O", x:75, y:50, size:22, done:false },
-  { id:"f14", type:"course", label:"Entrepreneurial Finance", pivot:"T", x:78, y:12, size:24, done:false },
-  { id:"f15", type:"course", label:"Real Estate Finance", pivot:"O", x:82, y:62, size:22, done:false },
-  { id:"f16", type:"course", label:"Healthcare Strategy", pivot:"V", x:85, y:30, size:24, done:false },
-  { id:"f17", type:"course", label:"Sustainable Enterprise", pivot:"T", x:72, y:8, size:22, done:false },
-  { id:"f18", type:"course", label:"Brand Strategy", pivot:"I", x:88, y:48, size:22, done:false },
-  { id:"f19", type:"course", label:"Pricing Analytics", pivot:"O", x:64, y:12, size:20, done:false },
-  { id:"f20", type:"course", label:"Operations & Project Mgmt", pivot:"O", x:48, y:68, size:22, done:false },
-  /* Experiences */
-  { id:"f21", type:"club", label:"Net Impact", pivot:"P", x:57, y:35, size:22, done:false },
-  { id:"f22", type:"coaching", label:"Peer Coaching Circle", pivot:"I", x:60, y:52, size:20, done:false },
-  { id:"f23", type:"coaching", label:"Advanced Coaching", pivot:"T", x:77, y:38, size:20, done:false },
-  { id:"f24", type:"immersion", label:"Global Immersion: London", pivot:"V", x:80, y:18, size:28, done:false },
-  { id:"f25", type:"immersion", label:"Global Immersion: India", pivot:"V", x:90, y:66, size:26, done:false },
-  { id:"f26", type:"immersion", label:"Summer Internship", pivot:"O", x:68, y:55, size:28, done:false },
-  { id:"f27", type:"course", label:"STAR Capstone Project", pivot:"O", x:86, y:40, size:28, done:false },
-  { id:"f28", type:"assessment", label:"Case Competition", pivot:"V", x:74, y:66, size:24, done:false },
-  { id:"f29", type:"reflection", label:"Leadership Philosophy", pivot:"P", x:92, y:22, size:24, done:false },
-  { id:"f30", type:"assessment", label:"PIVOT Assessment #3", pivot:"P", x:83, y:52, size:28, done:false },
-  { id:"grad", type:"assessment", label:"Graduation", pivot:"P", x:94, y:38, size:30, done:false },
+/* ── 15 earned skills (mid-Year-1 MBA persona, 3 per PIVOT domain) ── */
+var EARNED = {s1:1,s2:1,s3:1,s7:1,s11:1,s12:1,s13:1,s16:1,s17:1,s19:1,s22:1,s24:1,s25:1,s27:1,s30:1};
+function skillBy(id){for(var i=0;i<SKILLS.length;i++)if(SKILLS[i].id===id)return SKILLS[i];return null;}
+
+/* ── Auto-connect earned skills within each PIVOT domain ── */
+var MBA_CONNS = (function(){
+  var c=[],byD={P:[],I:[],V:[],O:[],T:[]};
+  SKILLS.forEach(function(s){if(EARNED[s.id])byD[s.dim].push(s.id);});
+  Object.keys(byD).forEach(function(d){var a=byD[d];for(var i=1;i<a.length;i++)c.push([a[i-1],a[i]]);});
+  return c;
+})();
+
+/* ── Timeline buckets (Y1 Fall → Career) ── */
+var BUCKETS = [
+  { label:"Y1 Fall",    x1:2,  x2:20 },
+  { label:"Y1 Spring",  x1:22, x2:40 },
+  { label:"Summer",     x1:42, x2:50 },
+  { label:"Y2 Fall",    x1:52, x2:68 },
+  { label:"Y2 Spring",  x1:70, x2:86 },
+  { label:"Career",     x1:88, x2:98 },
 ];
 
-var MBA_NODES = DONE_NODES.concat(FLOAT_NODES);
-
-/* ── Only connections between the 8 completed experiences ── */
-var MBA_CONNS = [
-  ["a1","c1"],["a1","csf"],["c1","co1"],["csf","c4"],["c4","cl1"],["co1","im1"],["cl1","im1"],["im1","a2"],["c4","a2"],
+/* ── 16 Experiences tagged to skills (tiles in timeline band) ── */
+/* TODO: replace with your real course→skill tagging once finalized */
+var MBA_EXPERIENCES = [
+  { id:"e1",  label:"PIVOT Assessment #1",         type:"assessment", bucket:0, x:5,  done:true,  skills:["s1","s2"] },
+  { id:"e2",  label:"Leading & Managing",          type:"course",     bucket:0, x:10, done:true,  skills:["s3","s7","s11"] },
+  { id:"e3",  label:"Consulting Skills & Frameworks", type:"course",  bucket:0, x:14, done:true,  skills:["s13","s16"] },
+  { id:"e4",  label:"Executive Coaching",          type:"coaching",   bucket:0, x:18, done:true,  skills:["s1","s2","s3"] },
+  { id:"e5",  label:"Analytics for Decision Making", type:"course",   bucket:1, x:24, done:true,  skills:["s22"] },
+  { id:"e6",  label:"Consulting Club",              type:"club",       bucket:1, x:28, done:true,  skills:["s19","s12"] },
+  { id:"e7",  label:"Global Immersion: Tokyo",      type:"immersion",  bucket:1, x:32, done:true,  skills:["s17","s27","s30"] },
+  { id:"e8",  label:"PIVOT Assessment #2",          type:"assessment", bucket:1, x:37, done:true,  skills:["s25","s24"] },
+  { id:"e9",  label:"Summer Internship",            type:"immersion",  bucket:2, x:46, done:false, skills:["s20","s22","s26"] },
+  { id:"e10", label:"Strategy",                     type:"course",     bucket:3, x:55, done:false, skills:["s13","s14","s15"] },
+  { id:"e11", label:"Leading Groups & Teams",       type:"course",     bucket:3, x:60, done:false, skills:["s9","s10","s23"] },
+  { id:"e12", label:"Negotiations",                 type:"course",     bucket:3, x:65, done:false, skills:["s8","s12","s11"] },
+  { id:"e13", label:"Global Immersion: London",     type:"immersion",  bucket:4, x:73, done:false, skills:["s27","s30"] },
+  { id:"e14", label:"STAR Capstone",                type:"course",     bucket:4, x:78, done:false, skills:["s21","s23","s24"] },
+  { id:"e15", label:"Leadership Philosophy",        type:"reflection", bucket:4, x:83, done:false, skills:["s4","s5","s6"] },
+  { id:"e16", label:"Graduation",                   type:"assessment", bucket:5, x:92, done:false, skills:["s20","s28","s29"] },
 ];
+var MBA_EXP_ICON = { course:"📖", assessment:"📊", coaching:"🎯", club:"👥", immersion:"🌍", reflection:"✍️" };
+function expBy(id){for(var i=0;i<MBA_EXPERIENCES.length;i++)if(MBA_EXPERIENCES[i].id===id)return MBA_EXPERIENCES[i];return null;}
+function earnedVia(sid){return MBA_EXPERIENCES.filter(function(e){return e.done && e.skills.indexOf(sid)>=0;});}
+function willEarnVia(sid){return MBA_EXPERIENCES.filter(function(e){return !e.done && e.skills.indexOf(sid)>=0;});}
+function expsTaggingSkill(sid){return MBA_EXPERIENCES.filter(function(e){return e.skills.indexOf(sid)>=0;});}
 
-/* ── Pathways (steps sorted by x for left-to-right forward flow) ── */
+/* ── Career "north stars" — each illuminates its most-important skills ── */
+/* TODO: replace with your real skill-to-career taxonomy once defined */
 var PATHS = [
-  { id:"consulting", label:"Consulting", color:"#7BAFD4", steps:["csf","c4","f9","f11"], goalLabel:"Management Consulting" },
-  { id:"banking", label:"Banking", color:PC.O, steps:["c1","f2","c4","f13"], goalLabel:"Investment Banking" },
-  { id:"tech", label:"Tech / PM", color:PC.T, steps:["csf","c4","f8","f9"], goalLabel:"Product Management" },
-  { id:"impact", label:"Social Impact", color:PC.V, steps:["co1","f21","im1","f17"], goalLabel:"Social Impact Leader" },
-  { id:"entrepreneur", label:"Entrepreneurship", color:PC.P, steps:["csf","cl1","im1","f27"], goalLabel:"Founder" },
+  { id:"consulting",   label:"Consulting",       color:"#7BAFD4", goalLabel:"Management Consulting",
+    skills:["s13","s16","s17","s11","s10","s12","s20","s22","s27","s1","s19","s18"] },
+  { id:"banking",      label:"Banking",          color:PC.O,       goalLabel:"Investment Banking",
+    skills:["s20","s22","s24","s28","s29","s21","s13","s8","s4","s19","s7","s11"] },
+  { id:"tech",         label:"Tech / PM",        color:PC.T,       goalLabel:"Product Management",
+    skills:["s13","s15","s17","s16","s22","s23","s10","s9","s27","s30","s14","s18"] },
+  { id:"impact",       label:"Social Impact",    color:PC.V,       goalLabel:"Social Impact Leader",
+    skills:["s6","s3","s5","s4","s18","s14","s7","s11","s9","s19","s29","s25"] },
+  { id:"entrepreneur", label:"Entrepreneurship", color:PC.P,       goalLabel:"Founder",
+    skills:["s15","s14","s17","s19","s20","s26","s27","s28","s29","s30","s25","s18"] },
+  { id:"realestate",   label:"Real Estate",      color:"#C9A96E",  goalLabel:"Real Estate Leader",
+    skills:["s13","s15","s20","s7","s8","s24","s22","s4","s21","s29","s19","s11"] },
 ];
-var GX = 95, GY = 38;
-
-function nbi(id) { for (var k=0;k<MBA_NODES.length;k++) if(MBA_NODES[k].id===id) return MBA_NODES[k]; return null; }
-function hf(n) { if(n.done) return 1; var xp=n.x/100; return xp<0.55?0.75:xp<0.70?0.55:xp<0.85?0.4:0.28; }
 
 function MBAJourney(props) {
   var CB = "#7BAFD4";
   var _nav=useState("journey"),nav=_nav[0],setNav=_nav[1];
-  var _ap=useState(null),ap=_ap[0],setAp=_ap[1];
-  var _sel=useState(null),sel=_sel[0],setSel=_sel[1];
+  var _ns=useState(null),ns=_ns[0],setNs=_ns[1];
+  var _ssk=useState(null),selSkill=_ssk[0],setSelSkill=_ssk[1];
+  var _se=useState(null),selExp=_se[0],setSelExp=_se[1];
   var _dim=useState(null),dimFilter=_dim[0],setDimFilter=_dim[1];
   var _anim=useState(false),anim=_anim[0],setAnim=_anim[1];
+  var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
+  var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
   var _ss=useState(true),showScroll=_ss[0],setShowScroll=_ss[1];
   var scrollRef=useRef(null);
 
-  useEffect(function(){setTimeout(function(){setAnim(true);},300);},[]);
+  useEffect(function(){
+    setTimeout(function(){setAnim(true);},300);
+    try{var v=localStorage.getItem("mba_reflections");if(v)setReflections(JSON.parse(v));}catch(e){}
+  },[]);
   useEffect(function(){
     var el=scrollRef.current;if(!el)return;
     function h(){if(el.scrollLeft>30)setShowScroll(false);}
     el.addEventListener("scroll",h);return function(){el.removeEventListener("scroll",h);};
   },[]);
 
-  var pw=ap?PATHS.find(function(p){return p.id===ap;}):null;
-  var pCol=pw?pw.color:CB;
-  var selN=sel?nbi(sel):null;
-  var doneCount=DONE_NODES.length;
-  function nv(n){return!dimFilter||n.pivot===dimFilter;}
+  var path = ns?PATHS.find(function(p){return p.id===ns;}):null;
+  var pCol = path?path.color:CB;
+  var careerSet = path?path.skills.reduce(function(a,k){a[k]=1;return a;},{}):null;
+  var selSkillObj = selSkill?skillBy(selSkill):null;
+  var selExpObj = selExp?expBy(selExp):null;
+  var earnedCount = Object.keys(EARNED).length;
+  var totalCount = SKILLS.length;
 
-  /* Sort pathway steps by x so moonlight always flows left-to-right */
-  function sortedPathCoords(pw2) {
-    var coords=[];
-    pw2.steps.forEach(function(sid){var nd=nbi(sid);if(nd)coords.push({x:nd.x/100*MBA_CW,y:nd.y/100*MBA_CH,id:sid});});
-    coords.sort(function(a,b){return a.x-b.x;});
-    coords.push({x:GX/100*MBA_CW,y:GY/100*MBA_CH,id:"goal"});
-    return coords;
+  function toggleSkill(sid){setSelExp(null);setSelSkill(selSkill===sid?null:sid);setDraft("");}
+  function toggleExp(eid){setSelSkill(null);setSelExp(selExp===eid?null:eid);setDraft("");}
+  function clearFilters(){setNs(null);setDimFilter(null);setSelSkill(null);setSelExp(null);}
+  function saveReflection(){
+    if(!selSkill||!draft.trim())return;
+    var next=Object.assign({},reflections);next[selSkill]=draft.trim();
+    setReflections(next);
+    try{localStorage.setItem("mba_reflections",JSON.stringify(next));}catch(e){}
+    setDraft("");
   }
 
   return (
@@ -2318,18 +2363,18 @@ function MBAJourney(props) {
 
       {/* Subheader */}
       <div style={{padding:"6px 20px 8px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{fontSize:14,color:ap?pCol:"rgba(255,255,255,0.4)"}}>{ap?pw.label+" Pathway \u2014 "+pw.goalLabel:(dimFilter?DIM_NAMES[dimFilter]+" experiences":doneCount+" of "+MBA_NODES.length+" experiences completed")}</div>
-        {(ap||dimFilter)&&<div onClick={function(){setAp(null);setDimFilter(null);setSel(null);}} style={{padding:"5px 14px",borderRadius:10,background:rgba(ap?pCol:PC[dimFilter],0.1),border:"1px solid "+rgba(ap?pCol:PC[dimFilter],0.2),cursor:"pointer",fontSize:13,fontWeight:600,color:ap?pCol:PC[dimFilter]}}>✕ Clear</div>}
+        <div style={{fontSize:14,color:ns?pCol:"rgba(255,255,255,0.4)"}}>{ns?"North Star: "+path.label+" \u2014 "+path.goalLabel:(dimFilter?DIM_NAMES[dimFilter]+" skills":earnedCount+" of "+totalCount+" skills earned")}</div>
+        {(ns||dimFilter)&&<div onClick={clearFilters} style={{padding:"5px 14px",borderRadius:10,background:rgba(ns?pCol:PC[dimFilter],0.1),border:"1px solid "+rgba(ns?pCol:PC[dimFilter],0.2),cursor:"pointer",fontSize:13,fontWeight:600,color:ns?pCol:PC[dimFilter]}}>✕ Clear</div>}
       </div>
 
-      {/* PIVOT Dimension + Pathway filters */}
+      {/* PIVOT Dimension filters (color key) */}
       <div style={{display:"flex",gap:6,padding:"0 20px 6px",overflowX:"auto"}}>
-        {DIMS.map(function(d){var isA=dimFilter===d;return <button key={d} onClick={function(){setDimFilter(isA?null:d);setAp(null);setSel(null);}} style={{background:isA?rgba(PC[d],0.15):rgba(PC[d],0.04),border:"1px solid "+(isA?rgba(PC[d],0.35):rgba(PC[d],0.08)),borderRadius:20,padding:"6px 14px",fontSize:13,fontWeight:isA?600:500,color:isA?PC[d]:"rgba(255,255,255,0.3)",cursor:"pointer",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap"}}><div style={{width:7,height:7,borderRadius:"50%",background:PC[d],opacity:isA?1:0.4}}/>{DIM_NAMES[d]}</button>;})}
+        {DIMS.map(function(d){var isA=dimFilter===d;return <button key={d} onClick={function(){setDimFilter(isA?null:d);setNs(null);setSelSkill(null);setSelExp(null);}} style={{background:isA?rgba(PC[d],0.15):rgba(PC[d],0.04),border:"1px solid "+(isA?rgba(PC[d],0.35):rgba(PC[d],0.08)),borderRadius:20,padding:"6px 14px",fontSize:13,fontWeight:isA?600:500,color:isA?PC[d]:"rgba(255,255,255,0.3)",cursor:"pointer",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap"}}><div style={{width:7,height:7,borderRadius:"50%",background:PC[d],opacity:isA?1:0.4}}/>{DIM_NAMES[d]}</button>;})}
       </div>
 
-      {/* Pathway pills */}
+      {/* North Star (career) pills */}
       <div style={{display:"flex",gap:6,padding:"0 20px 10px",overflowX:"auto"}}>
-        {PATHS.map(function(p){var on=ap===p.id;return <button key={p.id} onClick={function(){setAp(on?null:p.id);setDimFilter(null);setSel(null);}} style={{background:on?rgba(p.color,0.12):rgba(p.color,0.03),border:on?"2px solid "+rgba(p.color,0.5):"1px solid "+rgba(p.color,0.08),borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,color:on?p.color:rgba(p.color,0.45),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
+        {PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){setNs(on?null:p.id);setDimFilter(null);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.12):rgba(p.color,0.03),border:on?"2px solid "+rgba(p.color,0.5):"1px solid "+rgba(p.color,0.08),borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,color:on?p.color:rgba(p.color,0.45),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
       </div>
 
       {/* SCROLLING STAR MAP */}
@@ -2339,113 +2384,129 @@ function MBAJourney(props) {
             <defs>
               <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
               <filter id="glow2"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-              <filter id="moonWash" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="14"/></filter>
-              <filter id="moonMid" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur in="SourceGraphic" stdDeviation="6"/></filter>
               <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="8"/></filter>
-              <radialGradient id="hg" cx="100%" cy="50%" r="30%"><stop offset="0%" stopColor={ap?pCol:CB} stopOpacity="0.12"/><stop offset="100%" stopColor={ap?pCol:CB} stopOpacity="0"/></radialGradient>
-              <linearGradient id="fr" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#080816" stopOpacity="0"/><stop offset="70%" stopColor="#080816" stopOpacity="0"/><stop offset="100%" stopColor="#080816" stopOpacity="0.6"/></linearGradient>
-              <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="transparent"/><stop offset="78%" stopColor="transparent"/><stop offset="82%" stopColor="#3d1500" stopOpacity="0.12"/><stop offset="85%" stopColor="#8B3A00" stopOpacity="0.25"/><stop offset="87.5%" stopColor="#D4710A" stopOpacity="0.35"/><stop offset="89%" stopColor="#F5A623" stopOpacity="0.38"/><stop offset="89.5%" stopColor="#FFCC44" stopOpacity="0.28"/><stop offset="89.6%" stopColor="transparent"/><stop offset="100%" stopColor="transparent"/></linearGradient>
+              <filter id="whiteGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="10"/></filter>
+              <radialGradient id="hg" cx="100%" cy="50%" r="30%"><stop offset="0%" stopColor={ns?pCol:CB} stopOpacity="0.12"/><stop offset="100%" stopColor={ns?pCol:CB} stopOpacity="0"/></radialGradient>
+              <linearGradient id="fr" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#080816" stopOpacity="0"/><stop offset="70%" stopColor="#080816" stopOpacity="0"/><stop offset="100%" stopColor="#080816" stopOpacity="0.55"/></linearGradient>
+              <linearGradient id="sunset" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="transparent"/><stop offset="78%" stopColor="transparent"/><stop offset="86%" stopColor="#8B3A00" stopOpacity="0.22"/><stop offset="94%" stopColor="#D4710A" stopOpacity="0.32"/><stop offset="99%" stopColor="#F5A623" stopOpacity="0.30"/><stop offset="100%" stopColor="transparent"/></linearGradient>
             </defs>
 
-            {/* Horizon glow */}
-            <rect x={MBA_CW*0.7} y={0} width={MBA_CW*0.3} height={MBA_CH} fill="url(#hg)"/>
+            {/* Horizon glow (right side) */}
+            <rect x={MBA_CW*0.7} y={0} width={MBA_CW*0.3} height={MBA_SKY_H} fill="url(#hg)"/>
 
-            {/* Stars — bright like UBP */}
-            {MBA_SF.map(function(st,i){return <circle key={"sf"+i} cx={st.x} cy={st.y} r={st.r*0.7} fill={"rgba(255,255,255,"+(st.op*0.8)+")"}/>;
-            })}
-            {MBA_SM2.map(function(st,i){return <circle key={"sm"+i} cx={st.x} cy={st.y} r={st.r*0.9} fill={"rgba(255,255,255,"+(st.op*1.3)+")"}/>;
-            })}
-            {MBA_SN2.map(function(st,i){return <circle key={"sn"+i} cx={st.x} cy={st.y} r={st.r*1.1} fill={"rgba(255,255,255,"+(st.op*2)+")"}/>;
-            })}
+            {/* Background stars */}
+            {MBA_SF.map(function(st,i){return <circle key={"sf"+i} cx={st.x} cy={st.y} r={st.r*0.7} fill={"rgba(255,255,255,"+(st.op*0.8)+")"}/>;})}
+            {MBA_SM2.map(function(st,i){return <circle key={"sm"+i} cx={st.x} cy={st.y} r={st.r*0.9} fill={"rgba(255,255,255,"+(st.op*1.3)+")"}/>;})}
+            {MBA_SN2.map(function(st,i){return <circle key={"sn"+i} cx={st.x} cy={st.y} r={st.r*1.1} fill={"rgba(255,255,255,"+(st.op*2)+")"}/>;})}
 
-            {/* Connections */}
+            {/* Connections — earned skills within PIVOT domain */}
             {MBA_CONNS.map(function(c,ci){
-              var a=nbi(c[0]),b=nbi(c[1]);if(!a||!b)return null;
-              var vA=nv(a),vB=nv(b);
-              if(dimFilter&&!vA&&!vB)return null;
-              var bd=a.done&&b.done,od=a.done||b.done;
-              var lO,lW,lC,lD;
-              if(dimFilter){lO=(vA&&vB)?(bd?0.6:0.2):0.03;lW=(vA&&vB&&bd)?2.5:1;lC=PC[dimFilter];lD=(bd&&vA&&vB)?"none":"6,4";}
-              else if(ap){lO=0.02;lW=0.6;lC=CB;lD="none";}
-              else if(bd){lO=0.4;lW=2.5;lC=CB;lD="none";}
-              else if(od){lO=0.12;lW=1.5;lC=CB;lD="6,4";}
-              else{lO=0.05;lW=1;lC=CB;lD="4,6";}
-              return <line key={"c"+ci} x1={a.x/100*MBA_CW} y1={a.y/100*MBA_CH} x2={b.x/100*MBA_CW} y2={b.y/100*MBA_CH} stroke={rgba(lC,lO)} strokeWidth={lW} strokeDasharray={lD} strokeLinecap="round" style={{transition:"all 0.5s ease"}}/>;
+              var a=skillBy(c[0]),b=skillBy(c[1]);if(!a||!b)return null;
+              var inDimA=!dimFilter||a.dim===dimFilter, inDimB=!dimFilter||b.dim===dimFilter;
+              if(dimFilter&&!(inDimA&&inDimB))return null;
+              var inCA=careerSet?!!careerSet[a.id]:true, inCB=careerSet?!!careerSet[b.id]:true;
+              var dimmed=(careerSet&&!(inCA&&inCB));
+              var col=PC[a.dim], op=dimmed?0.06:0.5, w=dimmed?1:2.2;
+              return <line key={"c"+ci} x1={a.x/100*MBA_CW} y1={a.y/100*MBA_SKY_H} x2={b.x/100*MBA_CW} y2={b.y/100*MBA_SKY_H} stroke={rgba(col,op)} strokeWidth={w} strokeLinecap="round" style={{transition:"all 0.4s ease"}}/>;
             })}
 
-            {/* MOONLIGHT PATHWAY — sorted left-to-right */}
-            {ap&&pw&&(function(){
-              var coords=sortedPathCoords(pw);
-              var els=[];
-              for(var i=1;i<coords.length;i++){
-                var a=coords[i-1],b=coords[i];
-                els.push(<line key={"mw"+i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={pCol} strokeWidth={28} strokeLinecap="round" filter="url(#moonWash)" opacity={0.1}/>);
-                els.push(<line key={"mm"+i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={pCol} strokeWidth={9} strokeLinecap="round" filter="url(#moonMid)" opacity={0.15}/>);
-                els.push(<line key={"mc"+i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={pCol} strokeWidth={1.2} strokeLinecap="round" opacity={0.4}/>);
+            {/* Cross-highlight lines */}
+            {(function(){
+              var L=[];
+              if(selSkill&&selSkillObj){
+                var sx=selSkillObj.x/100*MBA_CW, sy=selSkillObj.y/100*MBA_SKY_H, col=PC[selSkillObj.dim];
+                expsTaggingSkill(selSkill).forEach(function(e){
+                  var ex=e.x/100*MBA_CW, ey=MBA_TIMELINE_Y+10;
+                  L.push(<line key={"xhs"+e.id} x1={sx} y1={sy} x2={ex} y2={ey} stroke={rgba(col,e.done?0.6:0.3)} strokeWidth={1.3} strokeDasharray={e.done?"none":"3,4"} strokeLinecap="round"/>);
+                });
               }
-              pw.steps.forEach(function(sid,si){
-                var nd=nbi(sid);if(!nd)return;
-                els.push(<circle key={"ng"+si} cx={nd.x/100*MBA_CW} cy={nd.y/100*MBA_CH} r={14} fill={pCol} filter="url(#nodeGlow)" opacity={0.12}/>);
-              });
-              els.push(<circle key="gg" cx={GX/100*MBA_CW} cy={GY/100*MBA_CH} r={16} fill={pCol} filter="url(#nodeGlow)" opacity={0.1}/>);
-              return els;
+              if(selExp&&selExpObj){
+                var ex2=selExpObj.x/100*MBA_CW, ey2=MBA_TIMELINE_Y+10;
+                selExpObj.skills.forEach(function(sid){
+                  var sk=skillBy(sid);if(!sk)return;
+                  var col=PC[sk.dim], sx2=sk.x/100*MBA_CW, sy2=sk.y/100*MBA_SKY_H;
+                  L.push(<line key={"xhe"+sid} x1={ex2} y1={ey2} x2={sx2} y2={sy2} stroke={rgba(col,selExpObj.done?0.6:0.35)} strokeWidth={1.3} strokeDasharray={selExpObj.done?"none":"3,4"} strokeLinecap="round"/>);
+                });
+              }
+              return L;
             })()}
 
-            {/* MBA_NODES — matching UBP style with emoji icons */}
-            {MBA_NODES.map(function(n){
-              var vis=nv(n),nx=n.x/100*MBA_CW,ny=n.y/100*MBA_CH,col=PC[n.pivot],isSel=sel===n.id;
-              var inP=ap&&pw&&pw.steps.indexOf(n.id)>=0;
-              var dimmed=(dimFilter&&!vis)||(ap&&!inP);
-              var isFloat=!n.done&&!inP;
-              var nOp=dimmed?0.04:(isFloat&&!isSel?0.35:hf(n));
-              var sz=n.done?(n.size*0.35):(n.size*0.28);
+            {/* Skill stars (30 total; earned = bright + dot, latent = outline) */}
+            {SKILLS.map(function(s){
+              var x=s.x/100*MBA_CW, y=s.y/100*MBA_SKY_H, col=PC[s.dim];
+              var earned=!!EARNED[s.id];
+              var inDim=!dimFilter||s.dim===dimFilter;
+              var inCareer=careerSet?!!careerSet[s.id]:false;
+              var dimmed=(dimFilter&&!inDim)||(careerSet&&!inCareer);
+              var isSel=selSkill===s.id;
+              var isCrossHL=selExp&&selExpObj&&selExpObj.skills.indexOf(s.id)>=0;
+              var r=earned?10:6; if(isSel)r+=2;
+              var opacity=dimmed?0.1:(isSel||isCrossHL?1:(earned?0.95:0.55));
+              var fill=rgba(col,earned?0.22:0.04);
+              var stroke=rgba(col,earned?0.85:0.35);
+              var strokeW=isSel?3:(earned?2:1);
+              var showWhite=careerSet&&inCareer&&!dimmed;
+              var lbl=s.label.length>26?s.label.slice(0,24)+"\u2026":s.label;
               return (
-                <g key={n.id} style={{cursor:"pointer",transition:"opacity 0.4s ease"}} opacity={nOp} onClick={function(){setSel(sel===n.id?null:n.id);}}>
-                  {n.done&&!dimmed&&<circle cx={nx} cy={ny} r={sz+10} fill={rgba(col,0.06)}/>}
-                  {isSel&&<circle cx={nx} cy={ny} r={sz+8} fill="none" stroke={col} strokeWidth={2} opacity={0.5} filter="url(#glow2)"/>}
-                  <circle cx={nx} cy={ny} r={sz} fill={rgba(col,n.done?0.15:0.04)} stroke={rgba(col,n.done?0.7:0.2)} strokeWidth={isSel?3:(n.done?2:1)}/>
-                  <text x={nx} y={ny+1} textAnchor="middle" dominantBaseline="middle" fontSize={sz*0.7} style={{pointerEvents:"none"}}>{MBA_TI[n.type]||"⭐"}</text>
-                  {/* Labels: completed=always, floating=faint, selected=bright, pathway=bright */}
-                  {!dimmed&&(isSel||inP||n.done||isFloat)&&(
-                    <text x={nx} y={ny+sz+12} textAnchor="middle" fontSize={n.done?11:(isSel?11:9)} fontWeight={n.done||isSel||inP?600:400} fill={rgba(col,(isSel||inP)?0.85:(n.done?0.7:0.4))} fontFamily={FONT} style={{pointerEvents:"none"}}>{n.label.length>24?n.label.slice(0,22)+"\u2026":n.label}</text>
-                  )}
-                  {n.done&&!dimmed&&<g><circle cx={nx+sz-2} cy={ny-sz+2} r={6} fill="#50C878" stroke="#080816" strokeWidth={2}/><text x={nx+sz-2} y={ny-sz+3} textAnchor="middle" dominantBaseline="middle" fontSize={8} fill="#fff" fontWeight={700} style={{pointerEvents:"none"}}>✓</text></g>}
+                <g key={s.id} style={{cursor:"pointer",transition:"opacity 0.4s ease"}} opacity={opacity} onClick={function(){toggleSkill(s.id);}}>
+                  {showWhite&&<circle cx={x} cy={y} r={r+8} fill="#fff" filter="url(#whiteGlow)" opacity={0.3}/>}
+                  {showWhite&&<circle cx={x} cy={y} r={r+3} fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.55}/>}
+                  {earned&&!dimmed&&<circle cx={x} cy={y} r={r+8} fill={rgba(col,0.08)}/>}
+                  {isSel&&<circle cx={x} cy={y} r={r+6} fill="none" stroke={col} strokeWidth={2} opacity={0.55} filter="url(#glow2)"/>}
+                  <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={strokeW}/>
+                  {earned&&<circle cx={x} cy={y} r={r*0.35} fill="#fff" opacity={0.8}/>}
+                  <text x={x} y={y+r+13} textAnchor="middle" fontSize={earned?11:9} fontWeight={earned?600:400} fill={rgba(col,earned?0.85:0.5)} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>
                 </g>
               );
             })}
 
-            {/* Goal star (pathway mode) */}
-            {ap&&pw&&(
-              <g opacity={0.7}>
-                <circle cx={GX/100*MBA_CW} cy={GY/100*MBA_CH} r={14} fill="none" stroke={pCol} strokeWidth="1.2" strokeDasharray="3,3" opacity="0.4"/>
-                <text x={GX/100*MBA_CW} y={GY/100*MBA_CH+1} textAnchor="middle" dominantBaseline="middle" fill={pCol} fontSize="14" fontWeight="300">✦</text>
-                <text x={GX/100*MBA_CW} y={GY/100*MBA_CH+24} textAnchor="middle" fill={pCol} fontSize={11} fontWeight={600} fontFamily={FONT} opacity="0.8">{pw.goalLabel}</text>
-              </g>
-            )}
+            {/* Horizon fade + sunset glow (sky only) */}
+            <rect x={0} y={0} width={MBA_CW} height={MBA_SKY_H} fill="url(#fr)" style={{pointerEvents:"none"}}/>
+            <rect x={0} y={0} width={MBA_CW} height={MBA_SKY_H} fill="url(#sunset)" style={{pointerEvents:"none"}}/>
 
-            {/* Horizon fade overlay */}
-            <rect x={0} y={0} width={MBA_CW} height={MBA_CH} fill="url(#fr)" style={{pointerEvents:"none"}}/>
+            {/* Ground / timeline band background */}
+            <rect x={0} y={MBA_TIMELINE_Y} width={MBA_CW} height={MBA_CH-MBA_TIMELINE_Y} fill="#080816" style={{pointerEvents:"none"}}/>
+            <line x1={0} y1={MBA_TIMELINE_Y} x2={MBA_CW} y2={MBA_TIMELINE_Y} stroke="#D4710A" strokeWidth={1.5} opacity={0.7}/>
+            <line x1={0} y1={MBA_TIMELINE_Y} x2={MBA_CW} y2={MBA_TIMELINE_Y} stroke="#F5A623" strokeWidth={0.5} opacity={0.5}/>
 
-            {/* Sunset horizon glow */}
-            <rect x={0} y={0} width={MBA_CW} height={MBA_CH} fill="url(#sunset)" style={{pointerEvents:"none"}}/>
-
-            {/* Ground below horizon — matches app background exactly */}
-            <rect x={0} y={MBA_CH-44} width={MBA_CW} height={44} fill="#080816" style={{pointerEvents:"none"}}/>
-
-            {/* Sharp bright horizon line — the exact dividing line */}
-            <line x1={0} y1={MBA_CH-44} x2={MBA_CW} y2={MBA_CH-44} stroke="#D4710A" strokeWidth={1.5} opacity={0.7}/>
-            <line x1={0} y1={MBA_CH-44} x2={MBA_CW} y2={MBA_CH-44} stroke="#F5A623" strokeWidth={0.5} opacity={0.5}/>
-
-            {/* Timeline labels — on the purple ground, below the horizon */}
-            {[{label:"Year 1 · Fall",x:12},{label:"Year 1 · Spring",x:30},{label:"Now",x:48,highlight:true},{label:"Year 2 · Fall",x:63},{label:"Year 2 · Spring",x:76},{label:"Career",x:91}].map(function(tm,ti){
-              var tx2=tm.x/100*MBA_CW,isH=tm.highlight;
-              var tCol=isH?"#F5A623":"#D4710A";
-              return <g key={"tm"+ti}>
-                <text x={tx2} y={MBA_CH-24} textAnchor="middle" fontSize={isH?14:13} fontWeight={isH?700:600} fill={tCol} fontFamily={FONT} opacity={isH?1:0.7}>{tm.label}</text>
-                {isH&&<circle cx={tx2} cy={MBA_CH-44} r={3.5} fill="#F5A623" opacity={0.9}/>}
-              </g>;
+            {/* Bucket zones (alternating subtle bands) */}
+            {BUCKETS.map(function(b,bi){
+              var bx1=b.x1/100*MBA_CW, bx2=b.x2/100*MBA_CW;
+              return <rect key={"bb"+bi} x={bx1} y={MBA_TIMELINE_Y+1} width={bx2-bx1} height={MBA_CH-MBA_TIMELINE_Y-1} fill={bi%2===0?"rgba(255,255,255,0.012)":"rgba(255,255,255,0.025)"} style={{pointerEvents:"none"}}/>;
             })}
-            <line x1={48/100*MBA_CW} y1={20} x2={48/100*MBA_CW} y2={MBA_CH-48} stroke="rgba(245,166,35,0.06)" strokeWidth={1} strokeDasharray="4,8"/>
+
+            {/* Experience tiles */}
+            {MBA_EXPERIENCES.map(function(e){
+              var tx=e.x/100*MBA_CW, ty=MBA_TIMELINE_Y+30;
+              var firstSkill=skillBy(e.skills[0]);
+              var col=firstSkill?PC[firstSkill.dim]:CB;
+              var isSel=selExp===e.id;
+              var isCross=selSkill&&e.skills.indexOf(selSkill)>=0;
+              var inDim=!dimFilter||e.skills.some(function(sid){var sk=skillBy(sid);return sk&&sk.dim===dimFilter;});
+              var dimmed=dimFilter&&!inDim;
+              var op=dimmed?0.2:(isCross?1:(e.done?0.92:0.6));
+              var w=MBA_TILE_W, h=MBA_TILE_H;
+              var short=e.label.length>15?e.label.slice(0,13)+"\u2026":e.label;
+              return (
+                <g key={e.id} style={{cursor:"pointer",transition:"opacity 0.4s ease"}} opacity={op} onClick={function(){toggleExp(e.id);}}>
+                  {(isSel||isCross)&&<rect x={tx-w/2-3} y={ty-h/2-3} width={w+6} height={h+6} rx={8} ry={8} fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.35} filter="url(#glow2)"/>}
+                  <rect x={tx-w/2} y={ty-h/2} width={w} height={h} rx={6} ry={6} fill={rgba(col,e.done?0.15:0.05)} stroke={rgba(col,isSel?1:(e.done?0.6:0.3))} strokeWidth={isSel?2.2:1.2} strokeDasharray={e.done?"none":"4,3"}/>
+                  <text x={tx-w/2+9} y={ty+1} dominantBaseline="middle" fontSize={14} style={{pointerEvents:"none"}}>{MBA_EXP_ICON[e.type]||"\u2605"}</text>
+                  <text x={tx-w/2+28} y={ty+1} dominantBaseline="middle" fontSize={10} fontWeight={600} fill={rgba(col,e.done?0.95:0.7)} fontFamily={FONT} style={{pointerEvents:"none"}}>{short}</text>
+                  {e.done&&<g><circle cx={tx+w/2-8} cy={ty-h/2+8} r={5} fill="#50C878" stroke="#080816" strokeWidth={1.5}/><text x={tx+w/2-8} y={ty-h/2+9} textAnchor="middle" dominantBaseline="middle" fontSize={7} fill="#fff" fontWeight={700} style={{pointerEvents:"none"}}>\u2713</text></g>}
+                </g>
+              );
+            })}
+
+            {/* Bucket labels */}
+            {BUCKETS.map(function(b,bi){
+              var cx=(b.x1+b.x2)/2/100*MBA_CW;
+              return <text key={"bl"+bi} x={cx} y={MBA_CH-10} textAnchor="middle" fontSize={12} fontWeight={600} fill="#D4710A" fontFamily={FONT} opacity={0.75}>{b.label}</text>;
+            })}
+
+            {/* "NOW" marker between Y1 Spring and Summer */}
+            <line x1={41/100*MBA_CW} y1={20} x2={41/100*MBA_CW} y2={MBA_TIMELINE_Y-4} stroke="rgba(245,166,35,0.15)" strokeWidth={1} strokeDasharray="4,8"/>
+            <text x={41/100*MBA_CW} y={MBA_CH-28} textAnchor="middle" fontSize={10} fontWeight={700} fill="#F5A623" fontFamily={FONT} letterSpacing="2">NOW</text>
           </svg>
         </div>
         {showScroll&&(
@@ -2457,22 +2518,76 @@ function MBAJourney(props) {
         <style>{"\n@keyframes pulse{0%,100%{opacity:0.6;transform:translateY(-50%) translateX(0)}50%{opacity:1;transform:translateY(-50%) translateX(5px)}}\n"}</style>
       </div>
 
-      {/* Detail panel — inline like UBP */}
-      <div style={{minHeight:selN?180:46,maxHeight:selN?260:46,transition:"all 0.3s ease",overflowY:selN?"auto":"hidden",borderTop:"1px solid "+rgba(CB,0.08),background:rgba(CN,0.6)}}>
-        {selN?(
+      {/* Detail panel — skill info (with reflection) or experience info */}
+      <div style={{minHeight:(selSkillObj||selExpObj)?200:46,maxHeight:(selSkillObj||selExpObj)?320:46,transition:"all 0.3s ease",overflowY:(selSkillObj||selExpObj)?"auto":"hidden",borderTop:"1px solid "+rgba(CB,0.08),background:rgba(CN,0.7)}}>
+        {selSkillObj?(
           <div style={{padding:"14px 20px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:10}}>
-              <div>
-                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}><span style={{fontSize:18}}>{MBA_TI[selN.type]||"⭐"}</span><span style={{fontSize:17,fontWeight:700,color:"#fff"}}>{selN.label}</span></div>
-                <div style={{fontSize:13,color:"rgba(255,255,255,0.4)"}}>{selN.type.charAt(0).toUpperCase()+selN.type.slice(1)} · <span style={{color:PC[selN.pivot],fontWeight:600}}>{DIM_NAMES[selN.pivot]}</span></div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+              <div style={{flex:1,paddingRight:10}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
+                  <span style={{width:8,height:8,borderRadius:"50%",background:PC[selSkillObj.dim],display:"inline-block"}}></span>
+                  <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selSkillObj.label}</span>
+                  {EARNED[selSkillObj.id]?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>EARNED</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),color:rgba(PC[selSkillObj.dim],0.8),fontWeight:600,letterSpacing:0.3}}>LATENT</span>}
+                </div>
+                <div style={{fontSize:12,color:PC[selSkillObj.dim],fontWeight:600,opacity:0.85}}>{DIM_NAMES[selSkillObj.dim]}</div>
               </div>
-              <div onClick={function(){setSel(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.4)"}}>✕</div>
+              <div onClick={function(){setSelSkill(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
             </div>
-            <div style={{fontSize:14,color:"rgba(255,255,255,0.6)",lineHeight:1.55}}>{selN.done?"Completed — this experience contributed to your growth in "+DIM_NAMES[selN.pivot]+".":"Upcoming — completing this will develop your "+DIM_NAMES[selN.pivot]+" dimension."}</div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",lineHeight:1.5,marginBottom:10,fontStyle:"italic"}}>"{selSkillObj.def}"</div>
+            {EARNED[selSkillObj.id]?(
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Earned through</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {earnedVia(selSkillObj.id).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.85)",cursor:"pointer"}}>{MBA_EXP_ICON[e.type]} {e.label}</span>;})}
+                </div>
+              </div>
+            ):(
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Develop through</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {willEarnVia(selSkillObj.id).length?willEarnVia(selSkillObj.id).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.05),border:"1px dashed "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.65)",cursor:"pointer"}}>{MBA_EXP_ICON[e.type]} {e.label}</span>;}):<span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>No tagged experiences yet — explore electives and immersions.</span>}
+                </div>
+              </div>
+            )}
+            <div style={{marginTop:10}}>
+              <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Your reflection</div>
+              {reflections[selSkillObj.id]&&!draft?(
+                <div>
+                  <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",lineHeight:1.5,padding:"8px 10px",background:rgba(CB,0.05),borderLeft:"2px solid "+rgba(PC[selSkillObj.dim],0.5),borderRadius:4,marginBottom:6}}>{reflections[selSkillObj.id]}</div>
+                  <div onClick={function(){setDraft(reflections[selSkillObj.id]);}} style={{fontSize:12,color:rgba(PC[selSkillObj.dim],0.85),cursor:"pointer",fontWeight:600}}>Edit reflection</div>
+                </div>
+              ):(
+                <div>
+                  <textarea value={draft} onChange={function(ev){setDraft(ev.target.value);}} placeholder={EARNED[selSkillObj.id]?"When did you practice this skill? What did you notice about yourself?":"How might you develop this skill in the coming terms?"} style={{width:"100%",minHeight:60,background:rgba(CB,0.04),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),borderRadius:6,padding:"8px 10px",color:"#fff",fontSize:13,fontFamily:FONT,resize:"vertical",outline:"none"}}/>
+                  <div style={{display:"flex",justifyContent:"flex-end",gap:8,marginTop:6}}>
+                    {draft&&<div onClick={function(){setDraft("");}} style={{fontSize:12,padding:"5px 12px",borderRadius:6,cursor:"pointer",color:"rgba(255,255,255,0.5)"}}>Cancel</div>}
+                    <div onClick={saveReflection} style={{fontSize:12,padding:"5px 14px",borderRadius:6,cursor:"pointer",background:draft.trim()?rgba(PC[selSkillObj.dim],0.2):rgba(CB,0.08),border:"1px solid "+rgba(PC[selSkillObj.dim],draft.trim()?0.5:0.2),color:draft.trim()?PC[selSkillObj.dim]:"rgba(255,255,255,0.3)",fontWeight:600}}>Save</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ):selExpObj?(
+          <div style={{padding:"14px 20px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+              <div style={{flex:1,paddingRight:10}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                  <span style={{fontSize:18}}>{MBA_EXP_ICON[selExpObj.type]||"★"}</span>
+                  <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selExpObj.label}</span>
+                  {selExpObj.done?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>DONE</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(CB,0.12),color:rgba(CB,0.85),fontWeight:600,letterSpacing:0.3}}>UPCOMING</span>}
+                </div>
+                <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>{selExpObj.type.charAt(0).toUpperCase()+selExpObj.type.slice(1)} · {BUCKETS[selExpObj.bucket]?BUCKETS[selExpObj.bucket].label:""}</div>
+              </div>
+              <div onClick={function(){setSelExp(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
+            </div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{selExpObj.done?"Developed these skills":"Will develop these skills"}</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+              {selExpObj.skills.map(function(sid){var sk=skillBy(sid);if(!sk)return null;var col=PC[sk.dim];var ear=!!EARNED[sid];return <span key={sid} onClick={function(){toggleSkill(sid);}} style={{fontSize:11,padding:"4px 10px",borderRadius:10,background:rgba(col,ear?0.15:0.05),border:"1px "+(ear?"solid":"dashed")+" "+rgba(col,ear?0.5:0.3),color:ear?"#fff":"rgba(255,255,255,0.7)",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:6,height:6,borderRadius:"50%",background:col,display:"inline-block"}}></span>{sk.label}</span>;})}
+            </div>
           </div>
         ):(
           <div style={{textAlign:"center",padding:"14px 0"}}>
-            <div style={{fontSize:14,color:ap?rgba(pCol,0.5):(dimFilter?rgba(PC[dimFilter],0.5):"rgba(255,255,255,0.2)")}}>{ap?pw.label+" pathway illuminated \u00B7 Tap a node":(dimFilter?DIM_NAMES[dimFilter]+" experiences highlighted":"Scroll right to see your future \u00B7 Tap any node to explore")}</div>
+            <div style={{fontSize:14,color:ns?rgba(pCol,0.6):(dimFilter?rgba(PC[dimFilter],0.6):"rgba(255,255,255,0.25)")}}>{ns?path.label+" skills illuminated · Tap a star to explore":(dimFilter?DIM_NAMES[dimFilter]+" skills highlighted":"Tap a star to see how you earned it · Tap a tile to see skills it develops")}</div>
           </div>
         )}
       </div>
@@ -2544,7 +2659,7 @@ var MBA_FEED = [
     type: "action",
     dim: "I",
     title: "Sarah Chen completed her 360°",
-    body: "As her peer coach, you'll receive feedback prompts this week. Your Interpersonal scores in peer coaching are consistently strong — this is where you model leadership for others.",
+    body: "As her peer coach, you'll receive feedback prompts this week. Your Interrelating scores in peer coaching are consistently strong — this is where you model leadership for others.",
     action: "View Feedback Prompts",
     tag: "Peer",
     time: "This week",
@@ -2923,7 +3038,7 @@ var MBA_TOKENS = {
 var MBA_BADGES = [
   { id: "b1", label: "Day One", desc: "Completed MBA Orientation", earned: true, icon: "✦" },
   { id: "b2", label: "Self-Aware", desc: "Completed PIVOT Assessment #1", earned: true, icon: "◉" },
-  { id: "b3", label: "Team Catalyst", desc: "Earned 3+ Interpersonal tokens", earned: true, icon: "◈" },
+  { id: "b3", label: "Team Catalyst", desc: "Earned 3+ Interrelating tokens", earned: true, icon: "◈" },
   { id: "b4", label: "Globe Trotter", desc: "Completed a Global Immersion", earned: true, icon: "◎" },
   { id: "b5", label: "Coached Up", desc: "Completed 4+ coaching sessions", earned: true, icon: "⬡" },
   { id: "b6", label: "Club Leader", desc: "Held a club VP/officer role", earned: true, icon: "★" },
@@ -3385,7 +3500,7 @@ var MBA_EVENTS = [
   {
     title: "Peer Coaching Circle — Session 7",
     date: "Feb 25, 2026",
-    desc: "Biweekly session with your 6-person coaching cohort. This week's theme: giving difficult feedback. Bring a real situation — we'll practice live. Earns Interpersonal token progress.",
+    desc: "Biweekly session with your 6-person coaching cohort. This week's theme: giving difficult feedback. Bring a real situation — we'll practice live. Earns Interrelating token progress.",
     dims: ["I", "P"],
     tag: "In Person",
     spots: "Your cohort",
@@ -3812,7 +3927,7 @@ var MBA_chatMessages = [
       },
       {
         type: "text",
-        content: "This story hits Transformation (adaptive response to failure), Interpersonal (recovering trust with teammates), and Ownership (taking responsibility without defensiveness). Deloitte Strategy specifically values what they call 'learning agility' — this story demonstrates it with concrete evidence.\n\nWant me to help you practice the delivery, or prep another behavioral question?"
+        content: "This story hits Transformation (adaptive response to failure), Interrelating (recovering trust with teammates), and Ownership (taking responsibility without defensiveness). Deloitte Strategy specifically values what they call 'learning agility' — this story demonstrates it with concrete evidence.\n\nWant me to help you practice the delivery, or prep another behavioral question?"
       }
     ],
     time: "2:20 PM"
