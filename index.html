@@ -58,18 +58,29 @@ function rgba(hex, a) {
 }
 
 /* ── Shared Bottom Nav ── */
+/* Default nav (UBP legacy) */
+var DEFAULT_NAV_ITEMS = [
+  { k: "journey", l: "Journey", i: "✦" },
+  { k: "dashboard", l: "Dashboard", i: "◧" },
+  { k: "index", l: "PIVOT Index", i: "◉" },
+  { k: "network", l: "Network", i: "◈" },
+  { k: "assistant", l: "Assistant", i: "✧" },
+];
+/* MBA nav (new IA: Journey, Progress, Team, Network, Coach) */
+var MBA_NAV_ITEMS = [
+  { k: "journey",  l: "Journey",  i: "✦" },
+  { k: "progress", l: "Progress", i: "◉" },
+  { k: "team",     l: "Team",     i: "◈" },
+  { k: "network",  l: "Network",  i: "◧" },
+  { k: "coach",    l: "Coach",    i: "✧" },
+];
+
 function BottomNav(props) {
   var active = props.active;
   var setActive = props.setActive;
   var color = props.color || "#7BAFD4";
   var onSwitch = props.onSwitch;
-  var items = [
-    { k: "journey", l: "Journey", i: "✦" },
-    { k: "dashboard", l: "Dashboard", i: "◧" },
-    { k: "index", l: "PIVOT Index", i: "◉" },
-    { k: "network", l: "Network", i: "◈" },
-    { k: "assistant", l: "Assistant", i: "✧" },
-  ];
+  var items = props.items || DEFAULT_NAV_ITEMS;
   return (
     <div style={{ display: "flex", justifyContent: "space-around", padding: "10px 0 28px", background: rgba(CN, 0.95), borderTop: "1px solid " + rgba(color, 0.08) }}>
       {items.map(function (item) {
@@ -2658,9 +2669,30 @@ function MBAJourney(props) {
               ):(
                 <div>
                   <textarea value={draft} onChange={function(ev){setDraft(ev.target.value);}} placeholder={earnedState[selSkillObj.id]?"When did you practice this skill? What did you notice about yourself?":"How might you develop this skill in the coming terms?"} style={{width:"100%",minHeight:60,background:rgba(CB,0.04),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),borderRadius:6,padding:"8px 10px",color:"#fff",fontSize:13,fontFamily:FONT,resize:"vertical",outline:"none"}}/>
-                  <div style={{display:"flex",justifyContent:"flex-end",gap:8,marginTop:6}}>
-                    {draft&&<div onClick={function(){setDraft("");}} style={{fontSize:12,padding:"5px 12px",borderRadius:6,cursor:"pointer",color:"rgba(255,255,255,0.5)"}}>Cancel</div>}
-                    <div onClick={saveReflection} style={{fontSize:12,padding:"5px 14px",borderRadius:6,cursor:"pointer",background:draft.trim()?rgba(PC[selSkillObj.dim],0.2):rgba(CB,0.08),border:"1px solid "+rgba(PC[selSkillObj.dim],draft.trim()?0.5:0.2),color:draft.trim()?PC[selSkillObj.dim]:"rgba(255,255,255,0.3)",fontWeight:600}}>Save</div>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginTop:6}}>
+                    <div onClick={function(){
+                      /* Coach-generated Socratic prompt, grounded in how this skill was earned (or will develop) */
+                      var sk=selSkillObj;
+                      var earned=!!earnedState[sk.id];
+                      var src=earned?earnedVia(sk.id,earnedPreset):willEarnVia(sk.id,earnedPreset);
+                      var sourceName = src.length ? src[0].label : (earned?"a recent experience":"an upcoming experience");
+                      var prompts = earned ? [
+                        "Think about "+sourceName+". What did you notice about yourself in a moment when this skill was tested?",
+                        "Describe a specific instance in "+sourceName+" where you did this well \u2014 and a moment you didn't. What was the difference?",
+                        "If someone watched you in "+sourceName+", what would they have seen you doing? What would they have missed?",
+                        "This skill is about \""+sk.def.toLowerCase().slice(0,80)+"\u2026\" \u2014 where in "+sourceName+" did that show up for you? Where did it not?",
+                      ] : [
+                        "Before "+sourceName+" begins, what part of this skill feels most distant from how you operate now?",
+                        "Imagine a moment in "+sourceName+" where you'd need this skill. What would it look like if you had it? What usually happens instead?",
+                        "Who have you seen do this well? What specifically were they doing that you could try?",
+                      ];
+                      var p = prompts[Math.floor(Math.random()*prompts.length)];
+                      setDraft(draft?draft+"\n\n"+p:p);
+                    }} style={{fontSize:11,padding:"5px 11px",borderRadius:14,background:"rgba(255,204,68,0.12)",border:"1px solid rgba(255,204,68,0.35)",color:"#FFCC44",cursor:"pointer",fontWeight:700,display:"inline-flex",alignItems:"center",gap:5}}>\u2728 Help me reflect</div>
+                    <div style={{display:"flex",gap:8}}>
+                      {draft&&<div onClick={function(){setDraft("");}} style={{fontSize:12,padding:"5px 12px",borderRadius:6,cursor:"pointer",color:"rgba(255,255,255,0.5)"}}>Cancel</div>}
+                      <div onClick={saveReflection} style={{fontSize:12,padding:"5px 14px",borderRadius:6,cursor:"pointer",background:draft.trim()?rgba(PC[selSkillObj.dim],0.2):rgba(CB,0.08),border:"1px solid "+rgba(PC[selSkillObj.dim],draft.trim()?0.5:0.2),color:draft.trim()?PC[selSkillObj.dim]:"rgba(255,255,255,0.3)",fontWeight:600}}>Save</div>
+                    </div>
                   </div>
                 </div>
               )}
@@ -2691,7 +2723,7 @@ function MBAJourney(props) {
         )}
       </div>
 
-      <BottomNav active={nav} setActive={setNav} color={CB} onSwitch={props.onSwitch}/>
+      <BottomNav active={nav} setActive={setNav} color={CB} onSwitch={props.onSwitch} items={MBA_NAV_ITEMS}/>
       <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"4px 0 6px",background:rgba(CN,0.9)}}>
         <img src={UNC_LOGO} alt="UNC" style={{width:14,height:14,objectFit:"contain"}}/>
         <span style={{fontSize:9,color:rgba(CB,0.5),letterSpacing:1.5,textTransform:"uppercase"}}>UNC Kenan-Flagler Business School</span>
@@ -2799,270 +2831,10 @@ var MBA_GROWTH = [
 var MBA_SCORES = { P: 4.6, I: 3.9, V: 4.1, O: 3.5, T: 3.2 };
 var MBA_BASELINE = { P: 4.1, I: 3.5, V: 3.8, O: 3.2, T: 2.8 };
 
-function MBADashboard(props) {
-  var CB = "#7BAFD4";
-  var _nav = useState("dashboard");
-  var activeNav = _nav[0], setActiveNav = _nav[1];
-  var _filter = useState("all");
-  var filter = _filter[0], setFilter = _filter[1];
-  var _vis = useState(false);
-  var visible = _vis[0], setVisible = _vis[1];
-  useEffect(function () { setTimeout(function () { setVisible(true); }, 100); }, []);
 
-  function ss(delay) {
-    return {
-      opacity: visible ? 1 : 0,
-      transform: visible ? "translateY(0)" : "translateY(12px)",
-      transition: "all 0.6s cubic-bezier(0.16,1,0.3,1) " + delay + "s",
-    };
-  }
-
-  var tagColors = {
-    "Career": PC.O, "Growth": PC.T, "Global": PC.V,
-    "Reflection": PC.P, "Peer": PC.I,
-  };
-
-  var filteredFeed = MBA_FEED;
-  if (filter !== "all") {
-    filteredFeed = MBA_FEED.filter(function (item) { return item.dim === filter; });
-  }
-
-  /* Radar chart math */
-  var cx = 110, cy = 110, R = 85;
-  function angle(i) { return (Math.PI * 2 * i / 5) - Math.PI / 2; }
-  function pt(i, r) { return [cx + r * Math.cos(angle(i)), cy + r * Math.sin(angle(i))]; }
-  function poly(scores) {
-    return DIMS.map(function (d, i) { return pt(i, (scores[d] / 5) * R).join(","); }).join(" ");
-  }
-
-  return (
-    <div style={{
-      width: "100%", maxWidth: 430, margin: "0 auto", height: "calc(var(--vh, 1vh) * 100)", minHeight: 700,
-      background: "linear-gradient(170deg," + CN + " 0%,#0c0c24 50%,#080816 100%)",
-      display: "flex", flexDirection: "column", overflow: "hidden",
-      fontFamily: FONT, userSelect: "none", WebkitFontSmoothing: "antialiased",
-    }}>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
-
-      {/* ── Header ── */}
-      <div style={{ padding: "16px 20px 4px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src={UNC_LOGO} alt="UNC" style={{ width: 34, height: 34, objectFit: "contain" }} />
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>
-            PIVOT{" "}
-            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Dashboard</span>
-          </div>
-        </div>
-        <div style={{
-          width: 40, height: 40, borderRadius: "50%",
-          background: "linear-gradient(135deg," + CB + "," + CN + ")",
-          border: "2px solid " + rgba(CB, 0.4),
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 15, fontWeight: 600, color: "#fff",
-        }}>MC</div>
-      </div>
-
-      {/* ── Scrollable Content ── */}
-      <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden" }}>
-
-        {/* ── Greeting ── */}
-        <div style={Object.assign({ padding: "10px 20px 6px" }, ss(0))}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#fff", marginBottom: 2 }}>Hey, Mike</div>
-          <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>
-            MBA Class of 2026 · Consulting Pathway · Mod 4
-          </div>
-        </div>
-
-        {/* ── Quick Stats Ribbon ── */}
-        <div style={Object.assign({ display: "flex", gap: 8, padding: "12px 20px 14px", overflowX: "auto" }, ss(0.05))}>
-          {MBA_STATS.map(function (s, i) {
-            return (
-              <div key={i} style={{
-                flex: "1 0 0", minWidth: 78, textAlign: "center",
-                background: rgba(CB, 0.05), border: "1px solid " + rgba(CB, 0.08),
-                borderRadius: 12, padding: "10px 6px 8px",
-              }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: "#fff" }}>{s.value}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 1 }}>{s.sub}</div>
-                <div style={{ fontSize: 11, fontWeight: 600, color: rgba(CB, 0.6), marginTop: 3 }}>{s.label}</div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* ── For You Header + Filters ── */}
-        <div style={Object.assign({ padding: "4px 20px 8px" }, ss(0.1))}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.6)", marginBottom: 10 }}>For You</div>
-          <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4 }}>
-            <button onClick={function () { setFilter("all"); }} style={{
-              background: filter === "all" ? rgba(CB, 0.15) : rgba(CB, 0.04),
-              border: "1px solid " + (filter === "all" ? rgba(CB, 0.3) : rgba(CB, 0.06)),
-              borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500,
-              color: filter === "all" ? CB : "rgba(255,255,255,0.3)", cursor: "pointer",
-            }}>All</button>
-            {DIMS.map(function (d) {
-              var isActive = filter === d;
-              return (
-                <button key={d} onClick={function () { setFilter(isActive ? "all" : d); }} style={{
-                  background: isActive ? rgba(PC[d], 0.15) : rgba(PC[d], 0.04),
-                  border: "1px solid " + (isActive ? rgba(PC[d], 0.3) : rgba(PC[d], 0.08)),
-                  borderRadius: 20, padding: "6px 12px", fontSize: 13, fontWeight: 500,
-                  color: isActive ? PC[d] : "rgba(255,255,255,0.3)", cursor: "pointer",
-                  display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap",
-                }}>
-                  <div style={{ width: 6, height: 6, borderRadius: "50%", background: PC[d], opacity: isActive ? 1 : 0.4 }} />
-                  {d}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ── Feed Cards ── */}
-        <div style={{ padding: "4px 20px 0" }}>
-          {filteredFeed.map(function (item, i) {
-            var color = tagColors[item.tag] || CB;
-            return (
-              <div key={i} style={Object.assign({
-                background: item.priority
-                  ? "linear-gradient(135deg," + rgba(color, 0.08) + "," + rgba(color, 0.02) + ")"
-                  : rgba(CN, 0.4),
-                border: "1px solid " + (item.priority ? rgba(color, 0.18) : rgba(CB, 0.05)),
-                borderRadius: 16, padding: "16px 18px", marginBottom: 10,
-              }, ss(0.12 + i * 0.06))}>
-                {/* Tag + Time */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{
-                      width: 8, height: 8, borderRadius: "50%", background: PC[item.dim],
-                    }} />
-                    <span style={{
-                      fontSize: 12, fontWeight: 600, color: color,
-                      textTransform: "uppercase", letterSpacing: 0.5,
-                    }}>{item.tag}</span>
-                  </div>
-                  <span style={{
-                    fontSize: 11, color: item.time.indexOf("days") > -1 ? "#FF6B6B" : "rgba(255,255,255,0.25)",
-                    fontWeight: item.time.indexOf("days") > -1 ? 600 : 400,
-                  }}>{item.time}</span>
-                </div>
-                {/* Title */}
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 6, lineHeight: 1.3 }}>{item.title}</div>
-                {/* Body */}
-                <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: 12 }}>{item.body}</div>
-                {/* Action */}
-                <button style={{
-                  padding: "10px 18px", borderRadius: 10,
-                  background: item.priority ? rgba(color, 0.15) : rgba(CB, 0.08),
-                  border: "1px solid " + (item.priority ? rgba(color, 0.25) : rgba(CB, 0.12)),
-                  fontSize: 14, fontWeight: 600, cursor: "pointer",
-                  color: item.priority ? color : rgba(CB, 0.8),
-                }}>{item.action}</button>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* ── Recent Growth ── */}
-        <div style={Object.assign({ padding: "12px 20px 8px" }, ss(0.5))}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.6)", marginBottom: 10 }}>Recent Growth</div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {MBA_GROWTH.map(function (g, i) {
-              return (
-                <div key={i} style={{
-                  flex: 1, background: rgba(PC[g.dim], 0.06),
-                  border: "1px solid " + rgba(PC[g.dim], 0.12),
-                  borderRadius: 12, padding: "12px 10px", textAlign: "center",
-                }}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: PC[g.dim] }}>{g.change}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.6)", marginTop: 2 }}>{g.label}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{g.note}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* ── Radar Chart (Bottom) ── */}
-        <div style={Object.assign({ padding: "12px 20px 20px" }, ss(0.6))}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "rgba(255,255,255,0.6)", marginBottom: 10 }}>Your PIVOT Profile</div>
-          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", marginTop: -6, marginBottom: 10 }}>Assessment #2 · Jan 2026</div>
-          <div style={{
-            background: rgba(CN, 0.4), border: "1px solid " + rgba(CB, 0.06),
-            borderRadius: 16, padding: "16px", display: "flex", justifyContent: "center",
-          }}>
-            <svg width={220} height={220} viewBox="0 0 220 220">
-              {/* Grid rings */}
-              {[1, 2, 3, 4, 5].map(function (level) {
-                var r = (level / 5) * R;
-                return (
-                  <polygon key={level}
-                    points={DIMS.map(function (d, i) { return pt(i, r).join(","); }).join(" ")}
-                    fill="none" stroke={rgba(CB, 0.08)} strokeWidth={1}
-                  />
-                );
-              })}
-              {/* Axis lines */}
-              {DIMS.map(function (d, i) {
-                var p = pt(i, R);
-                return <line key={d} x1={cx} y1={cy} x2={p[0]} y2={p[1]} stroke={rgba(CB, 0.06)} strokeWidth={1} />;
-              })}
-              {/* Baseline polygon */}
-              <polygon points={poly(MBA_BASELINE)} fill={rgba(CB, 0.05)} stroke={rgba(CB, 0.15)} strokeWidth={1} strokeDasharray="4,3" />
-              {/* Current polygon */}
-              <polygon points={poly(MBA_SCORES)} fill={rgba(CB, 0.1)} stroke={CB} strokeWidth={2} />
-              {/* Score dots */}
-              {DIMS.map(function (d, i) {
-                var p = pt(i, (MBA_SCORES[d] / 5) * R);
-                return <circle key={d} cx={p[0]} cy={p[1]} r={4} fill={PC[d]} stroke="#fff" strokeWidth={1.5} />;
-              })}
-              {/* Labels */}
-              {DIMS.map(function (d, i) {
-                var labelR = R + 20;
-                var p = pt(i, labelR);
-                return (
-                  <text key={d} x={p[0]} y={p[1]}
-                    textAnchor="middle" dominantBaseline="middle"
-                    fontSize={12} fontWeight={600} fill={PC[d]} fontFamily={FONT}
-                  >{d} {MBA_SCORES[d]}</text>
-                );
-              })}
-            </svg>
-          </div>
-          <div style={{ display: "flex", justifyContent: "center", gap: 16, marginTop: 10 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <div style={{ width: 16, height: 2, background: CB, borderRadius: 1 }} />
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>Current</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-              <div style={{ width: 16, height: 2, background: rgba(CB, 0.3), borderRadius: 1, borderTop: "1px dashed " + rgba(CB, 0.4) }} />
-              <span style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>Baseline</span>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ height: 10 }} />
-      </div>
-
-      {/* ── Bottom Nav ── */}
-      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} />
-
-      {/* ── Footer ── */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-        padding: "4px 0 6px", background: rgba(CN, 0.9),
-      }}>
-        <img src={UNC_LOGO} alt="UNC" style={{ width: 14, height: 14, objectFit: "contain" }} />
-        <span style={{ fontSize: 9, color: rgba(CB, 0.5), letterSpacing: 1.5, textTransform: "uppercase" }}>
-          UNC Kenan-Flagler Business School
-        </span>
-      </div>
-    </div>
-  );
-}
 
 /* ══════════════════════════════════════════════════════════════
-   MBA — PIVOT INDEX
+   MBA — PROGRESS (merged Dashboard + Index)
    ══════════════════════════════════════════════════════════════ */
 
 /* ── MBA-Specific Token Data ── */
@@ -3368,9 +3140,9 @@ function MBA_BossLevel(props) {
   );
 }
 
-function MBAIndex(props) {
+function MBAProgress(props) {
   var CB = "#7BAFD4";
-  var _nav = useState("index");
+  var _nav = useState("progress");
   var activeNav = _nav[0], setActiveNav = _nav[1];
   var _exp = useState(null);
   var expanded = _exp[0], setExpanded = _exp[1];
@@ -3504,6 +3276,34 @@ function MBAIndex(props) {
           </div>
         </div>
 
+        {/* ── Recent Growth (from Dashboard) ── */}
+        <div style={{ padding: "0 16px 14px" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>Recent Growth</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {MBA_GROWTH.map(function (g, i) {
+              return (
+                <div key={"g" + i} style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "8px 12px", borderRadius: 10,
+                  background: rgba(PC[g.dim], 0.08),
+                  border: "1px solid " + rgba(PC[g.dim], 0.18),
+                }}>
+                  <div style={{
+                    width: 34, height: 34, borderRadius: "50%",
+                    background: rgba(PC[g.dim], 0.15),
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 13, fontWeight: 800, color: PC[g.dim],
+                  }}>{g.dim}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{g.label} <span style={{ color: "#50C878", marginLeft: 4 }}>{g.change}</span></div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 1 }}>{g.note}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* ── AI Insight Card ── */}
         <div style={{ padding: "0 16px 12px" }}>
           <div style={{
@@ -3550,7 +3350,7 @@ function MBAIndex(props) {
       </div>
 
       {/* ── Bottom Nav ── */}
-      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} />
+      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} items={MBA_NAV_ITEMS} />
 
       {/* ── Footer ── */}
       <div style={{
@@ -3561,6 +3361,368 @@ function MBAIndex(props) {
         <span style={{ fontSize: 9, color: rgba(CB, 0.5), letterSpacing: 1.5, textTransform: "uppercase" }}>
           UNC Kenan-Flagler Business School
         </span>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MBA — TEAM
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Mock cohort (30 peers incl. current user) — for demo only ── */
+/* Each entry: id, name, initials, year, attrs {P,I,V,O,T}, skills [ids], focus, isMe? */
+var COHORT = [
+  { id:"sd0",  name:"Mike Carver",       initials:"MC", year:2, attrs:{P:3.7,I:3.9,V:3.4,O:3.5,T:3.0}, skills:["s1","s2","s3","s7","s11","s12","s13","s16","s17","s19","s22","s24","s25","s27","s30"], focus:"Consulting", isMe:true },
+  { id:"sd1",  name:"Maya Chen",         initials:"MC", year:2, attrs:{P:4.1,I:4.3,V:3.8,O:3.2,T:3.6}, skills:["s3","s6","s7","s9","s10","s11","s14","s18","s27","s30"], focus:"Product Mgmt" },
+  { id:"sd2",  name:"Diego Ramirez",     initials:"DR", year:2, attrs:{P:3.4,I:3.1,V:4.2,O:4.0,T:3.3}, skills:["s13","s15","s16","s17","s19","s20","s22","s24","s25","s26"], focus:"Consulting" },
+  { id:"sd3",  name:"Priya Kapoor",      initials:"PK", year:1, attrs:{P:4.3,I:4.0,V:3.2,O:3.0,T:3.1}, skills:["s1","s2","s4","s5","s6","s7","s9","s11"], focus:"Social Impact" },
+  { id:"sd4",  name:"Jordan Williams",   initials:"JW", year:2, attrs:{P:3.2,I:3.3,V:3.8,O:4.3,T:2.8}, skills:["s13","s19","s20","s21","s22","s23","s24","s4","s8"], focus:"Banking" },
+  { id:"sd5",  name:"Aisha Okafor",      initials:"AO", year:1, attrs:{P:3.8,I:4.2,V:3.5,O:3.1,T:3.9}, skills:["s7","s9","s10","s11","s12","s25","s27","s30"], focus:"Product Mgmt" },
+  { id:"sd6",  name:"Ethan Park",        initials:"EP", year:2, attrs:{P:3.0,I:2.9,V:4.4,O:3.6,T:4.1}, skills:["s13","s14","s15","s16","s17","s26","s27","s28","s29","s30"], focus:"Entrepreneurship" },
+  { id:"sd7",  name:"Sophia Bellini",    initials:"SB", year:2, attrs:{P:4.0,I:4.1,V:3.3,O:3.0,T:3.4}, skills:["s1","s2","s3","s6","s7","s11","s12","s9"], focus:"Social Impact" },
+  { id:"sd8",  name:"Marcus Johnson",    initials:"MJ", year:2, attrs:{P:3.3,I:3.5,V:3.7,O:4.0,T:3.2}, skills:["s13","s16","s17","s19","s20","s22","s24","s10","s11"], focus:"Consulting" },
+  { id:"sd9",  name:"Lina Haddad",       initials:"LH", year:1, attrs:{P:3.6,I:3.8,V:3.0,O:3.2,T:3.5}, skills:["s1","s2","s7","s9","s25","s30"], focus:"Product Mgmt" },
+  { id:"sd10", name:"Chris O'Connor",    initials:"CO", year:2, attrs:{P:3.1,I:3.0,V:4.0,O:4.2,T:2.9}, skills:["s13","s15","s19","s20","s21","s22","s23","s24","s8"], focus:"Banking" },
+  { id:"sd11", name:"Zara Ahmed",        initials:"ZA", year:1, attrs:{P:4.2,I:4.4,V:3.1,O:2.9,T:3.5}, skills:["s3","s6","s7","s9","s10","s11","s18","s12"], focus:"Social Impact" },
+  { id:"sd12", name:"Ben Nakamura",      initials:"BN", year:2, attrs:{P:3.5,I:3.2,V:4.1,O:3.8,T:3.6}, skills:["s13","s14","s15","s16","s17","s22","s27","s30"], focus:"Tech" },
+  { id:"sd13", name:"Hannah Weiss",      initials:"HW", year:2, attrs:{P:3.9,I:3.7,V:3.4,O:3.3,T:3.8}, skills:["s1","s2","s3","s11","s25","s27","s28","s30"], focus:"Consulting" },
+  { id:"sd14", name:"Tomás Silva",       initials:"TS", year:1, attrs:{P:3.4,I:3.6,V:3.9,O:3.4,T:3.0}, skills:["s14","s15","s16","s17","s19"], focus:"Entrepreneurship" },
+  { id:"sd15", name:"Rachel Torres",     initials:"RT", year:2, attrs:{P:3.2,I:3.4,V:3.6,O:4.1,T:3.1}, skills:["s13","s19","s20","s22","s24","s4","s21","s8"], focus:"Banking" },
+  { id:"sd16", name:"Kwame Asante",      initials:"KA", year:2, attrs:{P:4.0,I:4.2,V:3.5,O:3.0,T:3.7}, skills:["s6","s7","s9","s10","s11","s18","s25","s29","s30"], focus:"Social Impact" },
+  { id:"sd17", name:"Isabella Nguyen",   initials:"IN", year:1, attrs:{P:3.3,I:3.1,V:4.3,O:3.7,T:3.9}, skills:["s13","s15","s17","s26","s27","s30"], focus:"Entrepreneurship" },
+  { id:"sd18", name:"David Kim",         initials:"DK", year:2, attrs:{P:3.1,I:2.8,V:3.9,O:4.4,T:2.7}, skills:["s13","s19","s20","s21","s22","s23","s24","s4","s8","s16"], focus:"Banking" },
+  { id:"sd19", name:"Noor El-Sayed",     initials:"NE", year:1, attrs:{P:3.7,I:4.0,V:3.2,O:3.1,T:3.4}, skills:["s7","s9","s11","s12","s10","s1","s2"], focus:"Product Mgmt" },
+  { id:"sd20", name:"Lucas Martins",     initials:"LM", year:2, attrs:{P:3.5,I:3.3,V:4.0,O:3.6,T:3.8}, skills:["s13","s15","s16","s17","s26","s27","s28","s30"], focus:"Tech" },
+  { id:"sd21", name:"Olivia Brooks",     initials:"OB", year:1, attrs:{P:3.9,I:3.8,V:3.0,O:2.9,T:3.3}, skills:["s1","s3","s7","s9","s11"], focus:"Social Impact" },
+  { id:"sd22", name:"Amir Khan",         initials:"AK", year:2, attrs:{P:3.2,I:3.5,V:3.8,O:4.0,T:3.0}, skills:["s13","s16","s17","s19","s20","s22","s24","s10"], focus:"Consulting" },
+  { id:"sd23", name:"Freya Lindqvist",   initials:"FL", year:2, attrs:{P:3.8,I:4.0,V:3.4,O:3.2,T:3.9}, skills:["s1","s2","s7","s11","s12","s25","s27","s29","s30"], focus:"Product Mgmt" },
+  { id:"sd24", name:"Miguel Reyes",      initials:"MR", year:1, attrs:{P:3.3,I:3.1,V:3.7,O:3.9,T:2.9}, skills:["s13","s19","s20","s22","s4","s21"], focus:"Banking" },
+  { id:"sd25", name:"Sanjay Patel",      initials:"SP", year:2, attrs:{P:3.0,I:3.2,V:4.2,O:3.8,T:3.5}, skills:["s13","s14","s15","s16","s17","s22","s26","s27","s30"], focus:"Tech" },
+  { id:"sd26", name:"Evelyn Carter",     initials:"EC", year:1, attrs:{P:3.6,I:3.4,V:3.3,O:3.5,T:3.2}, skills:["s1","s7","s11","s13","s22"], focus:"Real Estate" },
+  { id:"sd27", name:"Omar Haddad",       initials:"OH", year:2, attrs:{P:3.1,I:3.0,V:3.5,O:4.1,T:2.8}, skills:["s13","s15","s19","s20","s22","s24","s4","s7","s8"], focus:"Real Estate" },
+  { id:"sd28", name:"Grace Liu",         initials:"GL", year:2, attrs:{P:4.1,I:4.3,V:3.2,O:3.0,T:3.6}, skills:["s1","s2","s3","s6","s7","s9","s10","s11","s12"], focus:"Social Impact" },
+  { id:"sd29", name:"Tyler Brennan",     initials:"TB", year:1, attrs:{P:3.4,I:3.2,V:3.8,O:3.6,T:3.0}, skills:["s13","s15","s16","s17"], focus:"Entrepreneurship" },
+];
+
+/* ── Current user's active working teams ── */
+var MY_TEAMS = [
+  { id:"mt1", name:"STAR: Lenovo Strategy",  purpose:"Semester Project", role:"Consulting Analyst", memberIds:["sd0","sd2","sd8","sd22","sd13"] },
+  { id:"mt2", name:"Peer Coaching Circle",   purpose:"Biweekly Reflection", role:"Member",           memberIds:["sd0","sd1","sd5","sd19","sd11","sd28"] },
+  { id:"mt3", name:"Case Comp: Deloitte",    purpose:"Case Competition",  role:"Team Lead",         memberIds:["sd0","sd6","sd10","sd18"] },
+];
+
+/* ── Team-building task types (drives coach's suggested composition) ── */
+var TASK_TYPES = [
+  { id:"semester", label:"Semester Project",      size:4, desc:"Sustained delivery on a structured problem with a client or professor.", emphasis:{O:0.35,V:0.25,I:0.2,P:0.1,T:0.1}, needSkills:["s13","s16","s17","s22","s24"] },
+  { id:"case",     label:"Case Competition",      size:4, desc:"Time-boxed analytical sprint; judged presentation.",                      emphasis:{O:0.3,V:0.35,T:0.15,I:0.15,P:0.05}, needSkills:["s13","s16","s20","s22","s18"] },
+  { id:"creative", label:"Creative Product Dev",  size:4, desc:"Generate and refine product ideas under ambiguity.",                     emphasis:{V:0.35,T:0.25,I:0.2,O:0.15,P:0.05}, needSkills:["s15","s16","s17","s27","s30"] },
+  { id:"pitch",    label:"Presentation Pitch",    size:3, desc:"Persuade an audience; narrative and presence matter.",                   emphasis:{V:0.3,I:0.3,P:0.2,O:0.15,T:0.05}, needSkills:["s14","s18","s6","s10","s12"] },
+];
+
+function getStudent(id){ for(var i=0;i<COHORT.length;i++) if(COHORT[i].id===id) return COHORT[i]; return null; }
+/* Stdev across a list of numbers (proxy for team diversity on a dim) */
+function stdev(arr){ if(arr.length<2) return 0; var m=arr.reduce(function(a,b){return a+b;},0)/arr.length; var v=arr.reduce(function(a,b){return a+(b-m)*(b-m);},0)/arr.length; return Math.sqrt(v); }
+
+function MBATeam(props) {
+  var CB = "#7BAFD4";
+  var _nav = useState("team"); var activeNav = _nav[0], setActiveNav = _nav[1];
+  var _view = useState("org"); var view = _view[0], setView = _view[1];
+  var _task = useState(null); var taskId = _task[0], setTaskId = _task[1];
+  var _picks = useState([]); var picks = _picks[0], setPicks = _picks[1];
+  var _teamOpen = useState(null); var teamOpen = _teamOpen[0], setTeamOpen = _teamOpen[1];
+
+  /* Org aggregates (anonymized) */
+  var cohortSize = COHORT.length;
+  var avgAttrs = { P:0, I:0, V:0, O:0, T:0 };
+  COHORT.forEach(function(s){ DIMS.forEach(function(d){ avgAttrs[d] += s.attrs[d]; }); });
+  DIMS.forEach(function(d){ avgAttrs[d] = avgAttrs[d] / cohortSize; });
+
+  var skillCounts = {};
+  SKILLS.forEach(function(sk){ skillCounts[sk.id] = 0; });
+  COHORT.forEach(function(s){ s.skills.forEach(function(sid){ skillCounts[sid] = (skillCounts[sid]||0) + 1; }); });
+  var skillList = SKILLS.map(function(sk){ return { id:sk.id, label:sk.label, dim:sk.dim, count:skillCounts[sk.id], pct: Math.round(skillCounts[sk.id]/cohortSize*100) }; });
+  var topSkills = skillList.slice().sort(function(a,b){return b.count-a.count;}).slice(0,5);
+  var rareSkills = skillList.slice().sort(function(a,b){return a.count-b.count;}).slice(0,5);
+
+  var focusCounts = {};
+  COHORT.forEach(function(s){ focusCounts[s.focus] = (focusCounts[s.focus]||0) + 1; });
+  var focusList = Object.keys(focusCounts).map(function(k){ return {label:k, count:focusCounts[k], pct:Math.round(focusCounts[k]/cohortSize*100)}; }).sort(function(a,b){return b.count-a.count;});
+
+  return (
+    <div style={{ width:"100%", maxWidth:430, margin:"0 auto", height:"calc(var(--vh, 1vh) * 100)", minHeight:700, background:"linear-gradient(170deg,"+CN+" 0%,#0c0c24 50%,#080816 100%)", display:"flex", flexDirection:"column", overflow:"hidden", fontFamily:FONT, userSelect:"none", WebkitFontSmoothing:"antialiased" }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+
+      {/* Header */}
+      <div style={{ padding:"14px 18px 6px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+          <img src={UNC_LOGO} alt="UNC" style={{ width:34, height:34, objectFit:"contain" }} />
+          <div style={{ fontSize:22, fontWeight:700, color:"#fff", letterSpacing:0.3 }}>PIVOT <span style={{ fontSize:15, fontWeight:400, color:rgba(CB,0.6), letterSpacing:2, textTransform:"uppercase", marginLeft:4 }}>Team</span></div>
+        </div>
+        <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,"+CB+","+CN+")", border:"2px solid "+rgba(CB,0.4), display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:600, color:"#fff" }}>MC</div>
+      </div>
+
+      {/* Sub-view tabs */}
+      <div style={{ display:"flex", gap:6, padding:"8px 16px 10px" }}>
+        {[{k:"org",l:"Org"},{k:"my",l:"My Teams"},{k:"build",l:"Build a Team"}].map(function(tb){
+          var on = view===tb.k;
+          return <button key={tb.k} onClick={function(){setView(tb.k);}} style={{ flex:1, padding:"8px 10px", borderRadius:10, background:on?rgba(CB,0.18):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.55):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.6)", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:FONT }}>{tb.l}</button>;
+        })}
+      </div>
+
+      {/* Content area */}
+      <div style={{ flex:1, overflowY:"auto", WebkitOverflowScrolling:"touch", padding:"4px 16px 14px" }}>
+
+        {view==="org" && (
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.5, marginBottom:6 }}>COHORT SNAPSHOT · ANONYMIZED</div>
+            <div style={{ fontSize:13, color:"rgba(255,255,255,0.55)", marginBottom:12, lineHeight:1.45 }}>{cohortSize} students across the Full-Time MBA. All data aggregated — no individual scores surfaced.</div>
+
+            {/* Avg attrs */}
+            <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.12), marginBottom:12 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:8 }}>COHORT AVERAGE · PIVOT</div>
+              {DIMS.map(function(d){
+                var v = avgAttrs[d];
+                return (
+                  <div key={d} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+                    <div style={{ width:36, fontSize:12, fontWeight:700, color:PC[d] }}>{DIM_NAMES[d]}</div>
+                    <div style={{ flex:1, height:8, borderRadius:4, background:rgba(PC[d],0.1), position:"relative" }}>
+                      <div style={{ position:"absolute", left:0, top:0, height:"100%", width:(v/5*100)+"%", background:rgba(PC[d],0.7), borderRadius:4 }}></div>
+                    </div>
+                    <div style={{ width:32, fontSize:12, fontWeight:700, color:"rgba(255,255,255,0.85)", textAlign:"right" }}>{v.toFixed(1)}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Career paths */}
+            <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.12), marginBottom:12 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:8 }}>NORTH STARS · COHORT DISTRIBUTION</div>
+              {focusList.map(function(f,i){
+                return (
+                  <div key={"f"+i} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:5 }}>
+                    <div style={{ flex:1, fontSize:13, fontWeight:600, color:"rgba(255,255,255,0.85)" }}>{f.label}</div>
+                    <div style={{ width:110, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
+                      <div style={{ position:"absolute", left:0, top:0, height:"100%", width:f.pct+"%", background:rgba(CB,0.6), borderRadius:3 }}></div>
+                    </div>
+                    <div style={{ width:40, fontSize:12, fontWeight:600, color:"rgba(255,255,255,0.65)", textAlign:"right" }}>{f.pct}%</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Skill coverage */}
+            <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.12), marginBottom:12 }}>
+              <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:8 }}>MOST-EARNED SKILLS</div>
+              {topSkills.map(function(s,i){
+                return (
+                  <div key={"ts"+i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
+                    <span style={{ width:6, height:6, borderRadius:"50%", background:PC[s.dim] }}></span>
+                    <div style={{ flex:1, fontSize:12, color:"rgba(255,255,255,0.85)" }}>{s.label}</div>
+                    <div style={{ fontSize:11, fontWeight:600, color:"rgba(255,255,255,0.55)" }}>{s.pct}%</div>
+                  </div>
+                );
+              })}
+              <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"10px 0" }}></div>
+              <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:8 }}>RAREST SKILLS · OPPORTUNITY</div>
+              {rareSkills.map(function(s,i){
+                return (
+                  <div key={"rs"+i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
+                    <span style={{ width:6, height:6, borderRadius:"50%", background:PC[s.dim] }}></span>
+                    <div style={{ flex:1, fontSize:12, color:"rgba(255,255,255,0.7)" }}>{s.label}</div>
+                    <div style={{ fontSize:11, fontWeight:600, color:"rgba(255,255,255,0.55)" }}>{s.pct}%</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {view==="my" && (
+          <div>
+            <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.5, marginBottom:6 }}>YOUR ACTIVE TEAMS</div>
+            <div style={{ fontSize:13, color:"rgba(255,255,255,0.55)", marginBottom:12, lineHeight:1.45 }}>Diversity = spread of attribute scores across team members. Higher = more cognitive variety.</div>
+            {MY_TEAMS.map(function(t){
+              var members = t.memberIds.map(getStudent).filter(Boolean);
+              var means = {P:0,I:0,V:0,O:0,T:0};
+              DIMS.forEach(function(d){ members.forEach(function(m){ means[d]+=m.attrs[d]; }); means[d]=means[d]/members.length; });
+              var divScores = {};
+              DIMS.forEach(function(d){ divScores[d] = stdev(members.map(function(m){return m.attrs[d];})); });
+              var avgDiv = DIMS.reduce(function(a,d){return a+divScores[d];},0)/DIMS.length;
+              var coveredSkills = {};
+              members.forEach(function(m){ m.skills.forEach(function(s){ coveredSkills[s]=1; }); });
+              var coverageCount = Object.keys(coveredSkills).length;
+              var open = teamOpen===t.id;
+              return (
+                <div key={t.id} style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.06), border:"1px solid "+rgba(CB,0.15), marginBottom:10 }}>
+                  <div onClick={function(){setTeamOpen(open?null:t.id);}} style={{ cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:15, fontWeight:700, color:"#fff" }}>{t.name}</div>
+                      <div style={{ fontSize:12, color:"rgba(255,255,255,0.55)", marginTop:2 }}>{t.purpose} \u00b7 {t.role} \u00b7 {members.length} members</div>
+                    </div>
+                    <div style={{ fontSize:14, color:"rgba(255,255,255,0.4)" }}>{open?"\u2303":"\u2304"}</div>
+                  </div>
+                  {/* Mini PIVOT means */}
+                  <div style={{ display:"flex", gap:6, marginTop:10 }}>
+                    {DIMS.map(function(d){
+                      return (
+                        <div key={d} style={{ flex:1, textAlign:"center" }}>
+                          <div style={{ fontSize:9, fontWeight:700, color:rgba(PC[d],0.75), letterSpacing:0.5 }}>{d}</div>
+                          <div style={{ fontSize:13, fontWeight:700, color:"rgba(255,255,255,0.85)" }}>{means[d].toFixed(1)}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display:"flex", gap:6, marginTop:8, fontSize:11 }}>
+                    <div style={{ padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.05)", color:"rgba(255,255,255,0.7)" }}>Diversity {avgDiv.toFixed(2)}</div>
+                    <div style={{ padding:"3px 8px", borderRadius:8, background:"rgba(80,200,120,0.1)", color:"#7ad99a" }}>{coverageCount}/30 skills covered</div>
+                  </div>
+                  {open && (
+                    <div style={{ marginTop:12, paddingTop:10, borderTop:"1px solid rgba(255,255,255,0.08)" }}>
+                      <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginBottom:8 }}>MEMBERS</div>
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                        {members.map(function(m){
+                          var dom = DIMS.reduce(function(best,d){return m.attrs[d]>m.attrs[best]?d:best;}, "P");
+                          return (
+                            <div key={m.id} style={{ padding:"5px 8px", borderRadius:14, background:rgba(PC[dom],0.12), border:"1px solid "+rgba(PC[dom],0.3), display:"flex", alignItems:"center", gap:6, fontSize:12 }}>
+                              <div style={{ width:22, height:22, borderRadius:"50%", background:rgba(PC[dom],0.3), display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:700, color:"#fff" }}>{m.initials}</div>
+                              <div style={{ color:m.isMe?"#FFCC44":"#fff", fontWeight:m.isMe?700:500 }}>{m.name}{m.isMe?" (you)":""}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {view==="build" && (
+          <div>
+            {!taskId && (
+              <div>
+                <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.5, marginBottom:6 }}>WHAT IS THE TEAM FOR?</div>
+                <div style={{ fontSize:13, color:"rgba(255,255,255,0.55)", marginBottom:12, lineHeight:1.45 }}>Pick the task type. Coach suggests a composition, then you pick who to invite.</div>
+                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+                  {TASK_TYPES.map(function(tt){
+                    return <div key={tt.id} onClick={function(){setTaskId(tt.id);setPicks([]);}} style={{ padding:"14px 12px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.18), cursor:"pointer" }}>
+                      <div style={{ fontSize:14, fontWeight:700, color:"#fff", marginBottom:4 }}>{tt.label}</div>
+                      <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", lineHeight:1.4 }}>{tt.desc}</div>
+                      <div style={{ fontSize:10, fontWeight:700, color:rgba(CB,0.75), marginTop:8, letterSpacing:0.6 }}>SIZE {tt.size}</div>
+                    </div>;
+                  })}
+                </div>
+              </div>
+            )}
+
+            {taskId && (function(){
+              var tt = TASK_TYPES.filter(function(t){return t.id===taskId;})[0];
+              /* Sort cohort by match score for this task */
+              function matchScore(s){
+                var dimScore = 0;
+                DIMS.forEach(function(d){ dimScore += (s.attrs[d]/5) * (tt.emphasis[d]||0); });
+                var skillOverlap = tt.needSkills.filter(function(sk){return s.skills.indexOf(sk)>=0;}).length / tt.needSkills.length;
+                return dimScore*0.6 + skillOverlap*0.4;
+              }
+              var ranked = COHORT.slice().sort(function(a,b){return matchScore(b)-matchScore(a);});
+              /* Coach recommendation: top students but enforce some diversity — pick top candidates ensuring different dominant dims */
+              function dominantDim(s){ return DIMS.reduce(function(best,d){return s.attrs[d]>s.attrs[best]?d:best;}, "P"); }
+              var coachRec = [];
+              var usedDims = {};
+              ranked.forEach(function(s){
+                if (coachRec.length>=tt.size) return;
+                var dd = dominantDim(s);
+                if (!usedDims[dd] || coachRec.length >= tt.size-1) { coachRec.push(s); usedDims[dd]=1; }
+              });
+              /* If we still need more, pad from ranked */
+              for (var i=0; i<ranked.length && coachRec.length<tt.size; i++) if (coachRec.indexOf(ranked[i])<0) coachRec.push(ranked[i]);
+
+              function toggle(id){
+                var next = picks.slice();
+                var idx = next.indexOf(id);
+                if (idx>=0) next.splice(idx,1);
+                else if (next.length<tt.size) next.push(id);
+                setPicks(next);
+              }
+              function acceptCoach(){ setPicks(coachRec.map(function(s){return s.id;})); }
+
+              var picked = picks.map(getStudent).filter(Boolean);
+              var pickedMeans = {P:0,I:0,V:0,O:0,T:0};
+              if (picked.length) DIMS.forEach(function(d){ picked.forEach(function(m){pickedMeans[d]+=m.attrs[d];}); pickedMeans[d]=pickedMeans[d]/picked.length; });
+              var pickedCover = {};
+              picked.forEach(function(m){ m.skills.forEach(function(sid){ pickedCover[sid]=1; }); });
+              var needMet = tt.needSkills.filter(function(sk){return pickedCover[sk];}).length;
+              var pickedDiv = DIMS.reduce(function(a,d){return a+stdev(picked.map(function(m){return m.attrs[d];}));},0)/DIMS.length;
+
+              return (
+                <div>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:10 }}>
+                    <div>
+                      <div style={{ fontSize:11, color:"rgba(255,255,255,0.4)", letterSpacing:1.3 }}>BUILDING FOR</div>
+                      <div style={{ fontSize:15, fontWeight:700, color:"#fff" }}>{tt.label}</div>
+                    </div>
+                    <div onClick={function(){setTaskId(null);setPicks([]);}} style={{ fontSize:12, padding:"6px 12px", borderRadius:10, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.12)", color:"rgba(255,255,255,0.6)", cursor:"pointer" }}>Change task</div>
+                  </div>
+
+                  {/* Coach recommendation card */}
+                  <div style={{ padding:"12px 14px", borderRadius:12, background:"linear-gradient(135deg,"+rgba(CB,0.1)+","+rgba("#FFCC44",0.04)+")", border:"1px solid "+rgba("#FFCC44",0.3), marginBottom:14 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6 }}>
+                      <span style={{ fontSize:14 }}>\u2728</span>
+                      <span style={{ fontSize:11, fontWeight:700, color:"#FFCC44", letterSpacing:1.3 }}>COACH SUGGESTS</span>
+                    </div>
+                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)", lineHeight:1.5, marginBottom:10 }}>For a {tt.label.toLowerCase()}, weight toward <b style={{color:"#fff"}}>{DIMS.slice().sort(function(a,b){return tt.emphasis[b]-tt.emphasis[a];}).slice(0,2).map(function(d){return DIM_NAMES[d];}).join(" + ")}</b>. Aim for {tt.size} people with complementary dominant dimensions. Coverage on: {tt.needSkills.map(function(sk){var s=skillBy(sk);return s?s.label:sk;}).slice(0,3).join(" \u00b7 ")}\u2026</div>
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:8 }}>
+                      {coachRec.map(function(m){var dd=dominantDim(m);return <div key={m.id} style={{ padding:"4px 8px", borderRadius:12, background:rgba(PC[dd],0.15), border:"1px solid "+rgba(PC[dd],0.35), fontSize:11, color:"#fff" }}>{m.initials} \u00b7 {dd}</div>;})}
+                    </div>
+                    <div onClick={acceptCoach} style={{ display:"inline-block", padding:"6px 14px", borderRadius:10, background:"rgba(255,204,68,0.2)", border:"1px solid rgba(255,204,68,0.5)", fontSize:12, fontWeight:700, color:"#FFCC44", cursor:"pointer" }}>Accept this team</div>
+                  </div>
+
+                  {/* Your selection preview */}
+                  {picked.length>0 && (
+                    <div style={{ padding:"10px 12px", borderRadius:10, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.15), marginBottom:12 }}>
+                      <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:6 }}>YOUR SELECTION \u00b7 {picked.length}/{tt.size}</div>
+                      <div style={{ display:"flex", gap:6, marginBottom:6 }}>
+                        {DIMS.map(function(d){return <div key={d} style={{ flex:1, textAlign:"center" }}><div style={{ fontSize:9, fontWeight:700, color:rgba(PC[d],0.75) }}>{d}</div><div style={{ fontSize:12, fontWeight:700, color:"#fff" }}>{(pickedMeans[d]||0).toFixed(1)}</div></div>;})}
+                      </div>
+                      <div style={{ display:"flex", gap:6, fontSize:11 }}>
+                        <div style={{ padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.06)", color:"rgba(255,255,255,0.7)" }}>Diversity {pickedDiv.toFixed(2)}</div>
+                        <div style={{ padding:"3px 8px", borderRadius:8, background:"rgba(80,200,120,0.12)", color:"#7ad99a" }}>{needMet}/{tt.needSkills.length} critical skills</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Ranked cohort — tap to add/remove */}
+                  <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginBottom:6 }}>COHORT \u00b7 RANKED BY FIT</div>
+                  <div>
+                    {ranked.filter(function(s){return !s.isMe;}).slice(0,18).map(function(s){
+                      var on = picks.indexOf(s.id)>=0;
+                      var dd = dominantDim(s);
+                      var ms = Math.round(matchScore(s)*100);
+                      return (
+                        <div key={s.id} onClick={function(){toggle(s.id);}} style={{ padding:"9px 11px", borderRadius:10, background:on?rgba(CB,0.18):"rgba(255,255,255,0.03)", border:"1px solid "+(on?rgba(CB,0.5):"rgba(255,255,255,0.07)"), display:"flex", alignItems:"center", gap:10, marginBottom:5, cursor:"pointer" }}>
+                          <div style={{ width:30, height:30, borderRadius:"50%", background:rgba(PC[dd],0.2), display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:"#fff" }}>{s.initials}</div>
+                          <div style={{ flex:1 }}>
+                            <div style={{ fontSize:13, fontWeight:600, color:"#fff" }}>{s.name}</div>
+                            <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>{s.focus} \u00b7 strongest {DIM_NAMES[dd]} {s.attrs[dd].toFixed(1)}</div>
+                          </div>
+                          <div style={{ fontSize:11, fontWeight:700, color:on?"#fff":"rgba(255,255,255,0.5)", minWidth:32, textAlign:"right" }}>{ms}%</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+      </div>
+
+      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} items={MBA_NAV_ITEMS} />
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:6, padding:"4px 0 6px", background:rgba(CN,0.9) }}>
+        <img src={UNC_LOGO} alt="UNC" style={{ width:14, height:14, objectFit:"contain" }} />
+        <span style={{ fontSize:9, color:rgba(CB,0.5), letterSpacing:1.5, textTransform:"uppercase" }}>UNC Kenan-Flagler Business School</span>
       </div>
     </div>
   );
@@ -3615,6 +3777,34 @@ var MBA_EVENTS = [
     dims: ["I", "P"],
     tag: "In Person",
     spots: "Your cohort",
+    featured: false,
+  },
+  /* Items moved over from the old Dashboard feed — recommended for this student's profile */
+  {
+    title: "Global Immersion Elective: London",
+    date: "Mar 1, 2026 (Applications close)",
+    desc: "Students with your PIVOT profile who went into consulting found the London GIE (fintech + strategy) transformative for Vision development. Your Vision is trending up — this would accelerate it.",
+    dims: ["V", "O"],
+    tag: "Recommended",
+    spots: "~30 MBAs",
+    featured: false,
+  },
+  {
+    title: "Year 1 Reflection Letter — Due Friday",
+    date: "Feb 28, 2026",
+    desc: "Write a letter to your pre-MBA self. Students who complete it report a 0.3 average Purpose gain. Prompt: \"What would surprise your pre-MBA self about who you're becoming?\"",
+    dims: ["P"],
+    tag: "Deadline",
+    spots: "3 days left",
+    featured: false,
+  },
+  {
+    title: "Deloitte Strategy Interview Guide — Updated",
+    date: "Just posted",
+    desc: "2026 recruiting cycle update. Based on your consulting pathway and Ownership trajectory, you're well-positioned. 12 behavioral questions mapped to PIVOT dimensions inside — use your coaching session #4 breakthrough as your Transformation story.",
+    dims: ["O", "T"],
+    tag: "Recruiting",
+    spots: "Available",
     featured: false,
   },
 ];
@@ -3957,7 +4147,7 @@ function MBANetwork(props) {
       </div>
 
       {/* ── Bottom Nav ── */}
-      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} />
+      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} items={MBA_NAV_ITEMS} />
 
       {/* ── Footer ── */}
       <div style={{
@@ -4173,7 +4363,7 @@ function MBA_MessageContent(props) {
 
 function MBAAssistant(props) {
   var CB = "#7BAFD4";
-  var _nav = useState("assistant");
+  var _nav = useState("coach");
   var activeNav = _nav[0], setActiveNav = _nav[1];
   var _vis = useState(false);
   var visible = _vis[0], setVisible = _vis[1];
@@ -4314,7 +4504,7 @@ function MBAAssistant(props) {
       </div>
 
       {/* ── Bottom Nav ── */}
-      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} />
+      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} items={MBA_NAV_ITEMS} />
 
       {/* ── Footer ── */}
       <div style={{
@@ -4368,9 +4558,12 @@ function PIVOTApp() {
     else if (screen === "assistant") screenComponent = <UBPAssistant onSwitch={handleSwitch} />;
   } else if (program === "mba") {
     if (screen === "journey") screenComponent = <MBAJourney onSwitch={handleSwitch} />;
-    else if (screen === "dashboard") screenComponent = <MBADashboard onSwitch={handleSwitch} />;
-    else if (screen === "index") screenComponent = <MBAIndex onSwitch={handleSwitch} />;
+    else if (screen === "progress") screenComponent = <MBAProgress onSwitch={handleSwitch} />;
+    else if (screen === "team") screenComponent = <MBATeam onSwitch={handleSwitch} />;
     else if (screen === "network") screenComponent = <MBANetwork onSwitch={handleSwitch} />;
+    else if (screen === "coach") screenComponent = <MBAAssistant onSwitch={handleSwitch} />;
+    /* Legacy key routes (in case deep links or persisted state still use old names) */
+    else if (screen === "dashboard" || screen === "index") screenComponent = <MBAProgress onSwitch={handleSwitch} />;
     else if (screen === "assistant") screenComponent = <MBAAssistant onSwitch={handleSwitch} />;
   }
 
