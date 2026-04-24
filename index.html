@@ -2334,13 +2334,28 @@ function MBAJourney(props) {
   var _anim=useState(false),anim=_anim[0],setAnim=_anim[1];
   var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
   var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
-  var _ss=useState(true),showScroll=_ss[0],setShowScroll=_ss[1];
+  var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
   var scrollRef=useRef(null);
 
   useEffect(function(){
     setTimeout(function(){setAnim(true);},300);
     try{var v=localStorage.getItem("mba_reflections");if(v)setReflections(JSON.parse(v));}catch(e){}
+    try{
+      var saved=localStorage.getItem("mba_northstar");
+      var skipped=localStorage.getItem("mba_onb_skipped");
+      if(saved){ setNs(saved); }
+      else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
+    }catch(e){}
   },[]);
+
+  function pickNorthStar(id){
+    setNs(id);
+    try{ if(id)localStorage.setItem("mba_northstar",id); else localStorage.removeItem("mba_northstar"); }catch(e){}
+  }
+  function dismissOnboarding(save){
+    setShowOnboarding(false);
+    try{ if(!save)localStorage.setItem("mba_onb_skipped","1"); }catch(e){}
+  }
   useEffect(function(){
     var el=scrollRef.current;if(!el)return;
     function h(){if(el.scrollLeft>30)setShowScroll(false);}
@@ -2381,18 +2396,13 @@ function MBAJourney(props) {
 
       {/* Subheader */}
       <div style={{padding:"6px 20px 8px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <div style={{fontSize:14,color:ns?pCol:"rgba(255,255,255,0.4)"}}>{ns?"North Star: "+path.label+" \u2014 "+path.goalLabel:(dimFilter?DIM_NAMES[dimFilter]+" skills":earnedCount+" of "+totalCount+" skills earned")}</div>
+        <div style={{fontSize:14,fontWeight:500,color:ns?pCol:"rgba(255,255,255,0.65)"}}>{ns?"North Star: "+path.label:earnedCount+" of "+totalCount+" skills earned"}</div>
         {(ns||dimFilter)&&<div onClick={clearFilters} style={{padding:"5px 14px",borderRadius:10,background:rgba(ns?pCol:PC[dimFilter],0.1),border:"1px solid "+rgba(ns?pCol:PC[dimFilter],0.2),cursor:"pointer",fontSize:13,fontWeight:600,color:ns?pCol:PC[dimFilter]}}>✕ Clear</div>}
       </div>
 
-      {/* PIVOT Dimension filters (color key) */}
-      <div style={{display:"flex",gap:6,padding:"0 20px 6px",overflowX:"auto"}}>
-        {DIMS.map(function(d){var isA=dimFilter===d;return <button key={d} onClick={function(){setDimFilter(isA?null:d);setNs(null);setSelSkill(null);setSelExp(null);}} style={{background:isA?rgba(PC[d],0.15):rgba(PC[d],0.04),border:"1px solid "+(isA?rgba(PC[d],0.35):rgba(PC[d],0.08)),borderRadius:20,padding:"6px 14px",fontSize:13,fontWeight:isA?600:500,color:isA?PC[d]:"rgba(255,255,255,0.3)",cursor:"pointer",display:"flex",alignItems:"center",gap:6,whiteSpace:"nowrap"}}><div style={{width:7,height:7,borderRadius:"50%",background:PC[d],opacity:isA?1:0.4}}/>{DIM_NAMES[d]}</button>;})}
-      </div>
-
       {/* North Star (career) pills */}
-      <div style={{display:"flex",gap:6,padding:"0 20px 10px",overflowX:"auto"}}>
-        {PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){setNs(on?null:p.id);setDimFilter(null);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.12):rgba(p.color,0.03),border:on?"2px solid "+rgba(p.color,0.5):"1px solid "+rgba(p.color,0.08),borderRadius:20,padding:"6px 14px",fontSize:12,fontWeight:600,color:on?p.color:rgba(p.color,0.45),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
+      <div style={{display:"flex",gap:7,padding:"0 20px 10px",overflowX:"auto"}}>
+        {PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){pickNorthStar(on?null:p.id);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.18):rgba(p.color,0.06),border:on?"2px solid "+rgba(p.color,0.7):"1px solid "+rgba(p.color,0.3),borderRadius:20,padding:"7px 14px",fontSize:13,fontWeight:700,color:on?p.color:rgba(p.color,0.85),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
       </div>
 
       {/* Vertical sky map — full-bleed, scrollable */}
@@ -2472,13 +2482,13 @@ function MBAJourney(props) {
             var subLabel = baseTier==="Building" ? (READY_THRESH-earnedOnPath)+" skills to Ready" : (earnedOnPath+"/"+total+" critical skills");
             var floorLabel = allFloor ? "Foundation complete" : ("Foundation: "+floorMet+"/"+floorKeys.length+" dimensions met");
             var els=[];
-            els.push(<text key="gn" x={gx} y={gy-30} textAnchor="middle" fontSize={10} fontWeight={600} fill={rgba(pCol,0.75)} fontFamily={FONT} letterSpacing="2.5">{path.goalLabel.toUpperCase()}</text>);
+            els.push(<text key="gn" x={gx} y={gy-30} textAnchor="middle" fontSize={11} fontWeight={700} fill={rgba(pCol,0.92)} fontFamily={FONT} letterSpacing="2.5">{path.goalLabel.toUpperCase()}</text>);
             els.push(<circle key="gh" cx={gx} cy={gy} r={26} fill={pCol} filter="url(#goalGlow)" opacity={baseTier==="Building"?0.14:0.32}/>);
             els.push(<circle key="gs" cx={gx} cy={gy} r={9} fill={baseTier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={baseTier==="Building"?0.8:1.8} opacity={0.95}/>);
             if(baseTier==="Mastery"||baseTier==="Fluent") els.push(<circle key="gc" cx={gx} cy={gy} r={3} fill="#fff"/>);
-            els.push(<text key="gt" x={gx} y={gy+24} textAnchor="middle" fontSize={14} fontWeight={700} fill={tierCol} fontFamily={FONT} letterSpacing="1.5">{tier.toUpperCase()}</text>);
-            els.push(<text key="gs2" x={gx} y={gy+40} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.55)" fontFamily={FONT}>{subLabel}</text>);
-            els.push(<text key="gf" x={gx} y={gy+54} textAnchor="middle" fontSize={9} fill={allFloor?"rgba(80,200,120,0.75)":"rgba(255,200,100,0.6)"} fontFamily={FONT}>{floorLabel}</text>);
+            els.push(<text key="gt" x={gx} y={gy+26} textAnchor="middle" fontSize={16} fontWeight={800} fill={tierCol} fontFamily={FONT} letterSpacing="1.5">{tier.toUpperCase()}</text>);
+            els.push(<text key="gs2" x={gx} y={gy+43} textAnchor="middle" fontSize={12} fontWeight={500} fill="rgba(255,255,255,0.75)" fontFamily={FONT}>{subLabel}</text>);
+            els.push(<text key="gf" x={gx} y={gy+58} textAnchor="middle" fontSize={11} fontWeight={500} fill={allFloor?"rgba(100,220,140,0.88)":"rgba(255,210,120,0.8)"} fontFamily={FONT}>{floorLabel}</text>);
             // 12-dot meter
             var meterY=gy+68, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
             for(var di=0; di<total; di++){
@@ -2493,8 +2503,8 @@ function MBAJourney(props) {
           })()}
           {!ns&&(
             <g>
-              <text x={MBA_CW/2} y={42} textAnchor="middle" fontSize={11} fontWeight={600} fill="rgba(255,255,255,0.38)" fontFamily={FONT} letterSpacing="2.5">PICK A NORTH STAR</text>
-              <text x={MBA_CW/2} y={62} textAnchor="middle" fontSize={10} fill="rgba(255,255,255,0.28)" fontFamily={FONT}>tap a career above to light the path ahead</text>
+              <text x={MBA_CW/2} y={50} textAnchor="middle" fontSize={13} fontWeight={700} fill="rgba(255,255,255,0.65)" fontFamily={FONT} letterSpacing="3">PICK A NORTH STAR</text>
+              <text x={MBA_CW/2} y={72} textAnchor="middle" fontSize={12} fontWeight={500} fill="rgba(255,255,255,0.45)" fontFamily={FONT}>tap a career above to light the path ahead</text>
             </g>
           )}
 
@@ -2502,27 +2512,31 @@ function MBAJourney(props) {
           {SKILLS.map(function(s){
             var x=s.x/100*MBA_CW, y=MBA_SKY_TOP+s.y/100*MBA_SKY_H, col=PC[s.dim];
             var earned=!!EARNED[s.id];
-            var inDim=!dimFilter||s.dim===dimFilter;
             var inCareer=careerSet?!!careerSet[s.id]:false;
-            var dimmed=(dimFilter&&!inDim)||(careerSet&&!inCareer);
+            var dimmed=(careerSet&&!inCareer);
             var isSel=selSkill===s.id;
             var isCrossHL=selExp&&selExpObj&&selExpObj.skills.indexOf(s.id)>=0;
-            var r=earned?10:6; if(isSel)r+=2;
-            var opacity=dimmed?0.08:(isSel||isCrossHL?1:(earned?0.95:0.55));
-            var fill=rgba(col,earned?0.25:0.04);
-            var stroke=rgba(col,earned?0.9:0.4);
-            var strokeW=isSel?2.5:(earned?1.8:1);
+            var r=earned?11:8; if(isSel)r+=2;
+            var opacity=dimmed?0.22:1;
+            /* latent stars: brighter so they read clearly on the dark sky */
+            var fill=rgba(col,earned?0.28:0.14);
+            var stroke=rgba(col,earned?0.95:0.75);
+            var strokeW=isSel?2.8:(earned?2:1.4);
             var showWhite=careerSet&&inCareer&&!dimmed;
             var lbl=s.label.length>24?s.label.slice(0,22)+"\u2026":s.label;
+            /* Label: white when latent (high contrast on sky), PIVOT-colored when earned */
+            var lblFill = earned ? rgba(col,1) : "rgba(255,255,255,0.88)";
+            var lblSize = earned ? 12 : 11;
+            var lblWeight = earned ? 700 : 500;
             return (
               <g key={s.id} style={{cursor:"pointer",transition:"opacity 0.4s ease"}} opacity={opacity} onClick={function(){toggleSkill(s.id);}}>
-                {showWhite&&<circle cx={x} cy={y} r={r+8} fill="#fff" filter="url(#whiteGlow)" opacity={0.3}/>}
-                {showWhite&&<circle cx={x} cy={y} r={r+2.5} fill="none" stroke="#fff" strokeWidth={1} opacity={0.5}/>}
-                {earned&&!dimmed&&<circle cx={x} cy={y} r={r+6} fill={rgba(col,0.08)}/>}
-                {isSel&&<circle cx={x} cy={y} r={r+5} fill="none" stroke={col} strokeWidth={1.8} opacity={0.55} filter="url(#glow2)"/>}
+                {showWhite&&<circle cx={x} cy={y} r={r+9} fill="#fff" filter="url(#whiteGlow)" opacity={0.32}/>}
+                {showWhite&&<circle cx={x} cy={y} r={r+3} fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.55}/>}
+                {earned&&!dimmed&&<circle cx={x} cy={y} r={r+7} fill={rgba(col,0.1)}/>}
+                {isSel&&<circle cx={x} cy={y} r={r+6} fill="none" stroke={col} strokeWidth={2} opacity={0.65} filter="url(#glow2)"/>}
                 <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={strokeW}/>
-                {earned&&<circle cx={x} cy={y} r={r*0.4} fill="#fff" opacity={0.85}/>}
-                <text x={x} y={y+r+12} textAnchor="middle" fontSize={earned?10:9} fontWeight={earned?600:400} fill={rgba(col,earned?0.9:0.55)} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>
+                {earned&&<circle cx={x} cy={y} r={r*0.42} fill="#fff" opacity={0.92}/>}
+                <text x={x} y={y+r+14} textAnchor="middle" fontSize={lblSize} fontWeight={lblWeight} fill={lblFill} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>
               </g>
             );
           })}
@@ -2533,11 +2547,13 @@ function MBAJourney(props) {
 
           {/* Attribute foundation band */}
           <rect x={0} y={MBA_SKY_BOT+3} width={MBA_CW} height={MBA_ATTR_H} fill="#060412" style={{pointerEvents:"none"}}/>
-          <text x={16} y={MBA_SKY_BOT+20} fontSize={9} fontWeight={700} fill="rgba(255,255,255,0.45)" fontFamily={FONT} letterSpacing="1.8">FOUNDATION \u00b7 ATTRIBUTES YOU BROUGHT IN</text>
+          <text x={16} y={MBA_SKY_BOT+22} fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.75)" fontFamily={FONT} letterSpacing="2">YOUR FOUNDATION</text>
+          <text x={MBA_CW-16} y={MBA_SKY_BOT+22} textAnchor="end" fontSize={9} fontWeight={500} fill="rgba(255,255,255,0.4)" fontFamily={FONT} letterSpacing="1">BASELINE \u2192 CURRENT</text>
           {ATTRIBUTES.map(function(a,ai){
-            var rowY=MBA_SKY_BOT+34+ai*22;
+            var rowY=MBA_SKY_BOT+40+ai*22;
             var col=PC[a.dim];
-            var barX=70, barW=MBA_CW-110, barH=10;
+            var labels={P:"PUR",I:"INT",V:"VIS",O:"OWN",T:"TRA"};
+            var barX=60, barW=MBA_CW-100, barH=11;
             var curW=(a.current/5)*barW;
             var baseX=barX+(a.baseline/5)*barW;
             var floor = path && path.floor && path.floor[a.dim];
@@ -2545,14 +2561,14 @@ function MBAJourney(props) {
             var meetsFloor = floor ? a.current>=floor : true;
             return (
               <g key={"attr"+ai}>
-                <text x={16} y={rowY+7} fontSize={10} fontWeight={700} fill={col} fontFamily={FONT} letterSpacing="0.5">{DIM_NAMES[a.dim].toUpperCase().slice(0,4)}</text>
-                <rect x={barX} y={rowY} width={barW} height={barH} rx={4} ry={4} fill={rgba(col,0.08)}/>
-                <rect x={barX} y={rowY} width={curW} height={barH} rx={4} ry={4} fill={rgba(col,path&&!meetsFloor?0.4:0.75)}/>
+                <text x={16} y={rowY+8} fontSize={12} fontWeight={700} fill={col} fontFamily={FONT} letterSpacing="1">{labels[a.dim]}</text>
+                <rect x={barX} y={rowY} width={barW} height={barH} rx={4} ry={4} fill={rgba(col,0.12)}/>
+                <rect x={barX} y={rowY} width={curW} height={barH} rx={4} ry={4} fill={rgba(col,path&&!meetsFloor?0.45:0.85)}/>
                 {/* baseline tick */}
-                <line x1={baseX} y1={rowY-2} x2={baseX} y2={rowY+barH+2} stroke="rgba(255,255,255,0.6)" strokeWidth={1}/>
+                <line x1={baseX} y1={rowY-2} x2={baseX} y2={rowY+barH+2} stroke="rgba(255,255,255,0.7)" strokeWidth={1.2}/>
                 {/* floor tick (when career selected) */}
-                {floorX!==null&&<g><line x1={floorX} y1={rowY-3} x2={floorX} y2={rowY+barH+3} stroke={meetsFloor?"#50C878":"#FFCC44"} strokeWidth={1.8}/><text x={floorX} y={rowY-5} textAnchor="middle" fontSize={7} fontWeight={700} fill={meetsFloor?"#50C878":"#FFCC44"} fontFamily={FONT}>{floor.toFixed(1)}</text></g>}
-                <text x={MBA_CW-14} y={rowY+7} textAnchor="end" fontSize={10} fontWeight={600} fill="rgba(255,255,255,0.8)" fontFamily={FONT}>{a.current.toFixed(1)}</text>
+                {floorX!==null&&<g><line x1={floorX} y1={rowY-4} x2={floorX} y2={rowY+barH+4} stroke={meetsFloor?"#50C878":"#FFCC44"} strokeWidth={2}/><text x={floorX} y={rowY-6} textAnchor="middle" fontSize={9} fontWeight={700} fill={meetsFloor?"#50C878":"#FFCC44"} fontFamily={FONT}>{floor.toFixed(1)}</text></g>}
+                <text x={MBA_CW-14} y={rowY+8} textAnchor="end" fontSize={12} fontWeight={700} fill="rgba(255,255,255,0.92)" fontFamily={FONT}>{a.current.toFixed(1)}</text>
               </g>
             );
           })}
@@ -2637,6 +2653,18 @@ function MBAJourney(props) {
         <img src={UNC_LOGO} alt="UNC" style={{width:14,height:14,objectFit:"contain"}}/>
         <span style={{fontSize:9,color:rgba(CB,0.5),letterSpacing:1.5,textTransform:"uppercase"}}>UNC Kenan-Flagler Business School</span>
       </div>
+
+      {/* First-login onboarding overlay */}
+      {showOnboarding&&(
+        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:"rgba(2,4,12,0.94)",zIndex:100,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"30px 24px",fontFamily:FONT}}>
+          <div style={{fontSize:22,fontWeight:800,color:"#fff",marginBottom:10,letterSpacing:0.3}}>Pick Your North Star</div>
+          <div style={{fontSize:14,color:"rgba(255,255,255,0.7)",textAlign:"center",marginBottom:26,maxWidth:320,lineHeight:1.55}}>This becomes the goal your skills point toward. You can change it anytime.</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,width:"100%",maxWidth:340,marginBottom:18}}>
+            {PATHS.map(function(p){return <button key={p.id} onClick={function(){pickNorthStar(p.id);dismissOnboarding(true);}} style={{padding:"16px 12px",borderRadius:12,background:rgba(p.color,0.18),border:"1.5px solid "+rgba(p.color,0.55),color:p.color,fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:FONT,lineHeight:1.25}}>{p.label}<div style={{fontSize:10,fontWeight:500,color:rgba(p.color,0.7),marginTop:3}}>{p.goalLabel}</div></button>;})}
+          </div>
+          <div onClick={function(){dismissOnboarding(false);}} style={{fontSize:13,color:"rgba(255,255,255,0.45)",cursor:"pointer",padding:"8px 14px"}}>Skip for now</div>
+        </div>
+      )}
     </div>
   );
 }
