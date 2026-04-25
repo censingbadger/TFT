@@ -2257,10 +2257,10 @@ function UBPAssistant(props) {
    MBA — JOURNEY (Skill Constellation)
    ══════════════════════════════════════════════════════════════ */
 
-var MBA_CW = 430, MBA_CH = 1060;
+var MBA_CW = 430, MBA_CH = 826;
 var MBA_GOAL_H = 130;        /* top goal-star zone */
 var MBA_SKY_TOP = MBA_GOAL_H;
-var MBA_SKY_H = 780;         /* sky area height (taller for breathing room) */
+var MBA_SKY_H = 546;         /* sky area height (reduced ~30% from 780) */
 var MBA_SKY_BOT = MBA_SKY_TOP + MBA_SKY_H;   /* horizon line */
 var MBA_ATTR_H = 118;        /* attribute foundation band */
 var READY_THRESH = 8, FLUENT_THRESH = 10, MASTERY_THRESH = 12;
@@ -2349,40 +2349,40 @@ var MBA_SN2 = MBA_genStars(40, 271);
 /* ── 30 Dynamic Leadership Skills (6 per PIVOT domain, with dynamic-lens definitions) ── */
 var SKILLS = [
   /* Purpose */
-  { id:"s1",  dim:"P", label:"Self-Insight",                     def:"Notices own patterns under shifting conditions and uses them to adjust.", x:16, y:35 },
-  { id:"s2",  dim:"P", label:"Emotional Self-Awareness",         def:"Identifies own emotional shifts as stakes rise, and how they shape judgment.", x:22, y:58 },
-  { id:"s3",  dim:"P", label:"Leader Identity in Action",        def:"Steps into leadership when conditions require direction and the path is unclear.", x:28, y:30 },
-  { id:"s4",  dim:"P", label:"Values-Anchored Decisions",        def:"Holds core values when changing conditions create pressure to compromise them.", x:10, y:50 },
-  { id:"s5",  dim:"P", label:"Moral Courage",                    def:"Takes principled stands when situations shift and others recalibrate positions.", x:26, y:45 },
-  { id:"s6",  dim:"P", label:"Purpose Articulation",             def:"Reconnects self and others to purpose when plans change or motivation wavers.", x:36, y:54 },
+  { id:"s1",  dim:"P", label:"Self-Insight",                     def:"Notices own patterns under shifting conditions and uses them to adjust.", x:14, y:28 },
+  { id:"s2",  dim:"P", label:"Emotional Self-Awareness",         def:"Identifies own emotional shifts as stakes rise, and how they shape judgment.", x:8, y:52 },
+  { id:"s3",  dim:"P", label:"Leader Identity in Action",        def:"Steps into leadership when conditions require direction and the path is unclear.", x:26, y:20 },
+  { id:"s4",  dim:"P", label:"Values-Anchored Decisions",        def:"Holds core values when changing conditions create pressure to compromise them.", x:10, y:42 },
+  { id:"s5",  dim:"P", label:"Moral Courage",                    def:"Takes principled stands when situations shift and others recalibrate positions.", x:24, y:36 },
+  { id:"s6",  dim:"P", label:"Purpose Articulation",             def:"Reconnects self and others to purpose when plans change or motivation wavers.", x:36, y:48 },
   /* Interrelating */
-  { id:"s7",  dim:"I", label:"Relational Investment",            def:"Invests in working relationships before disruption or need arises.", x:18, y:70 },
-  { id:"s8",  dim:"I", label:"Commitment Integrity",             def:"Renegotiates commitments openly rather than going silent when conditions change.", x:38, y:82 },
-  { id:"s9",  dim:"I", label:"Psychological Safety Creation",    def:"Creates space for dissent and bad news under pressure.", x:16, y:84 },
-  { id:"s10", dim:"I", label:"Developmental Feedback",           def:"Gives real-time feedback that helps others adjust as situations evolve.", x:42, y:64 },
-  { id:"s11", dim:"I", label:"Active Perspective-Taking",        def:"Engages perspectives that challenge own read of a shifting situation.", x:32, y:74 },
-  { id:"s12", dim:"I", label:"Conflict Engagement",              def:"Stays respectful and direct when stakes rise; surfaces and addresses conflict before it derails.", x:48, y:70 },
+  { id:"s7",  dim:"I", label:"Relational Investment",            def:"Invests in working relationships before disruption or need arises.", x:18, y:58 },
+  { id:"s8",  dim:"I", label:"Commitment Integrity",             def:"Renegotiates commitments openly rather than going silent when conditions change.", x:40, y:78 },
+  { id:"s9",  dim:"I", label:"Psychological Safety Creation",    def:"Creates space for dissent and bad news under pressure.", x:14, y:72 },
+  { id:"s10", dim:"I", label:"Developmental Feedback",           def:"Gives real-time feedback that helps others adjust as situations evolve.", x:38, y:52 },
+  { id:"s11", dim:"I", label:"Active Perspective-Taking",        def:"Engages perspectives that challenge own read of a shifting situation.", x:30, y:64 },
+  { id:"s12", dim:"I", label:"Conflict Engagement",              def:"Stays respectful and direct when stakes rise; surfaces and addresses conflict before it derails.", x:48, y:60 },
   /* Vision */
-  { id:"s13", dim:"V", label:"Strategic Foresight",              def:"Anticipates second- and third-order consequences under changing conditions.", x:52, y:18 },
-  { id:"s14", dim:"V", label:"Future-State Articulation",        def:"Describes a concrete future worth pursuing even as circumstances shift.", x:42, y:8 },
-  { id:"s15", dim:"V", label:"Opportunity Recognition",          def:"Spots opportunity in change that others read only as threat.", x:60, y:24 },
-  { id:"s16", dim:"V", label:"Generative Problem Framing",       def:"Reframes a problem when the original frame becomes wrong.", x:54, y:34 },
-  { id:"s17", dim:"V", label:"Adaptive Iteration",               def:"Changes approach in flight when the first approach isn't working.", x:46, y:26 },
-  { id:"s18", dim:"V", label:"Energizing Vision Communication",  def:"Rallies energy and conviction under low morale or uncertainty; connects daily work to larger purpose.", x:68, y:12 },
+  { id:"s13", dim:"V", label:"Strategic Foresight",              def:"Anticipates second- and third-order consequences under changing conditions.", x:50, y:16 },
+  { id:"s14", dim:"V", label:"Future-State Articulation",        def:"Describes a concrete future worth pursuing even as circumstances shift.", x:42, y:6 },
+  { id:"s15", dim:"V", label:"Opportunity Recognition",          def:"Spots opportunity in change that others read only as threat.", x:60, y:22 },
+  { id:"s16", dim:"V", label:"Generative Problem Framing",       def:"Reframes a problem when the original frame becomes wrong.", x:54, y:30 },
+  { id:"s17", dim:"V", label:"Adaptive Iteration",               def:"Changes approach in flight when the first approach isn't working.", x:45, y:24 },
+  { id:"s18", dim:"V", label:"Energizing Vision Communication",  def:"Rallies energy and conviction under low morale or uncertainty; connects daily work to larger purpose.", x:66, y:10 },
   /* Ownership */
-  { id:"s19", dim:"O", label:"Proactive Initiative",             def:"Acts on emerging issues before they become crises.", x:72, y:52 },
-  { id:"s20", dim:"O", label:"Decision Velocity with Discipline", def:"Makes decisive calls under uncertainty with clear rationale and revision triggers.", x:84, y:60 },
-  { id:"s21", dim:"O", label:"Clean Attribution",                def:"Owns role in failure before analyzing external causes.", x:66, y:72 },
-  { id:"s22", dim:"O", label:"Dynamic Prioritization",           def:"Adjusts and re-communicates priorities as conditions change.", x:82, y:70 },
-  { id:"s23", dim:"O", label:"Delegation & Empowerment",         def:"Empowers others to act on their judgment when conditions preclude direct control.", x:88, y:50 },
-  { id:"s24", dim:"O", label:"Follow-Through Under Obstacles",   def:"Persists through setbacks by changing approach, not abandoning the goal.", x:76, y:82 },
+  { id:"s19", dim:"O", label:"Proactive Initiative",             def:"Acts on emerging issues before they become crises.", x:72, y:40 },
+  { id:"s20", dim:"O", label:"Decision Velocity with Discipline", def:"Makes decisive calls under uncertainty with clear rationale and revision triggers.", x:84, y:52 },
+  { id:"s21", dim:"O", label:"Clean Attribution",                def:"Owns role in failure before analyzing external causes.", x:66, y:66 },
+  { id:"s22", dim:"O", label:"Dynamic Prioritization",           def:"Adjusts and re-communicates priorities as conditions change.", x:80, y:58 },
+  { id:"s23", dim:"O", label:"Delegation & Empowerment",         def:"Empowers others to act on their judgment when conditions preclude direct control.", x:88, y:38 },
+  { id:"s24", dim:"O", label:"Follow-Through Under Obstacles",   def:"Persists through setbacks by changing approach, not abandoning the goal.", x:76, y:72 },
   /* Transformation */
-  { id:"s25", dim:"T", label:"Learning from Failure",            def:"Extracts concrete lessons from failure and changes behavior accordingly.", x:62, y:36 },
-  { id:"s26", dim:"T", label:"Stretch-Seeking",                  def:"Steps into roles where success requires not-yet-developed abilities.", x:74, y:22 },
-  { id:"s27", dim:"T", label:"Functioning in Ambiguity",         def:"Makes progress despite uncertainty and missing information.", x:80, y:30 },
-  { id:"s28", dim:"T", label:"Emotional Regulation",             def:"Stays composed and focused when conditions become volatile.", x:72, y:42 },
-  { id:"s29", dim:"T", label:"Resilient Persistence",            def:"Holds to long-horizon goals through multiple setbacks; recovers footing after disappointment.", x:86, y:42 },
-  { id:"s30", dim:"T", label:"Curiosity & Openness to Change",   def:"Approaches change with curiosity rather than defensiveness; updates position when evidence shifts.", x:90, y:20 },
+  { id:"s25", dim:"T", label:"Learning from Failure",            def:"Extracts concrete lessons from failure and changes behavior accordingly.", x:62, y:28 },
+  { id:"s26", dim:"T", label:"Stretch-Seeking",                  def:"Steps into roles where success requires not-yet-developed abilities.", x:74, y:18 },
+  { id:"s27", dim:"T", label:"Functioning in Ambiguity",         def:"Makes progress despite uncertainty and missing information.", x:80, y:26 },
+  { id:"s28", dim:"T", label:"Emotional Regulation",             def:"Stays composed and focused when conditions become volatile.", x:72, y:36 },
+  { id:"s29", dim:"T", label:"Resilient Persistence",            def:"Holds to long-horizon goals through multiple setbacks; recovers footing after disappointment.", x:86, y:34 },
+  { id:"s30", dim:"T", label:"Curiosity & Openness to Change",   def:"Approaches change with curiosity rather than defensiveness; updates position when evidence shifts.", x:90, y:14 },
 ];
 
 /* ── 15 earned skills (mid-Year-1 MBA persona, 3 per PIVOT domain) ── */
