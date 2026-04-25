@@ -471,172 +471,403 @@ var UBP_SN2 = UBP_genStars(30, 271);
 
 function UBPJourney(props) {
   var CB = "#4B9CD3";
-  var _nav = useState("journey"), activeNav = _nav[0], setActiveNav = _nav[1];
-  var _sel = useState(null), selected = _sel[0], setSelected = _sel[1];
-  var _dim = useState(null), dimFilter = _dim[0], setDimFilter = _dim[1];
-  var _anim = useState(false), anim = _anim[0], setAnim = _anim[1];
-  var scrollRef = useRef(null);
-  var _ss = useState(true), showScroll = _ss[0], setShowScroll = _ss[1];
+  var _nav=useState("journey"),nav=_nav[0],setNav=_nav[1];
+  var _ns=useState(null),ns=_ns[0],setNs=_ns[1];
+  var _ssk=useState(null),selSkill=_ssk[0],setSelSkill=_ssk[1];
+  var _se=useState(null),selExp=_se[0],setSelExp=_se[1];
+  var _dim=useState(null),dimFilter=_dim[0],setDimFilter=_dim[1];
+  var _anim=useState(false),anim=_anim[0],setAnim=_anim[1];
+  var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
+  var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
+  var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
+  var _preset=useState("today"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
+  var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
+  var scrollRef=useRef(null);
 
-  useEffect(function () { setTimeout(function () { setAnim(true); }, 300); }, []);
-  useEffect(function () {
-    var el = scrollRef.current; if (!el) return;
-    function h() { if (el.scrollLeft > 30) setShowScroll(false); }
-    el.addEventListener("scroll", h);
-    return function () { el.removeEventListener("scroll", h); };
-  }, []);
+  useEffect(function(){
+    setTimeout(function(){setAnim(true);},300);
+    try{var v=localStorage.getItem("ubp_reflections");if(v)setReflections(JSON.parse(v));}catch(e){}
+    try{
+      var sp=localStorage.getItem("ubp_preset");
+      if(sp && UBP_EARNED_PRESETS[sp]) setEarnedPreset(sp);
+    }catch(e){}
+    try{
+      var saved=localStorage.getItem("ubp_northstar");
+      var skipped=localStorage.getItem("ubp_onb_skipped");
+      var validIds=UBP_PATHS.map(function(p){return p.id;});
+      if(saved && validIds.indexOf(saved)>=0){ setNs(saved); }
+      else if(saved){ localStorage.removeItem("ubp_northstar"); if(!skipped)setTimeout(function(){setShowOnboarding(true);},400); }
+      else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
+    }catch(e){}
+  },[]);
 
-  var selNode = null;
-  for (var i = 0; i < UBP_NODES.length; i++) if (UBP_NODES[i].id === selected) { selNode = UBP_NODES[i]; break; }
-  var doneCount = UBP_NODES.filter(function (n) { return n.done; }).length;
-  function nbi(id) { for (var k = 0; k < UBP_NODES.length; k++) if (UBP_NODES[k].id === id) return UBP_NODES[k]; return null; }
-  function nv(n) { return !dimFilter || n.pivot === dimFilter; }
-  function hf(n) { if (n.done) return 1; var xp = n.x / 100; return xp < 0.55 ? 0.75 : xp < 0.70 ? 0.55 : xp < 0.85 ? 0.4 : 0.28; }
+  var earnedState = UBP_EARNED_PRESETS[earnedPreset] || UBP_EARNED_PRESETS["today"];
+  var MBA_CONNS_LIVE = buildConns(earnedState);
+  var earnedCountState = Object.keys(earnedState).length;
+  function pickPreset(id){
+    setEarnedPreset(id);
+    setSelSkill(null); setSelExp(null);
+    try{ localStorage.setItem("ubp_preset", id); }catch(e){}
+  }
+
+  function pickNorthStar(id){
+    setNs(id);
+    try{ if(id)localStorage.setItem("ubp_northstar",id); else localStorage.removeItem("ubp_northstar"); }catch(e){}
+  }
+  function dismissOnboarding(save){
+    setShowOnboarding(false);
+    try{ if(!save)localStorage.setItem("ubp_onb_skipped","1"); }catch(e){}
+  }
+  useEffect(function(){
+    var el=scrollRef.current;if(!el)return;
+    function h(){if(el.scrollLeft>30)setShowScroll(false);}
+    el.addEventListener("scroll",h);return function(){el.removeEventListener("scroll",h);};
+  },[]);
+
+  var path = ns?UBP_PATHS.find(function(p){return p.id===ns;}):null;
+  var pCol = path?path.color:CB;
+  var careerSet = path?path.skills.reduce(function(a,k){a[k]=1;return a;},{}):null;
+  var selSkillObj = selSkill?skillBy(selSkill):null;
+  var selExpObj = selExp?expBy(selExp):null;
+  var earnedCount = Object.keys(EARNED).length;
+  var totalCount = SKILLS.length;
+
+  function toggleSkill(sid){setSelExp(null);setSelSkill(selSkill===sid?null:sid);setDraft("");}
+  function toggleExp(eid){setSelSkill(null);setSelExp(selExp===eid?null:eid);setDraft("");}
+  function clearFilters(){setNs(null);setDimFilter(null);setSelSkill(null);setSelExp(null);}
+  function saveReflection(){
+    if(!selSkill||!draft.trim())return;
+    var next=Object.assign({},reflections);next[selSkill]=draft.trim();
+    setReflections(next);
+    try{localStorage.setItem("ubp_reflections",JSON.stringify(next));}catch(e){}
+    setDraft("");
+  }
 
   return (
-    <div style={{ width: "100%", maxWidth: 430, margin: "0 auto", height: "calc(var(--vh, 1vh) * 100)", minHeight: 700, background: "linear-gradient(170deg," + CN + " 0%,#0c0c24 50%,#080816 100%)", display: "flex", flexDirection: "column", overflow: "hidden", fontFamily: FONT, userSelect: "none", WebkitFontSmoothing: "antialiased" }}>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
-      <div style={{ padding: "16px 20px 4px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src={UNC_LOGO} alt="UNC" style={{ width: 34, height: 34, objectFit: "contain" }} />
-          <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>PIVOT <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Journey</span></div>
+    <div style={{width:"100%",maxWidth:430,margin:"0 auto",height:"calc(var(--vh, 1vh) * 100)",minHeight:700,background:"linear-gradient(170deg,"+CN+" 0%,#0c0c24 50%,#080816 100%)",display:"flex",flexDirection:"column",overflow:"hidden",fontFamily:FONT,userSelect:"none",WebkitFontSmoothing:"antialiased"}}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+
+      {/* Header — matching UBP */}
+      <div style={{padding:"16px 20px 4px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{display:"flex",alignItems:"center",gap:12}}>
+          <img src={UNC_LOGO} alt="UNC" style={{width:34,height:34,objectFit:"contain"}}/>
+          <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:0.3}}>PIVOT <span style={{fontSize:15,fontWeight:400,color:rgba(CB,0.6),letterSpacing:2,textTransform:"uppercase",marginLeft:4}}>Journey</span></div>
         </div>
-        <div style={{ width: 40, height: 40, borderRadius: "50%", background: "linear-gradient(135deg," + CB + "," + CN + ")", border: "2px solid " + rgba(CB, 0.4), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600, color: "#fff" }}>JS</div>
-      </div>
-      <div style={{ padding: "6px 20px 8px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)" }}>{dimFilter ? DIM_NAMES[dimFilter] + " experiences" : doneCount + " of " + UBP_NODES.length + " experiences completed"}</div>
-        {dimFilter && (<div onClick={function () { setDimFilter(null); setSelected(null); }} style={{ padding: "5px 14px", borderRadius: 10, background: rgba(PC[dimFilter], 0.1), border: "1px solid " + rgba(PC[dimFilter], 0.2), cursor: "pointer", fontSize: 13, fontWeight: 600, color: PC[dimFilter] }}>✕ Clear</div>)}
-      </div>
-      <div style={{ display: "flex", gap: 6, padding: "0 20px 10px", overflowX: "auto" }}>
-        {DIMS.map(function (d) {
-          var isA = dimFilter === d;
-          return (<button key={d} onClick={function () { setDimFilter(isA ? null : d); setSelected(null); }} style={{ background: isA ? rgba(PC[d], 0.15) : rgba(PC[d], 0.04), border: "1px solid " + (isA ? rgba(PC[d], 0.35) : rgba(PC[d], 0.08)), borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: isA ? 600 : 500, color: isA ? PC[d] : "rgba(255,255,255,0.3)", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
-            <div style={{ width: 7, height: 7, borderRadius: "50%", background: PC[d], opacity: isA ? 1 : 0.4 }} />{DIM_NAMES[d]}
-          </button>);
-        })}
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <div onClick={function(){setShowDemo(!showDemo);}} style={{padding:"5px 10px",borderRadius:12,background:showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08),border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)),cursor:"pointer",fontSize:10,fontWeight:700,color:showDemo?"#FFCC44":"rgba(255,255,255,0.55)",letterSpacing:"1",fontFamily:FONT}}>DEMO</div>
+          <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>JS</div>
+        </div>
       </div>
 
-      <div style={{ flex: 1, position: "relative", minHeight: 0, overflow: "hidden" }}>
-        <div ref={scrollRef} style={{ width: "100%", height: "100%", overflowX: "auto", overflowY: "hidden", WebkitOverflowScrolling: "touch" }}>
-          <svg width={UBP_CW} height={UBP_CH} style={{ display: "block", opacity: anim ? 1 : 0, transition: "opacity 1s ease", minWidth: UBP_CW }}>
-            <defs>
-              <filter id="glow"><feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-              <filter id="glow2"><feGaussianBlur stdDeviation="6" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
-              <radialGradient id="hg" cx="100%" cy="50%" r="30%"><stop offset="0%" stopColor={dimFilter ? PC[dimFilter] : CB} stopOpacity="0.12" /><stop offset="100%" stopColor={dimFilter ? PC[dimFilter] : CB} stopOpacity="0" /></radialGradient>
-              <linearGradient id="fr" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#080816" stopOpacity="0" /><stop offset="70%" stopColor="#080816" stopOpacity="0" /><stop offset="100%" stopColor="#080816" stopOpacity="0.6" /></linearGradient>
-            </defs>
-            <rect x={UBP_CW * 0.7} y={0} width={UBP_CW * 0.3} height={UBP_CH} fill="url(#hg)" />
-            {UBP_SF.map(function (st, i) { return <circle key={"sf" + i} cx={st.x} cy={st.y} r={st.r * 0.7} fill={"rgba(255,255,255," + (st.op * 0.8) + ")"} />; })}
-            {UBP_SM2.map(function (st, i) { return <circle key={"sm" + i} cx={st.x} cy={st.y} r={st.r * 0.9} fill={"rgba(255,255,255," + (st.op * 1.3) + ")"} />; })}
-            {UBP_SN2.map(function (st, i) { return <circle key={"sn" + i} cx={st.x} cy={st.y} r={st.r * 1.1} fill={"rgba(255,255,255," + (st.op * 2) + ")"} />; })}
-            {UBP_CONNS.map(function (conn, ci) {
-              var a = nbi(conn[0]), b = nbi(conn[1]);
-              if (!a || !b) return null;
-              var vA = nv(a), vB = nv(b);
-              if (dimFilter && !vA && !vB) return null;
-              var bd = a.done && b.done, od = a.done || b.done;
-              var lO, lW, lC, lD;
-              if (dimFilter) { lO = (vA && vB) ? (bd ? 0.6 : 0.2) : 0.03; lW = (vA && vB && bd) ? 2.5 : 1; lC = PC[dimFilter]; lD = (bd && vA && vB) ? "none" : "6,4"; }
-              else if (bd) { lO = 0.4; lW = 2.5; lC = CB; lD = "none"; }
-              else if (od) { lO = 0.12; lW = 1.5; lC = CB; lD = "6,4"; }
-              else { lO = 0.05; lW = 1; lC = CB; lD = "4,6"; }
-              return <line key={"c" + ci} x1={a.x / 100 * UBP_CW} y1={a.y / 100 * UBP_CH} x2={b.x / 100 * UBP_CW} y2={b.y / 100 * UBP_CH} stroke={rgba(lC, lO)} strokeWidth={lW} strokeDasharray={lD} strokeLinecap="round" style={{ transition: "all 0.5s ease" }} />;
-            })}
-            {UBP_NODES.map(function (n) {
-              var vis = nv(n), nx = n.x / 100 * UBP_CW, ny = n.y / 100 * UBP_CH, col = PC[n.pivot], isSel = selected === n.id;
-              var nOp = dimFilter ? (vis ? hf(n) : 0.04) : hf(n), sz = n.size * 0.4;
-              return (
-                <g key={n.id} style={{ cursor: "pointer", transition: "opacity 0.4s ease" }} opacity={nOp} onClick={function () { setSelected(selected === n.id ? null : n.id); }}>
-                  {n.done && !dimFilter && <circle cx={nx} cy={ny} r={sz + 12} fill={rgba(col, 0.08)} />}
-                  {!n.done && !dimFilter && <circle cx={nx} cy={ny} r={sz + 8} fill={rgba(col, 0.03)} />}
-                  {isSel && <circle cx={nx} cy={ny} r={sz + 8} fill="none" stroke={col} strokeWidth={2} opacity={0.5} filter="url(#glow2)" />}
-                  <circle cx={nx} cy={ny} r={sz} fill={rgba(col, n.done ? 0.18 : 0.08)} stroke={rgba(col, n.done ? 0.7 : 0.35)} strokeWidth={isSel ? 3 : (n.done ? 2 : 1.5)} />
-                  <text x={nx} y={ny + 1} textAnchor="middle" dominantBaseline="middle" fontSize={sz * 0.75} style={{ pointerEvents: "none" }}>{UBP_TI[n.type]}</text>
-                  <text x={nx} y={ny + sz + 14} textAnchor="middle" fontSize={11} fontWeight={600} fill={rgba(col, n.done ? 0.85 : 0.5)} fontFamily={FONT} style={{ pointerEvents: "none" }}>{n.label.length > 24 ? n.label.slice(0, 22) + "…" : n.label}</text>
-                  {n.done && <g><circle cx={nx + sz - 2} cy={ny - sz + 2} r={6} fill="#50C878" stroke="#080816" strokeWidth={2} /><text x={nx + sz - 2} y={ny - sz + 3} textAnchor="middle" dominantBaseline="middle" fontSize={8} fill="#fff" fontWeight={700} style={{ pointerEvents: "none" }}>✓</text></g>}
-                </g>
-              );
-            })}
-            <rect x={0} y={0} width={UBP_CW} height={UBP_CH} fill="url(#fr)" style={{ pointerEvents: "none" }} />
+      {/* Subheader */}
+      <div style={{padding:"6px 20px 8px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <div style={{fontSize:14,fontWeight:500,color:ns?pCol:"rgba(255,255,255,0.65)"}}>{ns?"North Star: "+path.label:earnedCountState+" of "+totalCount+" skills earned"}</div>
+        {(ns||dimFilter)&&<div onClick={clearFilters} style={{padding:"5px 14px",borderRadius:10,background:rgba(ns?pCol:PC[dimFilter],0.1),border:"1px solid "+rgba(ns?pCol:PC[dimFilter],0.2),cursor:"pointer",fontSize:13,fontWeight:600,color:ns?pCol:PC[dimFilter]}}>✕ Clear</div>}
+      </div>
 
-            {/* ── Timeline Path Labels ── */}
-            {[
-              { label: "Freshman Year", sub: "Fall 2025", x: 8 },
-              { label: "Sophomore Year", sub: "Spring 2026", x: 22 },
-              { label: "STAR & Core", sub: "Fall 2025", x: 35 },
-              { label: "Now", sub: "Spring 2026", x: 48, highlight: true },
-              { label: "Next Steps", sub: "Summer 2026", x: 56 },
-              { label: "Junior Year", sub: "2026–27", x: 68 },
-              { label: "Senior Year", sub: "2027–28", x: 83 },
-              { label: "Graduation", sub: "Spring 2028", x: 95 },
-            ].map(function (tm, ti) {
-              var tx = tm.x / 100 * UBP_CW;
-              var isH = tm.highlight;
-              var col = isH ? CB : "rgba(255,255,255,0.2)";
-              return (
-                <g key={"tm" + ti}>
-                  {/* Tick mark */}
-                  <line x1={tx} y1={UBP_CH - 38} x2={tx} y2={UBP_CH - 28} stroke={col} strokeWidth={isH ? 2 : 1} />
-                  {/* Label */}
-                  <text x={tx} y={UBP_CH - 18} textAnchor="middle" fontSize={isH ? 12 : 11} fontWeight={isH ? 700 : 500} fill={isH ? CB : "rgba(255,255,255,0.3)"} fontFamily={FONT}>{tm.label}</text>
-                  <text x={tx} y={UBP_CH - 6} textAnchor="middle" fontSize={9} fontWeight={400} fill={isH ? rgba(CB, 0.6) : "rgba(255,255,255,0.15)"} fontFamily={FONT}>{tm.sub}</text>
-                  {/* "Now" marker dot */}
-                  {isH && <circle cx={tx} cy={UBP_CH - 42} r={4} fill={CB} opacity={0.8} />}
-                </g>
-              );
-            })}
-            {/* Subtle horizontal timeline line */}
-            <line x1={8 / 100 * UBP_CW} y1={UBP_CH - 33} x2={95 / 100 * UBP_CW} y2={UBP_CH - 33} stroke="rgba(75,156,211,0.08)" strokeWidth={1} />
-            {/* "Now" divider line */}
-            <line x1={48 / 100 * UBP_CW} y1={20} x2={48 / 100 * UBP_CW} y2={UBP_CH - 42} stroke={rgba(CB, 0.08)} strokeWidth={1} strokeDasharray="4,8" />
-          </svg>
-        </div>
-        {showScroll && (
-          <div style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, animation: "pulse 2s ease-in-out infinite" }}>
-            <div style={{ fontSize: 18, color: dimFilter ? PC[dimFilter] : CB }}>→</div>
-            <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)", fontWeight: 500, letterSpacing: 0.5, whiteSpace: "nowrap" }}>scroll to explore</div>
+      {/* Demo preset picker (discreet; tap DEMO to open) */}
+      {showDemo&&(
+        <div style={{margin:"0 16px 10px",padding:"10px 12px",borderRadius:12,background:"rgba(255,204,68,0.06)",border:"1px solid rgba(255,204,68,0.25)"}}>
+          <div style={{fontSize:10,fontWeight:700,color:"#FFCC44",letterSpacing:"1.5",marginBottom:8}}>DEMO · JUMP TO A MILESTONE</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(5, 1fr)",gap:5}}>
+            {UBP_DEMO_PRESETS_META.map(function(pr){var on=earnedPreset===pr.id;return <div key={pr.id} onClick={function(){pickPreset(pr.id);}} style={{padding:"7px 4px",borderRadius:8,background:on?"rgba(255,204,68,0.2)":"rgba(255,255,255,0.03)",border:"1px solid "+(on?"rgba(255,204,68,0.7)":"rgba(255,255,255,0.1)"),cursor:"pointer",textAlign:"center",fontFamily:FONT}}><div style={{fontSize:11,fontWeight:700,color:on?"#FFCC44":"rgba(255,255,255,0.85)",lineHeight:1.2}}>{pr.label}</div><div style={{fontSize:9,color:on?"rgba(255,204,68,0.75)":"rgba(255,255,255,0.4)",marginTop:2}}>{pr.sub}</div></div>;})}
           </div>
-        )}
-        <style>{"\n@keyframes pulse{0%,100%{opacity:0.6;transform:translateY(-50%) translateX(0)}50%{opacity:1;transform:translateY(-50%) translateX(5px)}}\n"}</style>
+        </div>
+      )}
+
+      {/* North Star (career) pills */}
+      <div style={{display:"flex",gap:7,padding:"0 20px 10px",overflowX:"auto"}}>
+        {UBP_PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){pickNorthStar(on?null:p.id);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.18):rgba(p.color,0.06),border:on?"2px solid "+rgba(p.color,0.7):"1px solid "+rgba(p.color,0.3),borderRadius:20,padding:"7px 14px",fontSize:13,fontWeight:700,color:on?p.color:rgba(p.color,0.85),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
       </div>
 
-      <div style={{ minHeight: selNode ? 200 : 50, maxHeight: selNode ? 280 : 50, transition: "all 0.3s ease", overflowY: selNode ? "auto" : "hidden", borderTop: "1px solid " + rgba(CB, 0.08), background: rgba(CN, 0.6) }}>
-        {selNode ? (
-          <div style={{ padding: "14px 20px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}><span style={{ fontSize: 18 }}>{UBP_TI[selNode.type]}</span><span style={{ fontSize: 17, fontWeight: 700, color: "#fff" }}>{selNode.label}</span></div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>{UBP_TL[selNode.type]} · {selNode.semester} · <span style={{ color: PC[selNode.pivot], fontWeight: 600 }}>{DIM_NAMES[selNode.pivot]}</span></div>
+      {/* Vertical sky map — full-bleed, scrollable */}
+      <div style={{flex:1,position:"relative",minHeight:0,overflowY:"auto",overflowX:"hidden",WebkitOverflowScrolling:"touch",background:"#020308"}}>
+        <svg width="100%" viewBox={"0 0 "+MBA_CW+" "+MBA_CH} preserveAspectRatio="xMidYMin slice" style={{display:"block",opacity:anim?1:0,transition:"opacity 1s ease"}}>
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="glow2"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="whiteGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="10"/></filter>
+            <filter id="goalGlow" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur in="SourceGraphic" stdDeviation="16"/></filter>
+            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#020308"/>
+              <stop offset="25%" stopColor="#070718"/>
+              <stop offset="55%" stopColor="#0e1632"/>
+              <stop offset="82%" stopColor="#2a1838"/>
+              <stop offset="97%" stopColor="#6a2a18"/>
+              <stop offset="100%" stopColor="#8a4a14"/>
+            </linearGradient>
+            <linearGradient id="dawn" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="transparent"/>
+              <stop offset="78%" stopColor="transparent"/>
+              <stop offset="90%" stopColor="#8B3A00" stopOpacity="0.2"/>
+              <stop offset="98%" stopColor="#F5A623" stopOpacity="0.35"/>
+              <stop offset="100%" stopColor="#FFCC44" stopOpacity="0.45"/>
+            </linearGradient>
+          </defs>
+
+          {/* Sky (edge-to-edge) */}
+          <rect x={0} y={0} width={MBA_CW} height={MBA_SKY_BOT} fill="url(#skyGrad)"/>
+          <rect x={0} y={0} width={MBA_CW} height={MBA_SKY_BOT} fill="url(#dawn)"/>
+
+          {/* Background stars — scaled across sky */}
+          {MBA_SF.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;return <circle key={"sf"+i} cx={(st.x/MBA_CW)*MBA_CW} cy={y} r={st.r*0.7} fill={"rgba(255,255,255,"+(st.op*0.9)+")"}/>;})}
+          {MBA_SM2.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;return <circle key={"sm"+i} cx={(st.x/MBA_CW)*MBA_CW} cy={y} r={st.r*0.9} fill={"rgba(255,255,255,"+(st.op*1.5)+")"}/>;})}
+          {MBA_SN2.map(function(st,i){var y=(st.y/MBA_SKY_H)*(MBA_SKY_BOT-10)+4;return <circle key={"sn"+i} cx={(st.x/MBA_CW)*MBA_CW} cy={y} r={st.r*1.1} fill={"rgba(255,255,255,"+(st.op*2.2)+")"}/>;})}
+
+          {/* Roadmap rays — solid from earned career-skills to goal, dotted from latent */}
+          {ns&&path&&(function(){
+            var gx=MBA_CW/2, gy=62;
+            return path.skills.map(function(sid){
+              var sk=skillBy(sid); if(!sk) return null;
+              var sx=sk.x/100*MBA_CW, sy=MBA_SKY_TOP+sk.y/100*MBA_SKY_H;
+              var got=!!earnedState[sid];
+              return <line key={"ray"+sid} x1={sx} y1={sy} x2={gx} y2={gy}
+                stroke={got?rgba(pCol,0.38):rgba("#FFFFFF",0.14)}
+                strokeWidth={got?1.1:0.8}
+                strokeDasharray={got?"none":"2,5"}
+                strokeLinecap="round"/>;
+            });
+          })()}
+
+          {/* Constellation connections — earned skills within PIVOT domain */}
+          {MBA_CONNS_LIVE.map(function(c,ci){
+            var a=skillBy(c[0]),b=skillBy(c[1]);if(!a||!b)return null;
+            var inDimA=!dimFilter||a.dim===dimFilter, inDimB=!dimFilter||b.dim===dimFilter;
+            if(dimFilter&&!(inDimA&&inDimB))return null;
+            var inCA=careerSet?!!careerSet[a.id]:true, inCB=careerSet?!!careerSet[b.id]:true;
+            var dimmed=(careerSet&&!(inCA&&inCB));
+            var col=PC[a.dim], op=dimmed?0.05:0.5, w=dimmed?0.8:2;
+            var ax=a.x/100*MBA_CW, ay=MBA_SKY_TOP+a.y/100*MBA_SKY_H;
+            var bx=b.x/100*MBA_CW, by=MBA_SKY_TOP+b.y/100*MBA_SKY_H;
+            return <line key={"c"+ci} x1={ax} y1={ay} x2={bx} y2={by} stroke={rgba(col,op)} strokeWidth={w} strokeLinecap="round" style={{transition:"all 0.4s ease"}}/>;
+          })}
+
+          {/* Goal star zone (compact) */}
+          {ns&&path&&(function(){
+            var gx=MBA_CW/2, gy=56;
+            var earnedOnPath=path.skills.filter(function(sid){return !!earnedState[sid];}).length;
+            var total=path.skills.length;
+            var floorKeys=Object.keys(path.floor||{});
+            var floorMet=floorKeys.filter(function(k){var a=UBP_ATTRIBUTES.find(function(x){return x.dim===k;});return a&&a.current>=path.floor[k];}).length;
+            var allFloor=floorMet===floorKeys.length;
+            var baseTier = earnedOnPath>=MASTERY_THRESH ? "Mastery" : (earnedOnPath>=FLUENT_THRESH ? "Fluent" : (earnedOnPath>=READY_THRESH ? "Ready" : "Building"));
+            var tierCol = baseTier==="Mastery"?"#FFFFFF":(baseTier==="Fluent"?"#FFE9A6":(baseTier==="Ready"?"#FFCC44":"rgba(255,255,255,0.6)"));
+            var statusLine = earnedOnPath+"/"+total+" skills · "+(allFloor?"Foundation ready":floorMet+"/"+floorKeys.length+" foundations");
+            var els=[];
+            els.push(<circle key="gh" cx={gx} cy={gy} r={26} fill={pCol} filter="url(#goalGlow)" opacity={baseTier==="Building"?0.14:0.35}/>);
+            els.push(<circle key="gs" cx={gx} cy={gy} r={10} fill={baseTier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={baseTier==="Building"?0.8:2} opacity={0.98}/>);
+            if(baseTier==="Mastery"||baseTier==="Fluent") els.push(<circle key="gc" cx={gx} cy={gy} r={3.2} fill="#fff"/>);
+            els.push(<text key="gt" x={gx} y={gy+32} textAnchor="middle" fontSize={18} fontWeight={800} fill={tierCol} fontFamily={FONT} letterSpacing="2">{baseTier.toUpperCase()}{!allFloor&&baseTier!=="Building"?" ∗":""}</text>);
+            els.push(<text key="gsl" x={gx} y={gy+50} textAnchor="middle" fontSize={11} fontWeight={500} fill={allFloor?"rgba(255,255,255,0.72)":"rgba(255,210,120,0.8)"} fontFamily={FONT}>{statusLine}</text>);
+            var meterY=gy+66, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
+            for(var di=0; di<total; di++){
+              var dx=startX+di*dotSpace;
+              var sid=path.skills[di];
+              var got=!!earnedState[sid];
+              var dotCol = got ? (di>=MASTERY_THRESH-1?"#fff":(di>=FLUENT_THRESH-1?"#FFE9A6":(di>=READY_THRESH-1?"#FFCC44":rgba(pCol,0.95)))) : "rgba(255,255,255,0.1)";
+              var strokeCol = got ? "#fff" : rgba(pCol,0.35);
+              els.push(<circle key={"gd"+di} cx={dx} cy={meterY} r={3.2} fill={dotCol} stroke={strokeCol} strokeWidth={got?0.8:1}/>);
+            }
+            return els;
+          })()}
+          {!ns&&(
+            <g>
+              <text x={MBA_CW/2} y={50} textAnchor="middle" fontSize={13} fontWeight={700} fill="rgba(255,255,255,0.65)" fontFamily={FONT} letterSpacing="3">PICK A NORTH STAR</text>
+              <text x={MBA_CW/2} y={72} textAnchor="middle" fontSize={12} fontWeight={500} fill="rgba(255,255,255,0.45)" fontFamily={FONT}>tap a career above to light the path ahead</text>
+            </g>
+          )}
+
+          {/* Skill stars */}
+          {SKILLS.map(function(s){
+            var x=s.x/100*MBA_CW, y=MBA_SKY_TOP+s.y/100*MBA_SKY_H, col=PC[s.dim];
+            var earned=!!earnedState[s.id];
+            var inCareer=careerSet?!!careerSet[s.id]:false;
+            var dimmed=(careerSet&&!inCareer);
+            var isSel=selSkill===s.id;
+            var isCrossHL=selExp&&selExpObj&&selExpObj.skills.indexOf(s.id)>=0;
+            var r=earned?11:8; if(isSel)r+=2;
+            var opacity=dimmed?0.22:1;
+            /* latent stars: brighter so they read clearly on the dark sky */
+            var fill=rgba(col,earned?0.28:0.14);
+            var stroke=rgba(col,earned?0.95:0.75);
+            var strokeW=isSel?2.8:(earned?2:1.4);
+            var showWhite=careerSet&&inCareer&&!dimmed;
+            var lbl=s.label.length>24?s.label.slice(0,22)+"…":s.label;
+            /* Labels: show only on earned / selected / cross-highlighted / career-relevant stars.
+               Default latent stars are unlabeled to reduce visual noise. */
+            var showLabel = earned || isSel || isCrossHL || showWhite;
+            var lblFill = earned ? rgba(col,1) : "rgba(255,255,255,0.9)";
+            var lblSize = earned ? 12 : 11;
+            var lblWeight = earned ? 700 : 500;
+            return (
+              <g key={s.id} style={{cursor:"pointer",transition:"opacity 0.4s ease"}} opacity={opacity} onClick={function(){toggleSkill(s.id);}}>
+                {showWhite&&<circle cx={x} cy={y} r={r+9} fill="#fff" filter="url(#whiteGlow)" opacity={0.32}/>}
+                {showWhite&&<circle cx={x} cy={y} r={r+3} fill="none" stroke="#fff" strokeWidth={1.2} opacity={0.55}/>}
+                {earned&&!dimmed&&<circle cx={x} cy={y} r={r+7} fill={rgba(col,0.1)}/>}
+                {isSel&&<circle cx={x} cy={y} r={r+6} fill="none" stroke={col} strokeWidth={2} opacity={0.65} filter="url(#glow2)"/>}
+                <circle cx={x} cy={y} r={r} fill={fill} stroke={stroke} strokeWidth={strokeW}/>
+                {earned&&<circle cx={x} cy={y} r={r*0.42} fill="#fff" opacity={0.92}/>}
+                {showLabel&&<text x={x} y={y+r+14} textAnchor="middle" fontSize={lblSize} fontWeight={lblWeight} fill={lblFill} fontFamily={FONT} style={{pointerEvents:"none"}}>{lbl}</text>}
+              </g>
+            );
+          })}
+
+          {/* Horizon line */}
+          <line x1={0} y1={MBA_SKY_BOT} x2={MBA_CW} y2={MBA_SKY_BOT} stroke="#F5A623" strokeWidth={1} opacity={0.55}/>
+          <line x1={0} y1={MBA_SKY_BOT+1.5} x2={MBA_CW} y2={MBA_SKY_BOT+1.5} stroke="#D4710A" strokeWidth={2} opacity={0.35}/>
+
+          {/* Attribute + Skill readiness bars (new stacked model) */}
+          <rect x={0} y={MBA_SKY_BOT+3} width={MBA_CW} height={MBA_ATTR_H} fill="#060412" style={{pointerEvents:"none"}}/>
+          <text x={16} y={MBA_SKY_BOT+20} fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.75)" fontFamily={FONT} letterSpacing="2">READINESS</text>
+          <text x={MBA_CW-16} y={MBA_SKY_BOT+20} textAnchor="end" fontSize={9} fontWeight={500} fill="rgba(255,255,255,0.4)" fontFamily={FONT} letterSpacing="1">UBP_ATTRIBUTES + SKILLS</text>
+          {UBP_ATTRIBUTES.map(function(a,ai){
+            var rowY=MBA_SKY_BOT+30+ai*17;
+            var col=PC[a.dim];
+            var labels={P:"PUR",I:"INT",V:"VIS",O:"OWN",T:"TRA"};
+            var barX=48, barW=MBA_CW-80, barH=8;
+            var myAttrs2={}; UBP_ATTRIBUTES.forEach(function(x){myAttrs2[x.dim]=x.current;});
+            var r = computeReadiness(a.dim, earnedState, myAttrs2);
+            var attrW = (r.attrPct/100)*barW;
+            var totalW = (r.totalPct/100)*barW;
+            var tgt = path ? targetForPath(path)[a.dim] : null;
+            var tgtX = tgt!==null ? barX+(tgt/100)*barW : null;
+            /* Midline: 50% marker showing attribute ceiling */
+            var midX = barX + 0.5*barW;
+            return (
+              <g key={"attr"+ai}>
+                <text x={14} y={rowY+8} fontSize={11} fontWeight={700} fill={col} fontFamily={FONT} letterSpacing="0.5">{labels[a.dim]}</text>
+                {/* Background track (full bar) */}
+                <rect x={barX} y={rowY} width={barW} height={barH} rx={4} ry={4} fill="rgba(255,255,255,0.05)"/>
+                {/* 50% attribute-ceiling mark */}
+                <line x1={midX} y1={rowY-1} x2={midX} y2={rowY+barH+1} stroke="rgba(255,255,255,0.22)" strokeWidth={1} strokeDasharray="1,2"/>
+                {/* Skills portion (lighter) from attr boundary to total */}
+                <rect x={barX+attrW} y={rowY} width={Math.max(0,totalW-attrW)} height={barH} rx={0} ry={0} fill={rgba(col,0.45)}/>
+                {/* Attribute portion (saturated) — drawn on top */}
+                <rect x={barX} y={rowY} width={attrW} height={barH} rx={4} ry={4} fill={rgba(col,0.95)}/>
+                {/* Target hash mark (when career selected) */}
+                {tgtX!==null && <g>
+                  <line x1={tgtX} y1={rowY-4} x2={tgtX} y2={rowY+barH+4} stroke="#FFCC44" strokeWidth={2}/>
+                  <text x={tgtX} y={rowY-6} textAnchor="middle" fontSize={8} fontWeight={700} fill="#FFCC44" fontFamily={FONT}>{tgt}</text>
+                </g>}
+                {/* Combined % on right */}
+                <text x={MBA_CW-14} y={rowY+8} textAnchor="end" fontSize={11} fontWeight={700} fill="rgba(255,255,255,0.88)" fontFamily={FONT}>{Math.round(r.totalPct)}%</text>
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+{/* Detail panel — skill info (with reflection) or experience info */}
+      <div style={{minHeight:(selSkillObj||selExpObj)?200:46,maxHeight:(selSkillObj||selExpObj)?320:46,transition:"all 0.3s ease",overflowY:(selSkillObj||selExpObj)?"auto":"hidden",borderTop:"1px solid "+rgba(CB,0.08),background:rgba(CN,0.7)}}>
+        {selSkillObj?(
+          <div style={{padding:"14px 20px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+              <div style={{flex:1,paddingRight:10}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
+                  <span style={{width:8,height:8,borderRadius:"50%",background:PC[selSkillObj.dim],display:"inline-block"}}></span>
+                  <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selSkillObj.label}</span>
+                  {earnedState[selSkillObj.id]?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>EARNED</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),color:rgba(PC[selSkillObj.dim],0.8),fontWeight:600,letterSpacing:0.3}}>LATENT</span>}
+                </div>
+                <div style={{fontSize:12,color:PC[selSkillObj.dim],fontWeight:600,opacity:0.85}}>{DIM_NAMES[selSkillObj.dim]}</div>
               </div>
-              <div onClick={function () { setSelected(null); }} style={{ padding: "4px 10px", borderRadius: 8, cursor: "pointer", background: rgba(CB, 0.08), fontSize: 13, color: "rgba(255,255,255,0.4)" }}>✕</div>
+              <div onClick={function(){setSelSkill(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
             </div>
-            {selNode.done ? (
-              <div>
-                <div style={{ marginBottom: 10 }}><div style={{ fontSize: 11, fontWeight: 600, color: rgba(CB, 0.5), textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 }}>What I Did</div><div style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{selNode.did}</div></div>
-                <div style={{ marginBottom: 10 }}><div style={{ fontSize: 11, fontWeight: 600, color: rgba(CB, 0.5), textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 }}>What I Learned</div><div style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{selNode.learned}</div></div>
-                <div><div style={{ fontSize: 11, fontWeight: 600, color: rgba(CB, 0.5), textTransform: "uppercase", letterSpacing: 1, marginBottom: 3 }}>How I Grew</div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "5px 12px", borderRadius: 20, background: rgba(PC[selNode.pivot], 0.1), border: "1px solid " + rgba(PC[selNode.pivot], 0.2), fontSize: 13, fontWeight: 600, color: PC[selNode.pivot] }}>
-                    <div style={{ width: 7, height: 7, borderRadius: "50%", background: PC[selNode.pivot] }} />{selNode.grew}
-                  </div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",lineHeight:1.5,marginBottom:10,fontStyle:"italic"}}>"{selSkillObj.def}"</div>
+            {earnedState[selSkillObj.id]?(
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Earned through</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {earnedVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.85)",cursor:"pointer"}}>{UBP_EXP_ICON[e.type]} {e.label}</span>;})}
                 </div>
               </div>
-            ) : (
-              <div style={{ padding: "14px 16px", borderRadius: 12, background: rgba(PC[selNode.pivot], 0.04), border: "1px solid " + rgba(PC[selNode.pivot], 0.1) }}>
-                <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>This experience is upcoming. Completing it will earn you a <span style={{ color: PC[selNode.pivot], fontWeight: 600 }}>{DIM_NAMES[selNode.pivot]}</span> token and grow your <span style={{ color: PC[selNode.pivot], fontWeight: 600 }}>{selNode.grew}</span> competency.</div>
+            ):(
+              <div style={{marginBottom:10}}>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Develop through</div>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+                  {willEarnVia(selSkillObj.id, earnedPreset).length?willEarnVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.05),border:"1px dashed "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.65)",cursor:"pointer"}}>{UBP_EXP_ICON[e.type]} {e.label}</span>;}):<span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>No tagged experiences yet — explore electives and immersions.</span>}
+                </div>
               </div>
             )}
+            <div style={{marginTop:10}}>
+              <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Your reflection</div>
+              {reflections[selSkillObj.id]&&!draft?(
+                <div>
+                  <div style={{fontSize:13,color:"rgba(255,255,255,0.75)",lineHeight:1.5,padding:"8px 10px",background:rgba(CB,0.05),borderLeft:"2px solid "+rgba(PC[selSkillObj.dim],0.5),borderRadius:4,marginBottom:6}}>{reflections[selSkillObj.id]}</div>
+                  <div onClick={function(){setDraft(reflections[selSkillObj.id]);}} style={{fontSize:12,color:rgba(PC[selSkillObj.dim],0.85),cursor:"pointer",fontWeight:600}}>Edit reflection</div>
+                </div>
+              ):(
+                <div>
+                  <textarea value={draft} onChange={function(ev){setDraft(ev.target.value);}} placeholder={earnedState[selSkillObj.id]?"When did you practice this skill? What did you notice about yourself?":"How might you develop this skill in the coming terms?"} style={{width:"100%",minHeight:60,background:rgba(CB,0.04),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),borderRadius:6,padding:"8px 10px",color:"#fff",fontSize:13,fontFamily:FONT,resize:"vertical",outline:"none"}}/>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,marginTop:6}}>
+                    <div onClick={function(){
+                      /* Coach-generated Socratic prompt, grounded in how this skill was earned (or will develop) */
+                      var sk=selSkillObj;
+                      var earned=!!earnedState[sk.id];
+                      var src=earned?earnedVia(sk.id,earnedPreset):willEarnVia(sk.id,earnedPreset);
+                      var sourceName = src.length ? src[0].label : (earned?"a recent experience":"an upcoming experience");
+                      var prompts = earned ? [
+                        "Think about "+sourceName+". What did you notice about yourself in a moment when this skill was tested?",
+                        "Describe a specific instance in "+sourceName+" where you did this well — and a moment you didn't. What was the difference?",
+                        "If someone watched you in "+sourceName+", what would they have seen you doing? What would they have missed?",
+                        "This skill is about \""+sk.def.toLowerCase().slice(0,80)+"…\" — where in "+sourceName+" did that show up for you? Where did it not?",
+                      ] : [
+                        "Before "+sourceName+" begins, what part of this skill feels most distant from how you operate now?",
+                        "Imagine a moment in "+sourceName+" where you'd need this skill. What would it look like if you had it? What usually happens instead?",
+                        "Who have you seen do this well? What specifically were they doing that you could try?",
+                      ];
+                      var p = prompts[Math.floor(Math.random()*prompts.length)];
+                      setDraft(draft?draft+"\n\n"+p:p);
+                    }} style={{fontSize:11,padding:"5px 11px",borderRadius:14,background:"rgba(255,204,68,0.12)",border:"1px solid rgba(255,204,68,0.35)",color:"#FFCC44",cursor:"pointer",fontWeight:700,display:"inline-flex",alignItems:"center",gap:5}}>✨ Help me reflect</div>
+                    <div style={{display:"flex",gap:8}}>
+                      {draft&&<div onClick={function(){setDraft("");}} style={{fontSize:12,padding:"5px 12px",borderRadius:6,cursor:"pointer",color:"rgba(255,255,255,0.5)"}}>Cancel</div>}
+                      <div onClick={saveReflection} style={{fontSize:12,padding:"5px 14px",borderRadius:6,cursor:"pointer",background:draft.trim()?rgba(PC[selSkillObj.dim],0.2):rgba(CB,0.08),border:"1px solid "+rgba(PC[selSkillObj.dim],draft.trim()?0.5:0.2),color:draft.trim()?PC[selSkillObj.dim]:"rgba(255,255,255,0.3)",fontWeight:600}}>Save</div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        ) : (
-          <div style={{ textAlign: "center", padding: "14px 0" }}>
-            <div style={{ fontSize: 14, color: dimFilter ? rgba(PC[dimFilter], 0.5) : "rgba(255,255,255,0.2)" }}>{dimFilter ? DIM_NAMES[dimFilter] + " pathway illuminated · Tap a node" : "Scroll right to see your future · Tap any node to explore"}</div>
+        ):selExpObj?(
+          <div style={{padding:"14px 20px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+              <div style={{flex:1,paddingRight:10}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+                  <span style={{fontSize:18}}>{UBP_EXP_ICON[selExpObj.type]||"★"}</span>
+                  <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selExpObj.label}</span>
+                  {isDone(selExpObj, earnedPreset)?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>DONE</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(CB,0.12),color:rgba(CB,0.85),fontWeight:600,letterSpacing:0.3}}>UPCOMING</span>}
+                </div>
+                <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>{selExpObj.type.charAt(0).toUpperCase()+selExpObj.type.slice(1)} · {UBP_BUCKETS[selExpObj.bucket]?UBP_BUCKETS[selExpObj.bucket].label:""}</div>
+              </div>
+              <div onClick={function(){setSelExp(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
+            </div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{isDone(selExpObj, earnedPreset)?"Developed these skills":"Will develop these skills"}</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+              {selExpObj.skills.map(function(sid){var sk=skillBy(sid);if(!sk)return null;var col=PC[sk.dim];var ear=!!earnedState[sid];return <span key={sid} onClick={function(){toggleSkill(sid);}} style={{fontSize:11,padding:"4px 10px",borderRadius:10,background:rgba(col,ear?0.15:0.05),border:"1px "+(ear?"solid":"dashed")+" "+rgba(col,ear?0.5:0.3),color:ear?"#fff":"rgba(255,255,255,0.7)",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:6,height:6,borderRadius:"50%",background:col,display:"inline-block"}}></span>{sk.label}</span>;})}
+            </div>
+          </div>
+        ):(
+          <div style={{textAlign:"center",padding:"14px 0"}}>
+            <div style={{fontSize:14,color:ns?rgba(pCol,0.6):(dimFilter?rgba(PC[dimFilter],0.6):"rgba(255,255,255,0.25)")}}>{ns?path.label+" skills illuminated · Tap a star to explore":(dimFilter?DIM_NAMES[dimFilter]+" skills highlighted":"Tap a star to see how you earned it · Tap a tile to see skills it develops")}</div>
           </div>
         )}
       </div>
-      <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} />
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "4px 0 6px", background: rgba(CN, 0.9) }}>
-        <img src={UNC_LOGO} alt="UNC" style={{ width: 14, height: 14, objectFit: "contain" }} />
-        <span style={{ fontSize: 9, color: rgba(CB, 0.5), letterSpacing: 1.5, textTransform: "uppercase" }}>UNC Kenan-Flagler Undergraduate Business</span>
+
+      <BottomNav active={nav} setActive={setNav} color={CB} onSwitch={props.onSwitch} items={DEFAULT_NAV_ITEMS}/>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"4px 0 6px",background:rgba(CN,0.9)}}>
+        <img src={UNC_LOGO} alt="UNC" style={{width:14,height:14,objectFit:"contain"}}/>
+        <span style={{fontSize:9,color:rgba(CB,0.5),letterSpacing:1.5,textTransform:"uppercase"}}>UNC Kenan-Flagler Business School</span>
       </div>
+
+      {/* First-login onboarding overlay */}
+      {showOnboarding&&(
+        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:"rgba(2,4,12,0.94)",zIndex:100,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"30px 24px",fontFamily:FONT}}>
+          <div style={{fontSize:22,fontWeight:800,color:"#fff",marginBottom:10,letterSpacing:0.3}}>Pick Your North Star</div>
+          <div style={{fontSize:14,color:"rgba(255,255,255,0.7)",textAlign:"center",marginBottom:26,maxWidth:320,lineHeight:1.55}}>This becomes the goal your skills point toward. You can change it anytime.</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,width:"100%",maxWidth:340,marginBottom:18}}>
+            {UBP_PATHS.map(function(p){return <button key={p.id} onClick={function(){pickNorthStar(p.id);dismissOnboarding(true);}} style={{padding:"16px 12px",borderRadius:12,background:rgba(p.color,0.18),border:"1.5px solid "+rgba(p.color,0.55),color:p.color,fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:FONT,lineHeight:1.25}}>{p.label}<div style={{fontSize:10,fontWeight:500,color:rgba(p.color,0.7),marginTop:3}}>{p.goalLabel}</div></button>;})}
+          </div>
+          <div onClick={function(){dismissOnboarding(false);}} style={{fontSize:13,color:"rgba(255,255,255,0.45)",cursor:"pointer",padding:"8px 14px"}}>Skip for now</div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1360,6 +1591,44 @@ var UBP_DEMO_PRESETS_META = [
   {id:"mastery", label:"Senior",       sub:"All 30"},
 ];
 
+/* ── UBP timeline (4-year buckets) ── */
+var UBP_BUCKETS = [
+  { label:"Y1 Fall",    x1:2,  x2:14 },
+  { label:"Y1 Spring",  x1:16, x2:28 },
+  { label:"Y2 Fall",    x1:30, x2:40 },
+  { label:"Y2 Spring",  x1:42, x2:52 },
+  { label:"Internship", x1:54, x2:64 },
+  { label:"Y3",         x1:66, x2:76 },
+  { label:"Y4",         x1:78, x2:88 },
+  { label:"Career",     x1:90, x2:98 },
+];
+var UBP_DONE_CUTOFF = { "new":-1, "y1":1, "y2":3, "y3":5, "mastery":7 };
+
+/* UBP experiences tagged to skills (mock; replace with real course→skill tagging) */
+var UBP_EXPERIENCES = [
+  { id:"u1",  label:"BUSI 100 Intro to Business",   type:"course",     bucket:0, x:5,  done:true,  skills:["s1","s13"] },
+  { id:"u2",  label:"BUSI 200 Unlocking Leadership", type:"course",    bucket:0, x:9,  done:true,  skills:["s1","s2","s3"] },
+  { id:"u3",  label:"PIVOT Assessment #1",            type:"assessment", bucket:0, x:13, done:true,  skills:["s1","s2"] },
+  { id:"u4",  label:"Carolina Women in Business",    type:"club",       bucket:1, x:18, done:true,  skills:["s7","s11"] },
+  { id:"u5",  label:"BUSI 407 Org Behavior",          type:"course",    bucket:1, x:22, done:true,  skills:["s11","s7","s12"] },
+  { id:"u6",  label:"STAR Project Member",            type:"project",   bucket:1, x:26, done:true,  skills:["s12","s10","s24"] },
+  { id:"u7",  label:"BUSI 408 Financial Analytics",   type:"course",    bucket:2, x:32, done:true,  skills:["s13","s22"] },
+  { id:"u8",  label:"AOE Foundation Course",          type:"course",    bucket:2, x:36, done:true,  skills:["s16","s27"] },
+  { id:"u9",  label:"Consulting Club Member",         type:"club",      bucket:2, x:40, done:true,  skills:["s19","s11"] },
+  { id:"u10", label:"PIVOT Assessment #2",            type:"assessment",bucket:3, x:44, done:true,  skills:["s25","s30"] },
+  { id:"u11", label:"Industry Symposium",             type:"event",     bucket:3, x:48, done:true,  skills:["s14","s11"] },
+  { id:"u12", label:"Junior Consulting Internship",   type:"internship",bucket:4, x:58, done:false, skills:["s20","s22","s27","s17"] },
+  { id:"u13", label:"BUSI 500 Strategy",              type:"course",    bucket:5, x:68, done:false, skills:["s13","s14","s15"] },
+  { id:"u14", label:"STAR Capstone Lead",             type:"project",   bucket:5, x:72, done:false, skills:["s23","s24","s10"] },
+  { id:"u15", label:"Phillips Ambassador",            type:"global",    bucket:5, x:76, done:false, skills:["s27","s30","s11"] },
+  { id:"u16", label:"AOE Capstone",                   type:"course",    bucket:6, x:80, done:false, skills:["s4","s5","s18"] },
+  { id:"u17", label:"BUSI 580 Negotiations",          type:"course",    bucket:6, x:84, done:false, skills:["s8","s12","s11"] },
+  { id:"u18", label:"Senior Leadership Capstone",     type:"capstone",  bucket:6, x:88, done:false, skills:["s4","s5","s6"] },
+  { id:"u19", label:"PIVOT Assessment #3",            type:"assessment",bucket:7, x:92, done:false, skills:["s28","s29"] },
+  { id:"u20", label:"Graduation",                     type:"capstone",  bucket:7, x:96, done:false, skills:["s20","s28","s29"] },
+];
+var UBP_EXP_ICON = { course:"📖", assessment:"📊", coaching:"🎯", club:"👥", immersion:"🌍", reflection:"✍️", project:"🏗️", event:"🎯", global:"🌍", internship:"💼", capstone:"🎓", competition:"🏆" };
+
 function UBPIndex(props) {
   var CB = "#4B9CD3";
   var _nav = useState("index");
@@ -2032,106 +2301,53 @@ var UBP_chatMessages = [
     role: "ai",
     content: null,
     blocks: [
-      {
-        type: "text",
-        content: "Hey Jordan! I'm your PIVOT Assistant — I know your assessment scores, every token you've earned, and your growth trajectory. Think of me as a leadership advisor who actually remembers everything.\n\nWhat can I help with today?"
-      }
+      { type: "text", content: "Hey Jordan — I just pulled your reflection from the BUSI 200 STAR project debrief. There's a moment in there that’s gold for finance recruiting season. You also flagged a team thing on Monday with your STAR partner. What do you want to work on first?" }
     ],
-    time: "10:15 AM"
+    time: "3:42 PM"
   },
   {
     role: "user",
-    content: "I have a first-round interview with Bank of America for their summer analyst program next week. How should I prepare using my PIVOT stuff?",
-    time: "10:16 AM"
+    content: "The team thing. My STAR partner Priya pushed back hard on my financial model and I went quiet. Now neither of us has brought it up.",
+    time: "3:43 PM"
   },
   {
     role: "ai",
     content: null,
     blocks: [
-      {
-        type: "text",
-        content: "Great timing — let me pull your PIVOT profile and map it to what BofA looks for in summer analysts."
-      },
-      {
-        type: "pivot-cards",
-        cards: [
-          { dim: "P", score: "3.8", label: "Purpose", note: "You scored high on self-awareness and values clarity. BofA interviewers love hearing why you chose finance — lead with your \"why,\" not just your skills." },
-          { dim: "I", score: "3.5", label: "Interrelating", note: "Your STAR project with Lenovo is your best teamwork story. You navigated a team disagreement about the go-to-market strategy and found a compromise. That's gold for behavioral questions." },
-          { dim: "O", score: "3.1", label: "Ownership", note: "Your Consulting Club membership is a start, but you'll want to emphasize initiative — talk about organizing the Symposium panel, not just attending it." }
-        ]
-      },
-      {
-        type: "text",
-        content: "One thing to watch: your Vision score (2.5) is your lowest dimension. BofA will ask \"where do you see yourself in 5 years\" — and right now your reflections suggest you're still exploring. That's actually fine for a sophomore interview. Frame it as intentional exploration, not indecision."
-      }
+      { type: "text", content: "OK. Before we figure out what to say, let’s reframe. Going quiet is a tell that her pushback hit something you weren’t ready to defend. The repair isn’t apologizing for shutting down — it’s showing her your thinking actually moved." },
+      { type: "insight", title: "A way to think about the tension", content: "Walk in with one thing she was right about that you missed. Don’t open with apology — open with content. Something like: ‘I sat with your DCF concern over the weekend. You were right that my growth assumption was too aggressive. Here’s what I changed.’ The team isn’t watching whether you say sorry. They’re watching whether your model got better." },
+      { type: "text", content: "If you want, I can help you draft the opener." }
     ],
-    time: "10:17 AM"
+    time: "3:44 PM"
   },
   {
     role: "user",
-    content: "Can you help me build a story for \"tell me about a time you worked on a team\"?",
-    time: "10:18 AM"
+    content: "Helpful. I also have a Goldman Sachs IB superday next week. They’ll probably ask ‘tell me about a time a project went sideways and what you did.’ I don’t have a clean story.",
+    time: "3:46 PM"
   },
   {
     role: "ai",
     content: null,
     blocks: [
-      {
-        type: "text",
-        content: "Absolutely. Here's a STAR-format story built from your actual experience:"
-      },
-      {
-        type: "story",
-        title: "STAR Project: Lenovo Market Entry Analysis",
-        content: "Situation: \"Last fall, I was part of a 5-person STAR team advising Lenovo on their campus technology market strategy. We had 10 weeks and a client who wanted both quantitative analysis and creative recommendations.\"\n\nTask: \"I was responsible for the competitive landscape section, but our team hit a wall in week 4 — two members disagreed on whether to focus on pricing strategy or brand positioning.\"\n\nAction: \"I suggested we each write a one-page case for our approach and present to the team. That gave everyone a voice without it becoming personal. I also reached out to our faculty advisor, Dr. Chen, to pressure-test both arguments. We ended up combining elements of both.\"\n\nResult: \"Our final recommendation included a tiered pricing model with brand-specific positioning for each tier. The Lenovo team implemented two of our three recommendations. Personally, my peer feedback scores on 'navigating disagreement' were the highest on my team.\""
-      },
-      {
-        type: "text",
-        content: "This story hits Interrelating (conflict navigation), Ownership (took initiative to structure the debate), and Purpose (sought outside perspective rather than forcing an outcome). Want me to help you practice the delivery, or prep another behavioral question?"
-      }
+      { type: "text", content: "You do — you wrote it. Here’s your reflection from the BUSI 200 STAR project debrief on October 18:" },
+      { type: "insight", title: "From your journal · BUSI 200 · STAR Project Debrief · Oct 18", content: "“Client meeting week 8. Our financial model broke in front of the partner because I had hardcoded a growth rate from a stale slide deck. I wanted to bury it. Instead I owned it in the room — said the number was wrong, walked through the corrected logic on the whiteboard, and asked the partner whether the new range was credible. He spent the next 20 minutes pressure-testing it with us. Afterwards Dr. Williams told me: ‘Most students would have skipped past that mistake or buried it in a footnote. You used it as the recalibration moment. That’s what analysts who get promoted do.’”" },
+      { type: "text", content: "This is your superday answer. Here’s the STAR built directly from what you wrote:" },
+      { type: "story", title: "BUSI 200 STAR Project — Owning a Modeling Mistake in Front of the Client", content: "Situation: “In the BUSI 200 STAR project we were advising a regional retailer on market entry. Eight weeks in, during a client meeting with the partner present, my financial model produced an obviously wrong NPV.”\n\nTask: “I’d hardcoded a growth rate from a stale source. I had two choices: paper over it and follow up after, or own it in the room.”\n\nAction: “I flagged the error live, said the number was wrong, walked through what I had assumed and why it was off, and put the corrected logic on the whiteboard. Then I asked the partner whether the revised range was credible — inviting his judgment instead of defending mine.”\n\nResult: “The partner spent 20 minutes pressure-testing the new logic with us, and we left the meeting with a stronger model than we walked in with. Dr. Williams’ debrief note was that I treated the mistake as a recalibration moment instead of a credibility threat — which is, in his words, ‘what analysts who get promoted do.’”" },
+      { type: "insight", title: "Three skills you now own — and why Goldman cares", content: "1. Clean Attribution — you owned the mistake before anyone called it out. IB analyst seats burn out the analysts who hide errors and promote the ones who surface them. This story is direct evidence.\n\n2. Decision Velocity with Discipline — you made the call to flag it live, in seconds, with the partner watching. That’s the on-the-fly judgment under pressure that distinguishes a strong analyst class.\n\n3. Active Perspective-Taking — you invited the partner’s pressure-test rather than performing certainty. Senior bankers value analysts who pull expertise out of the room rather than monopolizing it.\n\nThese three together are exactly what Goldman’s IBD recruiting team interviews for at superday. When they ask the went-sideways question, this is the answer." },
+      { type: "text", content: "Want me to walk through delivery — pacing, where to pause, what to drop if they cut you off — or work on ‘why investment banking?’ next?" }
     ],
-    time: "10:19 AM"
-  },
-  {
-    role: "user",
-    content: "That's really helpful. I'm also trying to decide whether I should add a second AOE in Real Estate alongside Finance. What do you think?",
-    time: "10:21 AM"
-  },
-  {
-    role: "ai",
-    content: null,
-    blocks: [
-      {
-        type: "text",
-        content: "This is a bigger question than it seems — let me give you an honest breakdown."
-      },
-      {
-        type: "insight",
-        title: "The Case For Adding Real Estate",
-        content: "KF's Real Estate program is top-10 nationally. A dual AOE signals versatility and opens doors to REPE firms that specifically recruit KF grads. Your Finance AOE prereqs (BUSI 408) already overlap, so you'd only need ~3 additional courses. The Real Estate Club is also one of the most active networks at KF — strong alumni pull."
-      },
-      {
-        type: "insight",
-        title: "The Case Against (or At Least: Not Yet)",
-        content: "Your PIVOT data shows your Transformation dimension is at 25% — the lowest of your five. Adding course load might leave less room for the experiences that actually grow that dimension: study abroad, community projects, reflection time. Two AOEs looks great on paper but could mean you're optimizing for breadth at the cost of depth in your leadership development."
-      },
-      {
-        type: "text",
-        content: "My recommendation: talk to your UBP academic advisor about the course sequencing before committing. If you can fit it without dropping a global program or overloading your senior year, go for it. If it means sacrificing a study abroad semester, I'd push back — 61% of UBP students do a global experience, and your Vision dimension would benefit enormously from that."
-      }
-    ],
-    time: "10:22 AM"
+    time: "3:48 PM"
   }
 ];
 
 /* ── Suggested Prompts ── */
 var UBP_suggestedPrompts = [
-  { text: "Prep me for \"why finance?\"", dim: "P" },
-  { text: "What should I do this summer to grow?", dim: "T" },
-  { text: "Help me pick study abroad programs", dim: "V" },
-  { text: "Draft a follow-up email to my interviewer", dim: "I" },
-  { text: "Compare my scores to junior class averages", dim: "O" },
-  { text: "What does the research say about giving feedback?", dim: "I" },
+  { text: "Find a journal entry that fits Goldman's values",         dim: "T" },
+  { text: "Build my answer for \"a time I disagreed with someone\"",    dim: "I" },
+  { text: "Help me name a tension I’ve been avoiding",                dim: "I" },
+  { text: "Which 3 stories should I bring to IB superdays?",          dim: "V" },
+  { text: "Coach me through a difficult conversation script",        dim: "I" },
+  { text: "Pull a moment where I led under real pressure",           dim: "T" },
 ];
 
 
@@ -2238,7 +2454,7 @@ function UBPAssistant(props) {
           <img src={UNC_LOGO} alt="UNC" style={{ width: 34, height: 34, objectFit: "contain" }} />
           <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>
             PIVOT{" "}
-            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Assistant</span>
+            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Coach</span>
           </div>
         </div>
         <div style={{
@@ -2345,7 +2561,7 @@ function UBPAssistant(props) {
           padding: "14px 18px",
           border: "1px solid " + rgba(CB, 0.08),
         }}>
-          <div style={{ flex: 1, fontSize: 15, color: "rgba(255,255,255,0.25)" }}>Ask about your leadership journey...</div>
+          <div style={{ flex: 1, fontSize: 15, color: "rgba(255,255,255,0.25)" }}>Ask about a memory, a tension, or an interview...</div>
           <button style={{
             width: 38, height: 38, borderRadius: "50%",
             background: CB, border: "none",
