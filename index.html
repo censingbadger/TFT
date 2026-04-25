@@ -671,6 +671,7 @@ function UBPJourney(props) {
       if(saved && validIds.indexOf(saved)>=0){ setNs(saved); }
       else if(saved){ localStorage.removeItem("ubp_northstar"); if(!skipped)setTimeout(function(){setShowOnboarding(true);},400); }
       else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
+      if (!skipped && !localStorage.getItem("ubp_user_name")) { setTimeout(function(){setShowOnboarding(true);}, 400); }
     }catch(e){}
   },[]);
 
@@ -2117,9 +2118,12 @@ function UBPIndex(props) {
           </div>
         )}
         {assessment && (
-          <div style={{ margin:"0 16px 14px", padding:"10px 14px", borderRadius:12, background:"rgba(80,200,120,0.06)", border:"1px solid rgba(80,200,120,0.25)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <div style={{fontSize:11, color:"rgba(255,255,255,0.7)"}}>✓ PIVOT Assessment taken · foundation calibrated to you</div>
-            <div onClick={function(){setShowAssessment(true);}} style={{fontSize:11, color:"#7ad99a", fontWeight:700, cursor:"pointer"}}>Retake →</div>
+          <div style={{ margin:"0 16px 14px", padding:"10px 14px", borderRadius:12, background: assessment.demo?"rgba(255,204,68,0.06)":"rgba(80,200,120,0.06)", border:"1px solid "+(assessment.demo?"rgba(255,204,68,0.3)":"rgba(80,200,120,0.25)"), display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{fontSize:11, color:"rgba(255,255,255,0.7)"}}>{assessment.demo ? "📋 Demo scores loaded · take the assessment to calibrate to you" : "✓ PIVOT Assessment taken · foundation calibrated to you"}</div>
+            <div style={{display:"flex", gap:8}}>
+              <div onClick={function(){startAssessment("short");}} style={{fontSize:11, color: "#FFCC44", fontWeight:700, cursor:"pointer"}}>{assessment.demo ? "Short →" : "Retake (Short) →"}</div>
+              <div onClick={function(){startAssessment("long");}} style={{fontSize:11, color: "#9bcfee", fontWeight:700, cursor:"pointer"}}>{assessment.demo ? "Long →" : "Retake (Long) →"}</div>
+            </div>
           </div>
         )}
 
@@ -3742,6 +3746,8 @@ function MBAJourney(props) {
   var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
   var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
   var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
+  var _onbName=useState(""),onbName=_onbName[0],setOnbName=_onbName[1];
+  function saveOnbName(){ if(onbName && onbName.trim()) try{ localStorage.setItem("mba_user_name", onbName.trim()); }catch(e){} }
   var _preset=useState("today"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
   var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
   var scrollRef=useRef(null);
@@ -3760,6 +3766,8 @@ function MBAJourney(props) {
       if(saved && validIds.indexOf(saved)>=0){ setNs(saved); }
       else if(saved){ localStorage.removeItem("mba_northstar"); if(!skipped)setTimeout(function(){setShowOnboarding(true);},400); }
       else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
+      /* Also trigger onboarding if name is missing (for users who joined before name capture existed) */
+      if (!skipped && !localStorage.getItem("mba_user_name")) { setTimeout(function(){setShowOnboarding(true);}, 400); }
     }catch(e){}
   },[]);
 
