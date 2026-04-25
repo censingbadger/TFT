@@ -142,6 +142,10 @@ function loadSavedAssessment(programKey){
   try { var v = localStorage.getItem(programKey+"_pivot_assessment"); return v ? JSON.parse(v) : null; } catch(e){ return null; }
 }
 
+/* ── Pre-populated demo assessment results (shown by default unless user takes their own) ── */
+var MBA_DEMO_ASSESSMENT = { scores:{P:3.7, I:3.9, V:3.4, O:3.5, T:3.0}, ts: 1740009600000, demo:true };
+var UBP_DEMO_ASSESSMENT = { scores:{P:3.8, I:3.5, V:2.5, O:3.1, T:2.2}, ts: 1740009600000, demo:true };
+
 /* PIVOT Self-Assessment modal — open=true to show */
 function PIVOTAssessment(props){
   var open = props.open;
@@ -1975,8 +1979,8 @@ function UBPIndex(props) {
       if (ns) setPathId(ns);
       var pr = localStorage.getItem("ubp_preset");
       if (pr && UBP_EARNED_PRESETS[pr]) setEarnedPreset(pr);
-      var a = loadSavedAssessment("ubp"); if (a) setAssessment(a);
-    } catch(e){}
+      var a = loadSavedAssessment("ubp"); setAssessment(a || UBP_DEMO_ASSESSMENT);
+    } catch(e){ setAssessment(UBP_DEMO_ASSESSMENT); }
   }, []);
 
   /* Radar inputs */
