@@ -128,7 +128,7 @@ var DEFAULT_NAV_ITEMS = [
   { k: "journey", l: "Journey", i: "✦" },
   { k: "dashboard", l: "Dashboard", i: "◧" },
   { k: "index", l: "PIVOT Index", i: "◉" },
-  { k: "network", l: "Compass", i: "◈" },
+  { k: "network", l: "Compass", i: "🧭" },
   { k: "assistant", l: "Assistant", i: "✧" },
 ];
 /* MBA nav (new IA: Journey, Progress, Team, Network, Coach) */
@@ -136,7 +136,7 @@ var MBA_NAV_ITEMS = [
   { k: "progress", l: "Progress", i: "◉" },
   { k: "journey",  l: "Journey",  i: "✦" },
   { k: "team",     l: "Team",     i: "◈" },
-  { k: "network",  l: "Compass",  i: "◧" },
+  { k: "network",  l: "Compass",  i: "🧭" },
   { k: "coach",    l: "Coach",    i: "✧" },
 ];
 
@@ -1505,6 +1505,7 @@ var UBP_EVENTS = [
     date: "Feb 21, 2026",
     desc: "Keynote speakers, industry panels, networking fair, and case competition finals. The flagship UBP career development event.",
     dims: ["O", "V"],
+    skills: ["s14","s18","s11","s7"],
     tag: "In Person",
     spots: "Open to all UBP",
     featured: true,
@@ -1514,6 +1515,7 @@ var UBP_EVENTS = [
     date: "Mar 6–7, 2026",
     desc: "Visit Goldman Sachs, JPMorgan, and BlackRock offices. Meet KF alumni on the trading floor and in asset management.",
     dims: ["V", "O"],
+    skills: ["s13","s20","s22","s7"],
     tag: "In Person",
     spots: "18 spots left",
     featured: false,
@@ -1523,6 +1525,7 @@ var UBP_EVENTS = [
     date: "Mar 12, 2026",
     desc: "Four Kenan-Flagler alumnae share paths to leadership roles. Q&A and small-group breakouts with Carolina Women in Business.",
     dims: ["P", "I"],
+    skills: ["s3","s5","s7","s11"],
     tag: "Hybrid",
     spots: "Open",
     featured: false,
@@ -1532,6 +1535,7 @@ var UBP_EVENTS = [
     date: "Apr 2, 2026",
     desc: "Teams present final consulting recommendations to corporate clients. Open to all UBP students considering STAR for next year.",
     dims: ["I", "O"],
+    skills: ["s10","s12","s23","s24"],
     tag: "In Person",
     spots: "Open",
     featured: false,
@@ -1541,6 +1545,7 @@ var UBP_EVENTS = [
     date: "Mar 18, 2026",
     desc: "Learn about summer and semester study abroad options, Phillips Ambassadors, TREBLE, and global immersion electives.",
     dims: ["V", "T"],
+    skills: ["s15","s27","s30","s14"],
     tag: "Virtual",
     spots: "Open",
     featured: false,
@@ -1703,10 +1708,26 @@ function UBPNetwork(props) {
                   <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: 10 }}>{evt.desc}</div>
                   {/* Dims + Spots */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", gap: 6 }}>
-                      {evt.dims.map(function (d, di) { return <UBP_DimDot key={di} dim={d} />; })}
+                    <div style={{ display: "flex", flexWrap:"wrap", gap: 5, flex:1, marginRight:10 }}>
+                      {(evt.skills || []).map(function (sid, si) {
+                        var sk = skillBy(sid); if (!sk) return null;
+                        var col = PC[sk.dim];
+                        return (
+                          <span key={si} style={{
+                            display:"inline-flex", alignItems:"center", gap:4,
+                            padding:"3px 8px", borderRadius:10,
+                            background: rgba(col, 0.1),
+                            border: "1px solid " + rgba(col, 0.3),
+                            fontSize: 10, fontWeight: 600,
+                            color: "rgba(255,255,255,0.85)",
+                          }}>
+                            <span style={{ width:6, height:6, borderRadius:"50%", background: col }}></span>
+                            {sk.label}
+                          </span>
+                        );
+                      })}
                     </div>
-                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>{evt.spots}</span>
+                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", whiteSpace:"nowrap" }}>{evt.spots}</span>
                   </div>
                   {/* RSVP Button */}
                   <button style={{
@@ -4299,6 +4320,7 @@ var MBA_EVENTS = [
     date: "Feb 9, 2026",
     desc: "Case interview masterclass led by McKinsey alumni. Structured problem-solving, market sizing, and behavioral rounds. Prep materials posted — come with a polished 'Tell me about yourself.'",
     dims: ["O", "I"],
+    skills: ["s13","s16","s20","s11","s18"],
     tag: "In Person",
     spots: "32 spots left",
     featured: true,
@@ -4308,6 +4330,7 @@ var MBA_EVENTS = [
     date: "Feb 14, 2026",
     desc: "Former PepsiCo CEO on leading transformation at scale. Small-group breakout session after keynote for MBA students only. Your Vision and Transformation dimensions align perfectly with her story.",
     dims: ["V", "T"],
+    skills: ["s14","s18","s17","s30"],
     tag: "In Person",
     spots: "Open to all MBA",
     featured: false,
@@ -4317,6 +4340,7 @@ var MBA_EVENTS = [
     date: "Feb 18, 2026",
     desc: "Year 2 STAR teams get matched with corporate clients. If you're considering leading a team, attend to learn about the 12-week commitment and client roster (Lenovo, Red Hat, SAS this year).",
     dims: ["O", "I"],
+    skills: ["s23","s24","s10","s12"],
     tag: "In Person",
     spots: "Year 2 only",
     featured: false,
@@ -4326,6 +4350,7 @@ var MBA_EVENTS = [
     date: "Feb 20, 2026",
     desc: "Two-week immersion in Mumbai and Bangalore. Focus on technology strategy, social enterprise, and cross-cultural leadership. Application opens March 1. Strong fit for your Vision trajectory.",
     dims: ["V", "T"],
+    skills: ["s15","s27","s30","s11"],
     tag: "Virtual",
     spots: "Open",
     featured: false,
@@ -4335,6 +4360,7 @@ var MBA_EVENTS = [
     date: "Feb 25, 2026",
     desc: "Biweekly session with your 6-person coaching cohort. This week's theme: giving difficult feedback. Bring a real situation — we'll practice live. Earns Interrelating token progress.",
     dims: ["I", "P"],
+    skills: ["s10","s9","s2","s7"],
     tag: "In Person",
     spots: "Your cohort",
     featured: false,
@@ -4345,6 +4371,7 @@ var MBA_EVENTS = [
     date: "Mar 1, 2026 (Applications close)",
     desc: "Students with your PIVOT profile who went into consulting found the London GIE (fintech + strategy) transformative for Vision development. Your Vision is trending up — this would accelerate it.",
     dims: ["V", "O"],
+    skills: ["s13","s15","s22","s17"],
     tag: "Recommended",
     spots: "~30 MBAs",
     featured: false,
@@ -4354,6 +4381,7 @@ var MBA_EVENTS = [
     date: "Feb 28, 2026",
     desc: "Write a letter to your pre-MBA self. Students who complete it report a 0.3 average Purpose gain. Prompt: \"What would surprise your pre-MBA self about who you're becoming?\"",
     dims: ["P"],
+    skills: ["s1","s6","s2"],
     tag: "Deadline",
     spots: "3 days left",
     featured: false,
@@ -4363,6 +4391,7 @@ var MBA_EVENTS = [
     date: "Just posted",
     desc: "2026 recruiting cycle update. Based on your consulting pathway and Ownership trajectory, you're well-positioned. 12 behavioral questions mapped to PIVOT dimensions inside — use your coaching session #4 breakthrough as your Transformation story.",
     dims: ["O", "T"],
+    skills: ["s20","s21","s25","s28"],
     tag: "Recruiting",
     spots: "Available",
     featured: false,
@@ -4525,10 +4554,26 @@ function MBANetwork(props) {
                   <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, marginBottom: 10 }}>{evt.desc}</div>
                   {/* Dims + Spots */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div style={{ display: "flex", gap: 6 }}>
-                      {evt.dims.map(function (d, di) { return <MBA_DimDot key={di} dim={d} />; })}
+                    <div style={{ display: "flex", flexWrap:"wrap", gap: 5, flex:1, marginRight:10 }}>
+                      {(evt.skills || []).map(function (sid, si) {
+                        var sk = skillBy(sid); if (!sk) return null;
+                        var col = PC[sk.dim];
+                        return (
+                          <span key={si} style={{
+                            display:"inline-flex", alignItems:"center", gap:4,
+                            padding:"3px 8px", borderRadius:10,
+                            background: rgba(col, 0.1),
+                            border: "1px solid " + rgba(col, 0.3),
+                            fontSize: 10, fontWeight: 600,
+                            color: "rgba(255,255,255,0.85)",
+                          }}>
+                            <span style={{ width:6, height:6, borderRadius:"50%", background: col }}></span>
+                            {sk.label}
+                          </span>
+                        );
+                      })}
                     </div>
-                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)" }}>{evt.spots}</span>
+                    <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", whiteSpace:"nowrap" }}>{evt.spots}</span>
                   </div>
                   {/* RSVP Button */}
                   <button style={{
