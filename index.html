@@ -3310,6 +3310,12 @@ function MBAProgress(props) {
   var anim = _anim[0], setAnim = _anim[1];
   var _pth = useState(null); var pathId = _pth[0], setPathId = _pth[1];
   var _pre = useState("today"); var earnedPreset = _pre[0], setEarnedPreset = _pre[1];
+  var _demo = useState(false); var showDemo = _demo[0], setShowDemo = _demo[1];
+
+  function pickPreset(id){
+    setEarnedPreset(id);
+    try{ localStorage.setItem("mba_preset", id); }catch(e){}
+  }
 
   useEffect(function () {
     setTimeout(function () { setAnim(true); }, 200);
@@ -3379,14 +3385,27 @@ function MBAProgress(props) {
             <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Index</span>
           </div>
         </div>
-        <div style={{
-          width: 40, height: 40, borderRadius: "50%",
-          background: "linear-gradient(135deg," + CB + "," + CN + ")",
-          border: "2px solid " + rgba(CB, 0.4),
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 15, fontWeight: 600, color: "#fff",
-        }}>MC</div>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <div onClick={function(){setShowDemo(!showDemo);}} style={{ padding:"5px 10px", borderRadius:12, background: showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08), border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)), cursor:"pointer", fontSize:10, fontWeight:700, color: showDemo?"#FFCC44":"rgba(255,255,255,0.55)", letterSpacing:"1", fontFamily:FONT }}>DEMO</div>
+          <div style={{
+            width: 40, height: 40, borderRadius: "50%",
+            background: "linear-gradient(135deg," + CB + "," + CN + ")",
+            border: "2px solid " + rgba(CB, 0.4),
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 15, fontWeight: 600, color: "#fff",
+          }}>MC</div>
+        </div>
       </div>
+
+      {/* Demo preset picker */}
+      {showDemo && (
+        <div style={{ margin:"0 16px 10px", padding:"10px 12px", borderRadius:12, background:"rgba(255,204,68,0.06)", border:"1px solid rgba(255,204,68,0.25)" }}>
+          <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:"1.5", marginBottom:8 }}>DEMO \u00b7 JUMP TO A MILESTONE</div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(5, 1fr)", gap:5 }}>
+            {DEMO_PRESETS_META.map(function(pr){ var on=earnedPreset===pr.id; return <div key={pr.id} onClick={function(){pickPreset(pr.id);}} style={{ padding:"7px 4px", borderRadius:8, background:on?"rgba(255,204,68,0.2)":"rgba(255,255,255,0.03)", border:"1px solid "+(on?"rgba(255,204,68,0.7)":"rgba(255,255,255,0.1)"), cursor:"pointer", textAlign:"center", fontFamily:FONT }}><div style={{ fontSize:11, fontWeight:700, color:on?"#FFCC44":"rgba(255,255,255,0.85)", lineHeight:1.2 }}>{pr.label}</div><div style={{ fontSize:9, color:on?"rgba(255,204,68,0.75)":"rgba(255,255,255,0.4)", marginTop:2 }}>{pr.sub}</div></div>;})}
+          </div>
+        </div>
+      )}
 
       {/* ── Tagline ── */}
       <div style={{ padding: "0 20px 12px" }}>
@@ -3545,32 +3564,32 @@ var COHORT = [
   { id:"sd0",  name:"Mike Carver",       initials:"MC", year:2, attrs:{P:3.7,I:3.9,V:3.4,O:3.5,T:3.0}, skills:["s1","s2","s3","s7","s11","s12","s13","s16","s17","s19","s22","s24","s25","s27","s30"], focus:"Consulting", isMe:true },
   { id:"sd1",  name:"Maya Chen",         initials:"MC", year:2, attrs:{P:4.1,I:4.3,V:3.8,O:3.2,T:3.6}, skills:["s3","s6","s7","s9","s10","s11","s14","s18","s27","s30"], focus:"Product Mgmt" },
   { id:"sd2",  name:"Diego Ramirez",     initials:"DR", year:2, attrs:{P:3.4,I:3.1,V:4.2,O:4.0,T:3.3}, skills:["s13","s15","s16","s17","s19","s20","s22","s24","s25","s26"], focus:"Consulting" },
-  { id:"sd3",  name:"Priya Kapoor",      initials:"PK", year:1, attrs:{P:4.3,I:4.0,V:3.2,O:3.0,T:3.1}, skills:["s1","s2","s4","s5","s6","s7","s9","s11"], focus:"Social Impact" },
+  { id:"sd3",  name:"Priya Kapoor",      initials:"PK", year:1, attrs:{P:4.3,I:4.0,V:3.2,O:3.0,T:3.1}, skills:["s1","s2","s4","s5","s6","s7","s9","s11"], focus:"Product Mgmt" },
   { id:"sd4",  name:"Jordan Williams",   initials:"JW", year:2, attrs:{P:3.2,I:3.3,V:3.8,O:4.3,T:2.8}, skills:["s13","s19","s20","s21","s22","s23","s24","s4","s8"], focus:"Banking" },
   { id:"sd5",  name:"Aisha Okafor",      initials:"AO", year:1, attrs:{P:3.8,I:4.2,V:3.5,O:3.1,T:3.9}, skills:["s7","s9","s10","s11","s12","s25","s27","s30"], focus:"Product Mgmt" },
   { id:"sd6",  name:"Ethan Park",        initials:"EP", year:2, attrs:{P:3.0,I:2.9,V:4.4,O:3.6,T:4.1}, skills:["s13","s14","s15","s16","s17","s26","s27","s28","s29","s30"], focus:"Entrepreneurship" },
-  { id:"sd7",  name:"Sophia Bellini",    initials:"SB", year:2, attrs:{P:4.0,I:4.1,V:3.3,O:3.0,T:3.4}, skills:["s1","s2","s3","s6","s7","s11","s12","s9"], focus:"Social Impact" },
+  { id:"sd7",  name:"Sophia Bellini",    initials:"SB", year:2, attrs:{P:4.0,I:4.1,V:3.3,O:3.0,T:3.4}, skills:["s1","s2","s3","s6","s7","s11","s12","s9"], focus:"Product Mgmt" },
   { id:"sd8",  name:"Marcus Johnson",    initials:"MJ", year:2, attrs:{P:3.3,I:3.5,V:3.7,O:4.0,T:3.2}, skills:["s13","s16","s17","s19","s20","s22","s24","s10","s11"], focus:"Consulting" },
   { id:"sd9",  name:"Lina Haddad",       initials:"LH", year:1, attrs:{P:3.6,I:3.8,V:3.0,O:3.2,T:3.5}, skills:["s1","s2","s7","s9","s25","s30"], focus:"Product Mgmt" },
   { id:"sd10", name:"Chris O'Connor",    initials:"CO", year:2, attrs:{P:3.1,I:3.0,V:4.0,O:4.2,T:2.9}, skills:["s13","s15","s19","s20","s21","s22","s23","s24","s8"], focus:"Banking" },
-  { id:"sd11", name:"Zara Ahmed",        initials:"ZA", year:1, attrs:{P:4.2,I:4.4,V:3.1,O:2.9,T:3.5}, skills:["s3","s6","s7","s9","s10","s11","s18","s12"], focus:"Social Impact" },
+  { id:"sd11", name:"Zara Ahmed",        initials:"ZA", year:1, attrs:{P:4.2,I:4.4,V:3.1,O:2.9,T:3.5}, skills:["s3","s6","s7","s9","s10","s11","s18","s12"], focus:"Entrepreneurship" },
   { id:"sd12", name:"Ben Nakamura",      initials:"BN", year:2, attrs:{P:3.5,I:3.2,V:4.1,O:3.8,T:3.6}, skills:["s13","s14","s15","s16","s17","s22","s27","s30"], focus:"Tech" },
   { id:"sd13", name:"Hannah Weiss",      initials:"HW", year:2, attrs:{P:3.9,I:3.7,V:3.4,O:3.3,T:3.8}, skills:["s1","s2","s3","s11","s25","s27","s28","s30"], focus:"Consulting" },
   { id:"sd14", name:"Tomás Silva",       initials:"TS", year:1, attrs:{P:3.4,I:3.6,V:3.9,O:3.4,T:3.0}, skills:["s14","s15","s16","s17","s19"], focus:"Entrepreneurship" },
   { id:"sd15", name:"Rachel Torres",     initials:"RT", year:2, attrs:{P:3.2,I:3.4,V:3.6,O:4.1,T:3.1}, skills:["s13","s19","s20","s22","s24","s4","s21","s8"], focus:"Banking" },
-  { id:"sd16", name:"Kwame Asante",      initials:"KA", year:2, attrs:{P:4.0,I:4.2,V:3.5,O:3.0,T:3.7}, skills:["s6","s7","s9","s10","s11","s18","s25","s29","s30"], focus:"Social Impact" },
+  { id:"sd16", name:"Kwame Asante",      initials:"KA", year:2, attrs:{P:4.0,I:4.2,V:3.5,O:3.0,T:3.7}, skills:["s6","s7","s9","s10","s11","s18","s25","s29","s30"], focus:"Entrepreneurship" },
   { id:"sd17", name:"Isabella Nguyen",   initials:"IN", year:1, attrs:{P:3.3,I:3.1,V:4.3,O:3.7,T:3.9}, skills:["s13","s15","s17","s26","s27","s30"], focus:"Entrepreneurship" },
   { id:"sd18", name:"David Kim",         initials:"DK", year:2, attrs:{P:3.1,I:2.8,V:3.9,O:4.4,T:2.7}, skills:["s13","s19","s20","s21","s22","s23","s24","s4","s8","s16"], focus:"Banking" },
   { id:"sd19", name:"Noor El-Sayed",     initials:"NE", year:1, attrs:{P:3.7,I:4.0,V:3.2,O:3.1,T:3.4}, skills:["s7","s9","s11","s12","s10","s1","s2"], focus:"Product Mgmt" },
   { id:"sd20", name:"Lucas Martins",     initials:"LM", year:2, attrs:{P:3.5,I:3.3,V:4.0,O:3.6,T:3.8}, skills:["s13","s15","s16","s17","s26","s27","s28","s30"], focus:"Tech" },
-  { id:"sd21", name:"Olivia Brooks",     initials:"OB", year:1, attrs:{P:3.9,I:3.8,V:3.0,O:2.9,T:3.3}, skills:["s1","s3","s7","s9","s11"], focus:"Social Impact" },
+  { id:"sd21", name:"Olivia Brooks",     initials:"OB", year:1, attrs:{P:3.9,I:3.8,V:3.0,O:2.9,T:3.3}, skills:["s1","s3","s7","s9","s11"], focus:"Real Estate" },
   { id:"sd22", name:"Amir Khan",         initials:"AK", year:2, attrs:{P:3.2,I:3.5,V:3.8,O:4.0,T:3.0}, skills:["s13","s16","s17","s19","s20","s22","s24","s10"], focus:"Consulting" },
   { id:"sd23", name:"Freya Lindqvist",   initials:"FL", year:2, attrs:{P:3.8,I:4.0,V:3.4,O:3.2,T:3.9}, skills:["s1","s2","s7","s11","s12","s25","s27","s29","s30"], focus:"Product Mgmt" },
   { id:"sd24", name:"Miguel Reyes",      initials:"MR", year:1, attrs:{P:3.3,I:3.1,V:3.7,O:3.9,T:2.9}, skills:["s13","s19","s20","s22","s4","s21"], focus:"Banking" },
   { id:"sd25", name:"Sanjay Patel",      initials:"SP", year:2, attrs:{P:3.0,I:3.2,V:4.2,O:3.8,T:3.5}, skills:["s13","s14","s15","s16","s17","s22","s26","s27","s30"], focus:"Tech" },
   { id:"sd26", name:"Evelyn Carter",     initials:"EC", year:1, attrs:{P:3.6,I:3.4,V:3.3,O:3.5,T:3.2}, skills:["s1","s7","s11","s13","s22"], focus:"Real Estate" },
   { id:"sd27", name:"Omar Haddad",       initials:"OH", year:2, attrs:{P:3.1,I:3.0,V:3.5,O:4.1,T:2.8}, skills:["s13","s15","s19","s20","s22","s24","s4","s7","s8"], focus:"Real Estate" },
-  { id:"sd28", name:"Grace Liu",         initials:"GL", year:2, attrs:{P:4.1,I:4.3,V:3.2,O:3.0,T:3.6}, skills:["s1","s2","s3","s6","s7","s9","s10","s11","s12"], focus:"Social Impact" },
+  { id:"sd28", name:"Grace Liu",         initials:"GL", year:2, attrs:{P:4.1,I:4.3,V:3.2,O:3.0,T:3.6}, skills:["s1","s2","s3","s6","s7","s9","s10","s11","s12"], focus:"Tech" },
   { id:"sd29", name:"Tyler Brennan",     initials:"TB", year:1, attrs:{P:3.4,I:3.2,V:3.8,O:3.6,T:3.0}, skills:["s13","s15","s16","s17"], focus:"Entrepreneurship" },
 ];
 
@@ -4428,7 +4447,7 @@ var MBA_chatMessages = [
       {
         type: "insight",
         title: "The Case For India (Tech/Social Enterprise)",
-        content: "India is the Transformation accelerator. Cross-cultural ambiguity, social enterprise complexity, and a completely different operating context. Your Tokyo GIE proved that immersive cross-cultural experiences drive your biggest growth spikes. India would stress-test your 'failure is data' reframe in a context where the rules are genuinely unfamiliar. Your Purpose dimension (4.6) would also deepen — connecting business skills to social impact tends to sharpen leadership identity."
+        content: "India is the Transformation accelerator. Cross-cultural ambiguity, social enterprise complexity, and a completely different operating context. Your Tokyo GIE proved that immersive cross-cultural experiences drive your biggest growth spikes. India would stress-test your 'failure is data' reframe in a context where the rules are genuinely unfamiliar. Your Purpose dimension (4.6) would also deepen — connecting business skills to purpose-driven work tends to sharpen leadership identity."
       },
       {
         type: "text",
