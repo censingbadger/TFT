@@ -1200,9 +1200,9 @@ function UBP_BadgeWall(props) {
               borderRadius: 12, transition: "all 0.3s",
             }}>
               <div style={{
-                fontSize: 22, marginBottom: 5,
-                filter: e ? "none" : "grayscale(1) brightness(0.4)",
-                opacity: e ? 1 : 0.3,
+                fontSize: 28, marginBottom: 6, lineHeight: 1,
+                filter: e ? "none" : "grayscale(1) brightness(0.55)",
+                opacity: e ? 1 : 0.35,
               }}>{b.icon}</div>
               <div style={{ fontSize: 11, fontWeight: 600, color: e ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.2)", lineHeight: 1.3 }}>{b.label}</div>
             </div>
@@ -3052,18 +3052,18 @@ var MBA_TOKENS = {
 };
 
 var MBA_BADGES = [
-  { id: "b1", label: "Day One", desc: "Completed MBA Orientation", earned: true, icon: "✦" },
-  { id: "b2", label: "Self-Aware", desc: "Completed PIVOT Assessment #1", earned: true, icon: "◉" },
-  { id: "b3", label: "Team Catalyst", desc: "Earned 3+ Interrelating tokens", earned: true, icon: "◈" },
-  { id: "b4", label: "Globe Trotter", desc: "Completed a Global Immersion", earned: true, icon: "◎" },
-  { id: "b5", label: "Coached Up", desc: "Completed 4+ coaching sessions", earned: true, icon: "⬡" },
-  { id: "b6", label: "Club Leader", desc: "Held a club VP/officer role", earned: true, icon: "★" },
-  { id: "b7", label: "Growth Spurt", desc: "Any dimension +0.4 in one event", earned: true, icon: "△" },
-  { id: "b8", label: "Data Fluent", desc: "Completed analytics coursework", earned: false, icon: "◇" },
-  { id: "b9", label: "STAR Performer", desc: "Completed STAR Capstone project", earned: false, icon: "▣" },
-  { id: "b10", label: "Dual Dimension", desc: "Two dimensions at 60%+", earned: false, icon: "⊕" },
-  { id: "b11", label: "Systems Thinker", desc: "Vision + Strategy combined", earned: false, icon: "⊙" },
-  { id: "b12", label: "PIVOT Master", desc: "All dimensions at 80%+", earned: false, icon: "◆" },
+  { id: "b1",  label: "Day One",         desc: "Completed MBA Orientation",          earned: true,  icon: "🎓" },
+  { id: "b2",  label: "Self-Aware",      desc: "Completed PIVOT Assessment #1",      earned: true,  icon: "🪞" },
+  { id: "b3",  label: "Team Catalyst",   desc: "Earned 3+ Interrelating tokens",     earned: true,  icon: "🤝" },
+  { id: "b4",  label: "Globe Trotter",   desc: "Completed a Global Immersion",       earned: true,  icon: "🌍" },
+  { id: "b5",  label: "Coached Up",      desc: "Completed 4+ coaching sessions",     earned: true,  icon: "🎯" },
+  { id: "b6",  label: "Club Leader",     desc: "Held a club VP/officer role",        earned: true,  icon: "👑" },
+  { id: "b7",  label: "Growth Spurt",    desc: "Any dimension +0.4 in one event",    earned: true,  icon: "📈" },
+  { id: "b8",  label: "Data Fluent",     desc: "Completed analytics coursework",     earned: false, icon: "📊" },
+  { id: "b9",  label: "STAR Performer",  desc: "Completed STAR Capstone project",    earned: false, icon: "⭐" },
+  { id: "b10", label: "Dual Dimension",  desc: "Two dimensions at 60%+",             earned: false, icon: "⚖️" },
+  { id: "b11", label: "Systems Thinker", desc: "Vision + Strategy combined",         earned: false, icon: "🧩" },
+  { id: "b12", label: "PIVOT Master",    desc: "All dimensions at 80%+",             earned: false, icon: "🏆" },
 ];
 
 var MBA_SELF_R = [
@@ -3202,9 +3202,9 @@ function MBA_BadgeWall(props) {
               borderRadius: 12, transition: "all 0.3s",
             }}>
               <div style={{
-                fontSize: 22, marginBottom: 5,
-                filter: e ? "none" : "grayscale(1) brightness(0.4)",
-                opacity: e ? 1 : 0.3,
+                fontSize: 28, marginBottom: 6, lineHeight: 1,
+                filter: e ? "none" : "grayscale(1) brightness(0.55)",
+                opacity: e ? 1 : 0.35,
               }}>{b.icon}</div>
               <div style={{ fontSize: 11, fontWeight: 600, color: e ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.2)", lineHeight: 1.3 }}>{b.label}</div>
             </div>
@@ -3464,6 +3464,14 @@ function MBAProgress(props) {
           </div>
         </div>
 
+        {/* ── Experience Token Bars ── */}
+        <div style={{ padding: "0 16px 8px" }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
+          {DIMS.map(function (d) {
+            return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} attrs={myAttrs} earnedMap={myEarned} path={selectedPath} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
+          })}
+        </div>
+
         {/* ── Recent Growth (from Dashboard) ── */}
         <div style={{ padding: "0 16px 14px" }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>Recent Growth</div>
@@ -3515,14 +3523,6 @@ function MBAProgress(props) {
               💡 View suggested experiences →
             </div>
           </div>
-        </div>
-
-        {/* ── Experience Token Bars ── */}
-        <div style={{ padding: "0 16px 8px" }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
-          {DIMS.map(function (d) {
-            return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} attrs={myAttrs} earnedMap={myEarned} path={selectedPath} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
-          })}
         </div>
 
         {/* ── Boss Level (Senior Capstone) ── */}
