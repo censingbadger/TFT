@@ -58,6 +58,158 @@ function rgba(hex, a) {
 }
 
 /* ── Shared Bottom Nav ── */
+/* ── PIVOT Dynamic Leadership Assessment (60 items, 5 domains × 3 facets × 4 items) ── */
+var PIVOT_ASSESSMENT_ITEMS = [
+  { num:1,  dim:"P", facet:"Purposive identity",            text:"I understand what makes my leadership meaningful." },
+  { num:2,  dim:"P", facet:"Purposive identity",            text:"My leadership connects to a larger sense of purpose." },
+  { num:3,  dim:"P", facet:"Purposive identity",            text:"Leading is central to who I am." },
+  { num:4,  dim:"P", facet:"Purposive identity",            text:"I lead from an internal compass, not external pressure." },
+  { num:5,  dim:"P", facet:"Moral identity & courage",      text:"My moral values are an important part of who I am as a leader." },
+  { num:6,  dim:"P", facet:"Moral identity & courage",      text:"I hold my ground on ethical issues under pressure." },
+  { num:7,  dim:"P", facet:"Moral identity & courage",      text:"I act on my moral convictions even when it is costly." },
+  { num:8,  dim:"P", facet:"Moral identity & courage",      text:"The ethical implications of my choices matter to me." },
+  { num:9,  dim:"P", facet:"Self-awareness",                text:"I know how I come across to others." },
+  { num:10, dim:"P", facet:"Self-awareness",                text:"I understand how my actions affect the people around me." },
+  { num:11, dim:"P", facet:"Self-awareness",                text:"I am clear about my strengths and limitations." },
+  { num:12, dim:"P", facet:"Self-awareness",                text:"I seek feedback to see what I might be missing." },
+  { num:13, dim:"I", facet:"Relational investment & trust", text:"I invest in relationships before I need something from them." },
+  { num:14, dim:"I", facet:"Relational investment & trust", text:"People know they can count on me to follow through." },
+  { num:15, dim:"I", facet:"Relational investment & trust", text:"I build trust through how I show up, not what I claim." },
+  { num:16, dim:"I", facet:"Relational investment & trust", text:"I care about my colleagues’ welfare, not just their performance." },
+  { num:17, dim:"I", facet:"Psychological safety creation", text:"I invite people to share dissent and bad news." },
+  { num:18, dim:"I", facet:"Psychological safety creation", text:"I respond to mistakes with learning, not blame." },
+  { num:19, dim:"I", facet:"Psychological safety creation", text:"I show people it is safe to speak up with me." },
+  { num:20, dim:"I", facet:"Psychological safety creation", text:"I make it clear that every voice matters." },
+  { num:21, dim:"I", facet:"Empathic attunement",           text:"I notice how people are feeling before they say anything." },
+  { num:22, dim:"I", facet:"Empathic attunement",           text:"I try to understand situations from other people’s points of view." },
+  { num:23, dim:"I", facet:"Empathic attunement",           text:"I sense when someone’s mood or energy has shifted." },
+  { num:24, dim:"I", facet:"Empathic attunement",           text:"I think about how my decisions will land for different people." },
+  { num:25, dim:"V", facet:"Strategic foresight",           text:"I think several steps ahead of where things are now." },
+  { num:26, dim:"V", facet:"Strategic foresight",           text:"I scan for early signals of what’s coming next." },
+  { num:27, dim:"V", facet:"Strategic foresight",           text:"I consider how today’s decisions will play out over time." },
+  { num:28, dim:"V", facet:"Strategic foresight",           text:"I plan for how changing conditions might shift priorities." },
+  { num:29, dim:"V", facet:"Opportunity recognition",       text:"I regularly scan my environment for new opportunities." },
+  { num:30, dim:"V", facet:"Opportunity recognition",       text:"I see openings in change that others miss." },
+  { num:31, dim:"V", facet:"Opportunity recognition",       text:"I notice patterns that point to emerging possibilities." },
+  { num:32, dim:"V", facet:"Opportunity recognition",       text:"I see problems as opportunities worth exploring." },
+  { num:33, dim:"V", facet:"Sense-making & vision",         text:"I help others make sense of ambiguous situations." },
+  { num:34, dim:"V", facet:"Sense-making & vision",         text:"I articulate a clear picture of where we could go." },
+  { num:35, dim:"V", facet:"Sense-making & vision",         text:"I use vivid language to make the future concrete." },
+  { num:36, dim:"V", facet:"Sense-making & vision",         text:"I connect current challenges to a larger direction." },
+  { num:37, dim:"O", facet:"Proactive behavior",            text:"If I see something that needs doing, I act." },
+  { num:38, dim:"O", facet:"Proactive behavior",            text:"I don’t wait for permission to start improving things." },
+  { num:39, dim:"O", facet:"Proactive behavior",            text:"I take initiative when others hesitate." },
+  { num:40, dim:"O", facet:"Proactive behavior",            text:"I have a bias toward action over inaction." },
+  { num:41, dim:"O", facet:"Decisiveness under ambiguity",  text:"I can decide and move forward with incomplete information." },
+  { num:42, dim:"O", facet:"Decisiveness under ambiguity",  text:"I act even when I can’t predict exactly how things will unfold." },
+  { num:43, dim:"O", facet:"Decisiveness under ambiguity",  text:"Ambiguity does not paralyze my judgment." },
+  { num:44, dim:"O", facet:"Decisiveness under ambiguity",  text:"I commit to decisions and adjust them as I learn more." },
+  { num:45, dim:"O", facet:"Accountability",                text:"I take responsibility for my outcomes, including the bad ones." },
+  { num:46, dim:"O", facet:"Accountability",                text:"I deliver what I commit to, even when conditions change." },
+  { num:47, dim:"O", facet:"Accountability",                text:"I hold myself to high standards regardless of what others do." },
+  { num:48, dim:"O", facet:"Accountability",                text:"I answer for my choices without deflecting blame." },
+  { num:49, dim:"T", facet:"Behavioral adaptability",       text:"I adjust my approach when situations change." },
+  { num:50, dim:"T", facet:"Behavioral adaptability",       text:"I quickly change tack when something isn’t working." },
+  { num:51, dim:"T", facet:"Behavioral adaptability",       text:"I stay effective when plans shift unexpectedly." },
+  { num:52, dim:"T", facet:"Behavioral adaptability",       text:"I pick up new ways of working when they are needed." },
+  { num:53, dim:"T", facet:"Learning orientation & growth", text:"I see mistakes as chances to learn." },
+  { num:54, dim:"T", facet:"Learning orientation & growth", text:"I take on challenging work because it helps me grow." },
+  { num:55, dim:"T", facet:"Learning orientation & growth", text:"I believe I can develop the abilities I need." },
+  { num:56, dim:"T", facet:"Learning orientation & growth", text:"I prefer learning new skills to performing existing ones." },
+  { num:57, dim:"T", facet:"Resilience & grit",             text:"I keep going when things get hard." },
+  { num:58, dim:"T", facet:"Resilience & grit",             text:"I bounce back from setbacks relatively quickly." },
+  { num:59, dim:"T", facet:"Resilience & grit",             text:"I sustain focus on long-term goals despite obstacles." },
+  { num:60, dim:"T", facet:"Resilience & grit",             text:"I find my footing again after disappointments." },
+];
+
+/* Compute domain scores (1-5) from a responses dict {itemNum: 1..5} */
+function scorePIVOT(responses){
+  var byDim = {P:[],I:[],V:[],O:[],T:[]};
+  PIVOT_ASSESSMENT_ITEMS.forEach(function(it){
+    var v = responses[it.num];
+    if (typeof v === "number") byDim[it.dim].push(v);
+  });
+  var scores = {};
+  Object.keys(byDim).forEach(function(d){
+    var arr = byDim[d];
+    scores[d] = arr.length ? Math.round((arr.reduce(function(a,b){return a+b;},0)/arr.length)*10)/10 : null;
+  });
+  return scores;
+}
+
+/* Read saved assessment from localStorage, returns {scores, responses, ts} or null */
+function loadSavedAssessment(programKey){
+  try { var v = localStorage.getItem(programKey+"_pivot_assessment"); return v ? JSON.parse(v) : null; } catch(e){ return null; }
+}
+
+/* PIVOT Self-Assessment modal — open=true to show */
+function PIVOTAssessment(props){
+  var open = props.open;
+  var onSave = props.onSave;
+  var onClose = props.onClose;
+  var initial = props.initial || {};
+  var _ans = useState(initial); var ans = _ans[0], setAns = _ans[1];
+  if (!open) return null;
+  function setItem(num, val){ var next=Object.assign({},ans); next[num]=val; setAns(next); }
+  var byDim = {P:[],I:[],V:[],O:[],T:[]};
+  PIVOT_ASSESSMENT_ITEMS.forEach(function(it){ byDim[it.dim].push(it); });
+  var answered = Object.keys(ans).length;
+  var total = PIVOT_ASSESSMENT_ITEMS.length;
+  var complete = answered === total;
+  function submit(){
+    if (!complete) return;
+    onSave({ responses: ans, scores: scorePIVOT(ans), ts: Date.now() });
+  }
+  return (
+    <div style={{position:"absolute", top:0, left:0, right:0, bottom:0, background:"rgba(2,4,12,0.98)", zIndex:200, overflowY:"auto", padding:"22px 16px 110px", fontFamily:FONT}}>
+      <div style={{maxWidth:430, margin:"0 auto"}}>
+        <div style={{fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.4)", letterSpacing:2, marginBottom:6}}>PIVOT DYNAMIC LEADERSHIP</div>
+        <div style={{fontSize:22, fontWeight:800, color:"#fff", marginBottom:8}}>Self-Assessment</div>
+        <div style={{fontSize:13, color:"rgba(255,255,255,0.65)", marginBottom:18, lineHeight:1.55}}>60 items, ~5 minutes. Rate how true each statement is for you right now: <b style={{color:"#fff"}}>1</b> = Strongly disagree → <b style={{color:"#fff"}}>5</b> = Strongly agree. Your scores set the foundation of your radar.</div>
+        {DIMS.map(function(d){
+          var dimItems = byDim[d];
+          var dAnswered = dimItems.filter(function(it){return typeof ans[it.num]==="number";}).length;
+          return (
+            <div key={d} style={{marginBottom:18, padding:"14px 14px", borderRadius:14, background:rgba(PC[d],0.06), border:"1px solid "+rgba(PC[d],0.22)}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:10}}>
+                <div style={{fontSize:14, fontWeight:800, color:PC[d], letterSpacing:1.5}}>{DIM_NAMES[d].toUpperCase()}</div>
+                <div style={{fontSize:11, color:rgba(PC[d],0.7), fontWeight:700}}>{dAnswered}/{dimItems.length}</div>
+              </div>
+              {dimItems.map(function(it){
+                var v = ans[it.num];
+                return (
+                  <div key={it.num} style={{marginBottom:14}}>
+                    <div style={{fontSize:9, fontWeight:700, color:"rgba(255,255,255,0.4)", letterSpacing:1, marginBottom:3}}>{it.facet.toUpperCase()}</div>
+                    <div style={{fontSize:13, color:"rgba(255,255,255,0.88)", lineHeight:1.5, marginBottom:7}}>{it.num}. {it.text}</div>
+                    <div style={{display:"flex", gap:5}}>
+                      {[1,2,3,4,5].map(function(n){
+                        var on = v===n;
+                        return <div key={n} onClick={function(){setItem(it.num,n);}} style={{flex:1, padding:"10px 4px", borderRadius:6, background:on?rgba(PC[d],0.4):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(PC[d],0.85):"rgba(255,255,255,0.12)"), color:on?"#fff":"rgba(255,255,255,0.7)", fontSize:13, fontWeight:700, textAlign:"center", cursor:"pointer"}}>{n}</div>;
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+        <div style={{fontSize:11, color:"rgba(255,255,255,0.4)", padding:"8px 4px 0", lineHeight:1.5, fontStyle:"italic"}}>Your answers are saved on this device only. You can retake the assessment anytime to refresh your foundation.</div>
+      </div>
+      {/* Sticky bottom bar */}
+      <div style={{position:"fixed", bottom:0, left:"50%", transform:"translateX(-50%)", width:"100%", maxWidth:430, padding:"12px 16px", background:"rgba(2,4,12,0.96)", borderTop:"1px solid rgba(255,255,255,0.08)", display:"flex", justifyContent:"space-between", alignItems:"center", boxSizing:"border-box"}}>
+        <div>
+          <div style={{fontSize:14, fontWeight:800, color:"#fff"}}>{answered}/{total}</div>
+          <div style={{fontSize:10, color:"rgba(255,255,255,0.5)"}}>items completed</div>
+        </div>
+        <div style={{display:"flex", gap:8}}>
+          <div onClick={onClose} style={{padding:"10px 14px", borderRadius:10, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.12)", fontSize:12, fontWeight:600, color:"rgba(255,255,255,0.65)", cursor:"pointer"}}>Close</div>
+          <div onClick={complete?submit:null} style={{padding:"10px 18px", borderRadius:10, background:complete?"rgba(80,200,120,0.25)":"rgba(255,255,255,0.04)", border:"1px solid "+(complete?"rgba(80,200,120,0.6)":"rgba(255,255,255,0.1)"), fontSize:13, fontWeight:800, color:complete?"#7ad99a":"rgba(255,255,255,0.3)", cursor:complete?"pointer":"not-allowed", letterSpacing:0.3}}>Submit</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Reusable Radar Chart (attributes + skills + optional career target) ── */
 /* Accepts either (attrs, earnedMap) OR precomputed dimData={P:{attrPct,skillPct,totalPct},...} */
 function PIVOTRadar(props){
@@ -1777,6 +1929,14 @@ function UBPIndex(props) {
   var _pth = useState(null); var pathId = _pth[0], setPathId = _pth[1];
   var _pre = useState("y2"); var earnedPreset = _pre[0], setEarnedPreset = _pre[1];
   var _demo = useState(false); var showDemo = _demo[0], setShowDemo = _demo[1];
+  var _ass = useState(null); var assessment = _ass[0], setAssessment = _ass[1];
+  var _showA = useState(false); var showAssessment = _showA[0], setShowAssessment = _showA[1];
+
+  function saveAssessment(payload){
+    setAssessment(payload);
+    try { localStorage.setItem("ubp_pivot_assessment", JSON.stringify(payload)); } catch(e){}
+    setShowAssessment(false);
+  }
 
   function pickNorthStar(id){
     setPathId(id);
@@ -1794,12 +1954,14 @@ function UBPIndex(props) {
       if (ns) setPathId(ns);
       var pr = localStorage.getItem("ubp_preset");
       if (pr && UBP_EARNED_PRESETS[pr]) setEarnedPreset(pr);
+      var a = loadSavedAssessment("ubp"); if (a) setAssessment(a);
     } catch(e){}
   }, []);
 
   /* Radar inputs */
   var myAttrs = {};
   UBP_ATTRIBUTES.forEach(function(a){ myAttrs[a.dim] = a.current; });
+  if (assessment && assessment.scores){ DIMS.forEach(function(d){ if (typeof assessment.scores[d]==="number") myAttrs[d] = assessment.scores[d]; }); }
   var myEarned = UBP_EARNED_PRESETS[earnedPreset] || UBP_EARNED_PRESETS["y2"];
   var selectedPath = pathId ? UBP_PATHS.filter(function(p){return p.id===pathId;})[0] : null;
   var radarTarget = selectedPath ? targetForPath(selectedPath) : null;
@@ -1936,6 +2098,24 @@ function UBPIndex(props) {
           </div>
         </div>
 
+        {/* PIVOT Assessment TODO */}
+        {!assessment && (
+          <div onClick={function(){setShowAssessment(true);}} style={{ margin:"0 16px 14px", padding:"14px 16px", borderRadius:14, background:"linear-gradient(135deg, rgba(255,204,68,0.14), rgba(75,156,211,0.08))", border:"1px solid rgba(255,204,68,0.45)", cursor:"pointer" }}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+              <span style={{fontSize:16}}>📋</span>
+              <span style={{fontSize:11,fontWeight:800,color:"#FFCC44",letterSpacing:1.4}}>TO DO · TAKE YOUR PIVOT ASSESSMENT</span>
+            </div>
+            <div style={{fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.5, marginBottom:8}}>Your foundation is uncalibrated — the radar is using placeholder values. Take the 60-item self-assessment (~5 min) and the foundation will reflect you.</div>
+            <div style={{display:"inline-block", padding:"6px 14px", borderRadius:10, background:"rgba(255,204,68,0.2)", border:"1px solid rgba(255,204,68,0.55)", fontSize:12, fontWeight:800, color:"#FFCC44"}}>Start →</div>
+          </div>
+        )}
+        {assessment && (
+          <div style={{ margin:"0 16px 14px", padding:"10px 14px", borderRadius:12, background:"rgba(80,200,120,0.06)", border:"1px solid rgba(80,200,120,0.25)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{fontSize:11, color:"rgba(255,255,255,0.7)"}}>✓ PIVOT Assessment taken · foundation calibrated to you</div>
+            <div onClick={function(){setShowAssessment(true);}} style={{fontSize:11, color:"#7ad99a", fontWeight:700, cursor:"pointer"}}>Retake →</div>
+          </div>
+        )}
+
         {/* ── AI Insight Card ── */}
         <div style={{ padding: "0 16px 12px" }}>
           <div style={{
@@ -1994,6 +2174,8 @@ function UBPIndex(props) {
           UNC Kenan-Flagler Undergraduate Business
         </span>
       </div>
+
+      <PIVOTAssessment open={showAssessment} initial={assessment ? assessment.responses : {}} onSave={saveAssessment} onClose={function(){setShowAssessment(false);}}/>
     </div>
   );
 }
@@ -4634,6 +4816,8 @@ function MBAProgress(props) {
           UNC Kenan-Flagler Business School
         </span>
       </div>
+
+      <PIVOTAssessment open={showAssessment} initial={assessment ? assessment.responses : {}} onSave={saveAssessment} onClose={function(){setShowAssessment(false);}}/>
     </div>
   );
 }
