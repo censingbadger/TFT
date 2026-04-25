@@ -1479,18 +1479,18 @@ var UBP_TOKENS = {
 };
 
 var UBP_BADGES = [
-  { id: "b1", label: "First Spark", desc: "Completed UBP Onboarding", earned: true, icon: "✦" },
-  { id: "b2", label: "Self-Aware", desc: "Completed first PIVOT assessment", earned: true, icon: "◉" },
-  { id: "b3", label: "Team Player", desc: "Earned 3+ Interrelating tokens", earned: true, icon: "◈" },
-  { id: "b4", label: "Globe Trotter", desc: "Completed a global experience", earned: false, icon: "◎" },
-  { id: "b5", label: "Symposium Scholar", desc: "Attended UBP Symposium", earned: true, icon: "⬡" },
-  { id: "b6", label: "STAR Contributor", desc: "Completed a STAR project", earned: true, icon: "★" },
-  { id: "b7", label: "Leader Rising", desc: "Held a club leadership role", earned: false, icon: "△" },
-  { id: "b8", label: "AOE Explorer", desc: "Started an Area of Emphasis", earned: false, icon: "◇" },
-  { id: "b9", label: "Intern Ready", desc: "Completed internship prep milestones", earned: false, icon: "▣" },
-  { id: "b10", label: "Dual Dimension", desc: "Two dimensions at 60%+", earned: false, icon: "⊕" },
-  { id: "b11", label: "Mentor Mode", desc: "Mentored a fellow student", earned: false, icon: "⊙" },
-  { id: "b12", label: "Capstone Ready", desc: "All dimensions at 80%+", earned: false, icon: "◆" },
+  { id: "b1",  label: "First Spark",       desc: "Completed UBP Onboarding",            earned: true,  icon: "🎓" },
+  { id: "b2",  label: "Self-Aware",        desc: "Completed first PIVOT assessment",    earned: true,  icon: "🪞" },
+  { id: "b3",  label: "Team Player",       desc: "Earned 3+ Interrelating tokens",      earned: true,  icon: "🤝" },
+  { id: "b4",  label: "Globe Trotter",     desc: "Completed a global experience",        earned: false, icon: "🌍" },
+  { id: "b5",  label: "Symposium Scholar", desc: "Attended UBP Symposium",               earned: true,  icon: "🎤" },
+  { id: "b6",  label: "STAR Contributor",  desc: "Completed a STAR project",             earned: true,  icon: "⭐" },
+  { id: "b7",  label: "Leader Rising",     desc: "Held a club leadership role",          earned: false, icon: "👑" },
+  { id: "b8",  label: "AOE Explorer",      desc: "Started an Area of Emphasis",          earned: false, icon: "🧭" },
+  { id: "b9",  label: "Intern Ready",      desc: "Completed internship prep milestones", earned: false, icon: "💼" },
+  { id: "b10", label: "Dual Dimension",    desc: "Two dimensions at 60%+",               earned: false, icon: "⚖️" },
+  { id: "b11", label: "Mentor Mode",       desc: "Mentored a fellow student",            earned: false, icon: "🫂" },
+  { id: "b12", label: "Capstone Ready",    desc: "All dimensions at 80%+",               earned: false, icon: "🏆" },
 ];
 
 var UBP_SELF_R = [
@@ -2077,40 +2077,19 @@ function UBPIndex(props) {
             })}
           </div>
 
-          <div style={{ position: "relative", width: ringSize, height: ringSize }}>
-            <svg width={ringSize} height={ringSize} style={{ transform: "rotate(-90deg)" }}>
-              <circle cx={ringSize / 2} cy={ringSize / 2} r={ringR} fill="none" stroke={rgba(CB, 0.08)} strokeWidth={ringStroke} />
-              <circle cx={ringSize / 2} cy={ringSize / 2} r={ringR} fill="none" stroke={CB} strokeWidth={ringStroke}
-                strokeDasharray={ringCirc} strokeDashoffset={ringOffset}
-                strokeLinecap="round" style={{ transition: "stroke-dashoffset 1.5s ease" }} />
-            </svg>
-            <div style={{
-              position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            }}>
-              <div style={{ fontSize: 34, fontWeight: 700, color: "#fff" }}>{totalEarned}</div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>of {totalAll} tokens</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: rgba(CB, 0.7), marginTop: 2 }}>{overallPct}% complete</div>
-            </div>
-          </div>
+          {/* Readiness Radar — hero visual */}
+          <PIVOTRadar size={260} attrs={myAttrs} earnedMap={myEarned} target={radarTarget} color={radarColor}/>
 
-          {/* Mini dimension circles */}
-          <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
-            {DIMS.map(function (d) {
-              var pct = dimPcts[d];
-              return (
-                <div key={d} style={{ textAlign: "center" }}>
-                  <div style={{
-                    width: 36, height: 36, borderRadius: "50%",
-                    border: "2px solid " + rgba(PC[d], pct >= 60 ? 0.8 : 0.25),
-                    background: rgba(PC[d], 0.08),
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 14, fontWeight: 700, color: PC[d],
-                  }}>{d}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 3 }}>{pct}%</div>
-                </div>
-              );
-            })}
+          <div style={{ marginTop: 6, textAlign:"center", padding:"0 16px" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.5 }}>READINESS FOR {selectedPath ? selectedPath.goalLabel.toUpperCase() : "LEADERSHIP"}</div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 4, maxWidth: 320, marginLeft:"auto", marginRight:"auto" }}>
+              {selectedPath
+                ? "Inner shape is who you are (attributes). Outer fill is what you have practiced (skills). Dashed pentagon is the ideal profile for this career."
+                : "Pick a North Star above to see your target profile."}
+            </div>
+            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.75)", marginTop: 8 }}>
+              <span style={{ fontWeight: 700, color: "#fff" }}>{overallPct}%</span> of experience tokens earned · <span style={{ color: "rgba(255,255,255,0.55)" }}>{totalEarned}/{totalAll}</span>
+            </div>
           </div>
 
           {/* Semester context */}
