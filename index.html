@@ -2232,7 +2232,7 @@ function UBPAssistant(props) {
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 16, color: "#fff", fontWeight: 700,
             flexShrink: 0,
-          }}>{"\u2191"}</button>
+          }}>{"↑"}</button>
         </div>
       </div>
 
@@ -2573,7 +2573,7 @@ function MBAJourney(props) {
       {/* Demo preset picker (discreet; tap DEMO to open) */}
       {showDemo&&(
         <div style={{margin:"0 16px 10px",padding:"10px 12px",borderRadius:12,background:"rgba(255,204,68,0.06)",border:"1px solid rgba(255,204,68,0.25)"}}>
-          <div style={{fontSize:10,fontWeight:700,color:"#FFCC44",letterSpacing:"1.5",marginBottom:8}}>DEMO \u00b7 JUMP TO A MILESTONE</div>
+          <div style={{fontSize:10,fontWeight:700,color:"#FFCC44",letterSpacing:"1.5",marginBottom:8}}>DEMO · JUMP TO A MILESTONE</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(5, 1fr)",gap:5}}>
             {DEMO_PRESETS_META.map(function(pr){var on=earnedPreset===pr.id;return <div key={pr.id} onClick={function(){pickPreset(pr.id);}} style={{padding:"7px 4px",borderRadius:8,background:on?"rgba(255,204,68,0.2)":"rgba(255,255,255,0.03)",border:"1px solid "+(on?"rgba(255,204,68,0.7)":"rgba(255,255,255,0.1)"),cursor:"pointer",textAlign:"center",fontFamily:FONT}}><div style={{fontSize:11,fontWeight:700,color:on?"#FFCC44":"rgba(255,255,255,0.85)",lineHeight:1.2}}>{pr.label}</div><div style={{fontSize:9,color:on?"rgba(255,204,68,0.75)":"rgba(255,255,255,0.4)",marginTop:2}}>{pr.sub}</div></div>;})}
           </div>
@@ -2657,12 +2657,12 @@ function MBAJourney(props) {
             var allFloor=floorMet===floorKeys.length;
             var baseTier = earnedOnPath>=MASTERY_THRESH ? "Mastery" : (earnedOnPath>=FLUENT_THRESH ? "Fluent" : (earnedOnPath>=READY_THRESH ? "Ready" : "Building"));
             var tierCol = baseTier==="Mastery"?"#FFFFFF":(baseTier==="Fluent"?"#FFE9A6":(baseTier==="Ready"?"#FFCC44":"rgba(255,255,255,0.6)"));
-            var statusLine = earnedOnPath+"/"+total+" skills \u00b7 "+(allFloor?"Foundation ready":floorMet+"/"+floorKeys.length+" foundations");
+            var statusLine = earnedOnPath+"/"+total+" skills · "+(allFloor?"Foundation ready":floorMet+"/"+floorKeys.length+" foundations");
             var els=[];
             els.push(<circle key="gh" cx={gx} cy={gy} r={26} fill={pCol} filter="url(#goalGlow)" opacity={baseTier==="Building"?0.14:0.35}/>);
             els.push(<circle key="gs" cx={gx} cy={gy} r={10} fill={baseTier==="Mastery"?"#fff":pCol} stroke="#fff" strokeWidth={baseTier==="Building"?0.8:2} opacity={0.98}/>);
             if(baseTier==="Mastery"||baseTier==="Fluent") els.push(<circle key="gc" cx={gx} cy={gy} r={3.2} fill="#fff"/>);
-            els.push(<text key="gt" x={gx} y={gy+32} textAnchor="middle" fontSize={18} fontWeight={800} fill={tierCol} fontFamily={FONT} letterSpacing="2">{baseTier.toUpperCase()}{!allFloor&&baseTier!=="Building"?" \u2217":""}</text>);
+            els.push(<text key="gt" x={gx} y={gy+32} textAnchor="middle" fontSize={18} fontWeight={800} fill={tierCol} fontFamily={FONT} letterSpacing="2">{baseTier.toUpperCase()}{!allFloor&&baseTier!=="Building"?" ∗":""}</text>);
             els.push(<text key="gsl" x={gx} y={gy+50} textAnchor="middle" fontSize={11} fontWeight={500} fill={allFloor?"rgba(255,255,255,0.72)":"rgba(255,210,120,0.8)"} fontFamily={FONT}>{statusLine}</text>);
             var meterY=gy+66, dotSpace=14, startX=gx-(total-1)*dotSpace/2;
             for(var di=0; di<total; di++){
@@ -2697,7 +2697,7 @@ function MBAJourney(props) {
             var stroke=rgba(col,earned?0.95:0.75);
             var strokeW=isSel?2.8:(earned?2:1.4);
             var showWhite=careerSet&&inCareer&&!dimmed;
-            var lbl=s.label.length>24?s.label.slice(0,22)+"\u2026":s.label;
+            var lbl=s.label.length>24?s.label.slice(0,22)+"…":s.label;
             /* Labels: show only on earned / selected / cross-highlighted / career-relevant stars.
                Default latent stars are unlabeled to reduce visual noise. */
             var showLabel = earned || isSel || isCrossHL || showWhite;
@@ -2811,9 +2811,9 @@ function MBAJourney(props) {
                       var sourceName = src.length ? src[0].label : (earned?"a recent experience":"an upcoming experience");
                       var prompts = earned ? [
                         "Think about "+sourceName+". What did you notice about yourself in a moment when this skill was tested?",
-                        "Describe a specific instance in "+sourceName+" where you did this well \u2014 and a moment you didn't. What was the difference?",
+                        "Describe a specific instance in "+sourceName+" where you did this well — and a moment you didn't. What was the difference?",
                         "If someone watched you in "+sourceName+", what would they have seen you doing? What would they have missed?",
-                        "This skill is about \""+sk.def.toLowerCase().slice(0,80)+"\u2026\" \u2014 where in "+sourceName+" did that show up for you? Where did it not?",
+                        "This skill is about \""+sk.def.toLowerCase().slice(0,80)+"…\" — where in "+sourceName+" did that show up for you? Where did it not?",
                       ] : [
                         "Before "+sourceName+" begins, what part of this skill feels most distant from how you operate now?",
                         "Imagine a moment in "+sourceName+" where you'd need this skill. What would it look like if you had it? What usually happens instead?",
@@ -2821,7 +2821,7 @@ function MBAJourney(props) {
                       ];
                       var p = prompts[Math.floor(Math.random()*prompts.length)];
                       setDraft(draft?draft+"\n\n"+p:p);
-                    }} style={{fontSize:11,padding:"5px 11px",borderRadius:14,background:"rgba(255,204,68,0.12)",border:"1px solid rgba(255,204,68,0.35)",color:"#FFCC44",cursor:"pointer",fontWeight:700,display:"inline-flex",alignItems:"center",gap:5}}>\u2728 Help me reflect</div>
+                    }} style={{fontSize:11,padding:"5px 11px",borderRadius:14,background:"rgba(255,204,68,0.12)",border:"1px solid rgba(255,204,68,0.35)",color:"#FFCC44",cursor:"pointer",fontWeight:700,display:"inline-flex",alignItems:"center",gap:5}}>✨ Help me reflect</div>
                     <div style={{display:"flex",gap:8}}>
                       {draft&&<div onClick={function(){setDraft("");}} style={{fontSize:12,padding:"5px 12px",borderRadius:6,cursor:"pointer",color:"rgba(255,255,255,0.5)"}}>Cancel</div>}
                       <div onClick={saveReflection} style={{fontSize:12,padding:"5px 14px",borderRadius:6,cursor:"pointer",background:draft.trim()?rgba(PC[selSkillObj.dim],0.2):rgba(CB,0.08),border:"1px solid "+rgba(PC[selSkillObj.dim],draft.trim()?0.5:0.2),color:draft.trim()?PC[selSkillObj.dim]:"rgba(255,255,255,0.3)",fontWeight:600}}>Save</div>
@@ -3400,7 +3400,7 @@ function MBAProgress(props) {
       {/* Demo preset picker */}
       {showDemo && (
         <div style={{ margin:"0 16px 10px", padding:"10px 12px", borderRadius:12, background:"rgba(255,204,68,0.06)", border:"1px solid rgba(255,204,68,0.25)" }}>
-          <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:"1.5", marginBottom:8 }}>DEMO \u00b7 JUMP TO A MILESTONE</div>
+          <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:"1.5", marginBottom:8 }}>DEMO · JUMP TO A MILESTONE</div>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(5, 1fr)", gap:5 }}>
             {DEMO_PRESETS_META.map(function(pr){ var on=earnedPreset===pr.id; return <div key={pr.id} onClick={function(){pickPreset(pr.id);}} style={{ padding:"7px 4px", borderRadius:8, background:on?"rgba(255,204,68,0.2)":"rgba(255,255,255,0.03)", border:"1px solid "+(on?"rgba(255,204,68,0.7)":"rgba(255,255,255,0.1)"), cursor:"pointer", textAlign:"center", fontFamily:FONT }}><div style={{ fontSize:11, fontWeight:700, color:on?"#FFCC44":"rgba(255,255,255,0.85)", lineHeight:1.2 }}>{pr.label}</div><div style={{ fontSize:9, color:on?"rgba(255,204,68,0.75)":"rgba(255,255,255,0.4)", marginTop:2 }}>{pr.sub}</div></div>;})}
           </div>
@@ -3617,7 +3617,7 @@ var TEAM_SURVEYS = [
   { id:"conflict", icon:"⚔️", label:"Productive Conflict",       desc:"How the team handles disagreement.", scale:"Likert 1-5",
     questions:["Our meetings are interesting, not boring.","We mine each other for opinions and perspectives.","We solve problems quickly because we engage them directly.","We do not have politics around tough topics.","We can call out each other's behavior without making it personal."] },
   { id:"commit",   icon:"🤝", label:"Commitment",                desc:"Buy-in to team decisions, even when imperfect.", scale:"Likert 1-5",
-    questions:["Our team makes clear and timely decisions.","Everyone leaves meetings clear on next steps and owners.","We disagree, then commit \u2014 even when we don\u2019t fully agree.","We change direction without resentment when conditions shift.","Decisions stick; we don\u2019t rehash them."] },
+    questions:["Our team makes clear and timely decisions.","Everyone leaves meetings clear on next steps and owners.","We disagree, then commit — even when we don’t fully agree.","We change direction without resentment when conditions shift.","Decisions stick; we don’t rehash them."] },
   { id:"accountability", icon:"⚖️", label:"Accountability",       desc:"Holding peers to standards and outcomes.", scale:"Likert 1-5",
     questions:["I get on my teammates about poor performance and behavior.","Teammates hold me accountable, not just the leader.","We confront missed commitments quickly and respectfully.","Our team focuses on the most important issues, not personalities.","We celebrate clean execution as much as wins."] },
   { id:"kai",      icon:"🧠", label:"KAI Inventory",              desc:"Kirton Adaption-Innovation cognitive style (mock).", scale:"Likert 1-5",
@@ -3626,8 +3626,8 @@ var TEAM_SURVEYS = [
     questions:["I see myself as someone who is reserved. (reverse for E)","I see myself as someone who is generally trusting. (A)","I see myself as someone who tends to be lazy. (reverse for C)","I see myself as someone who is relaxed, handles stress well. (reverse for N)","I see myself as someone who has few artistic interests. (reverse for O)","I see myself as someone who is outgoing, sociable. (E)","I see myself as someone who tends to find fault with others. (reverse for A)","I see myself as someone who does a thorough job. (C)","I see myself as someone who gets nervous easily. (N)","I see myself as someone who has an active imagination. (O)"] },
   { id:"ask",      icon:"💬", label:"Ask the Coach",              desc:"Free-text question for the coach about your team.", scale:"open",
     questions:["What is one thing you would like the coach to weigh in on this week?"] },
-  { id:"360",      icon:"🔄", label:"360\u00b0 Feedback",            desc:"Multi-rater on a single observable behavior.", scale:"Likert 1-5",
-    questions:["This person communicates clearly under pressure.","This person follows through on commitments without prompting.","This person makes others feel safe to disagree.","This person owns mistakes before deflecting.","This person elevates the group\u2019s thinking, not just their own."] },
+  { id:"360",      icon:"🔄", label:"360° Feedback",            desc:"Multi-rater on a single observable behavior.", scale:"Likert 1-5",
+    questions:["This person communicates clearly under pressure.","This person follows through on commitments without prompting.","This person makes others feel safe to disagree.","This person owns mistakes before deflecting.","This person elevates the group’s thinking, not just their own."] },
   { id:"techskills", icon:"🛠️", label:"Top 3 Technical Skills",   desc:"Self-report. Helps the coach match team gaps to capacity.", scale:"text",
     questions:["Skill 1","Skill 2","Skill 3"] },
   { id:"peeves",   icon:"😤", label:"Pet Peeves",                  desc:"Three things that drain you in teams.", scale:"text",
@@ -3660,24 +3660,28 @@ function MBATeam(props) {
   var _act = useState(null); var actOpen = _act[0], setActOpen = _act[1];
   var _svy = useState(null); var svyOpen = _svy[0], setSvyOpen = _svy[1];
   var _ans = useState({}); var answers = _ans[0], setAnswers = _ans[1];
+  /* per-team saved surveys: { teamId: { surveyId: {ts, responses} } } */
   var _saved = useState({}); var savedSurveys = _saved[0], setSavedSurveys = _saved[1];
 
   useEffect(function(){
-    try { var v = localStorage.getItem("team_surveys"); if (v) setSavedSurveys(JSON.parse(v)); } catch(e){}
+    try { var v = localStorage.getItem("team_surveys_v2"); if (v) setSavedSurveys(JSON.parse(v)); } catch(e){}
   }, []);
 
-  function setAnswer(svyId, qIdx, val){
-    var key = svyId + ":" + qIdx;
+  /* Answers are scoped to teamId+":"+surveyId+":"+questionIndex */
+  function setAnswer(teamId, svyId, qIdx, val){
+    var key = teamId + ":" + svyId + ":" + qIdx;
     var next = Object.assign({}, answers); next[key] = val; setAnswers(next);
   }
-  function saveSurvey(svyId){
+  function saveSurvey(teamId, svyId){
     var s = TEAM_SURVEYS.filter(function(x){return x.id===svyId;})[0];
-    if (!s) return;
-    var responses = s.questions.map(function(_,i){ return answers[svyId+":"+i] || null; });
+    if (!s || !teamId) return;
+    var responses = s.questions.map(function(_,i){ return answers[teamId+":"+svyId+":"+i] || null; });
     var next = Object.assign({}, savedSurveys);
-    next[svyId] = { ts: Date.now(), responses: responses };
+    var teamMap = Object.assign({}, next[teamId] || {});
+    teamMap[svyId] = { ts: Date.now(), responses: responses };
+    next[teamId] = teamMap;
     setSavedSurveys(next);
-    try { localStorage.setItem("team_surveys", JSON.stringify(next)); } catch(e){}
+    try { localStorage.setItem("team_surveys_v2", JSON.stringify(next)); } catch(e){}
     setSvyOpen(null);
   }
 
@@ -3729,16 +3733,30 @@ function MBATeam(props) {
 
             {/* Avg attrs */}
             <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.12), marginBottom:12 }}>
-              <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:8 }}>COHORT AVERAGE · PIVOT</div>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8 }}>
+                <div style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3 }}>COHORT AVERAGE · PIVOT</div>
+                <div style={{ display:"flex", gap:10, fontSize:9, color:"rgba(255,255,255,0.55)" }}>
+                  <span style={{ display:"inline-flex", alignItems:"center", gap:4 }}><span style={{ width:14, height:6, borderRadius:3, background:"rgba(255,255,255,0.45)" }}></span>cohort</span>
+                  <span style={{ display:"inline-flex", alignItems:"center", gap:4 }}><span style={{ width:2, height:10, background:"#FFCC44" }}></span>you</span>
+                </div>
+              </div>
               {DIMS.map(function(d){
                 var v = avgAttrs[d];
+                var me = ATTRIBUTES.filter(function(a){return a.dim===d;})[0];
+                var myCur = me ? me.current : null;
                 return (
-                  <div key={d} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:6 }}>
+                  <div key={d} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:7 }}>
                     <div style={{ width:36, fontSize:12, fontWeight:700, color:PC[d] }}>{DIM_NAMES[d]}</div>
                     <div style={{ flex:1, height:8, borderRadius:4, background:rgba(PC[d],0.1), position:"relative" }}>
-                      <div style={{ position:"absolute", left:0, top:0, height:"100%", width:(v/5*100)+"%", background:rgba(PC[d],0.7), borderRadius:4 }}></div>
+                      <div style={{ position:"absolute", left:0, top:0, height:"100%", width:(v/5*100)+"%", background:rgba(PC[d],0.55), borderRadius:4 }}></div>
+                      {myCur!==null && (
+                        <div style={{ position:"absolute", left:(myCur/5*100)+"%", top:-3, bottom:-3, width:2, background:"#FFCC44", boxShadow:"0 0 4px rgba(255,204,68,0.6)" }} title={"You: "+myCur.toFixed(1)}></div>
+                      )}
                     </div>
-                    <div style={{ width:32, fontSize:12, fontWeight:700, color:"rgba(255,255,255,0.85)", textAlign:"right" }}>{v.toFixed(1)}</div>
+                    <div style={{ width:64, display:"flex", justifyContent:"flex-end", alignItems:"baseline", gap:4 }}>
+                      <span style={{ fontSize:10, color:"rgba(255,255,255,0.5)" }}>{v.toFixed(1)}</span>
+                      <span style={{ fontSize:12, fontWeight:700, color:"#FFCC44" }}>{myCur!==null ? myCur.toFixed(1) : "–"}</span>
+                    </div>
                   </div>
                 );
               })}
@@ -3807,9 +3825,9 @@ function MBATeam(props) {
                   <div onClick={function(){setTeamOpen(open?null:t.id);}} style={{ cursor:"pointer", display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:15, fontWeight:700, color:"#fff" }}>{t.name}</div>
-                      <div style={{ fontSize:12, color:"rgba(255,255,255,0.55)", marginTop:2 }}>{t.purpose} \u00b7 {t.role} \u00b7 {members.length} members</div>
+                      <div style={{ fontSize:12, color:"rgba(255,255,255,0.55)", marginTop:2 }}>{t.purpose} · {t.role} · {members.length} members</div>
                     </div>
-                    <div style={{ fontSize:14, color:"rgba(255,255,255,0.4)" }}>{open?"\u2303":"\u2304"}</div>
+                    <div style={{ fontSize:14, color:"rgba(255,255,255,0.4)" }}>{open?"⌃":"⌄"}</div>
                   </div>
                   {/* Mini PIVOT means */}
                   <div style={{ display:"flex", gap:6, marginTop:10 }}>
@@ -3828,6 +3846,9 @@ function MBATeam(props) {
                   </div>
                   {open && (
                     <div style={{ marginTop:12, paddingTop:10, borderTop:"1px solid rgba(255,255,255,0.08)" }}>
+                      <div style={{ fontSize:11, fontWeight:800, color:"#FFCC44", letterSpacing:1.5, marginBottom:10 }}>MANAGE MY TEAM</div>
+
+                      {/* Members */}
                       <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginBottom:8 }}>MEMBERS</div>
                       <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
                         {members.map(function(m){
@@ -3839,6 +3860,155 @@ function MBATeam(props) {
                             </div>
                           );
                         })}
+                      </div>
+
+                      {/* Activities */}
+                      <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginTop:16, marginBottom:8 }}>ACTIVITIES · AI-ASSISTED</div>
+                      {TEAM_ACTIVITIES.map(function(a){
+                        var aKey = t.id + ":" + a.id;
+                        var openA = actOpen===aKey;
+                        return (
+                          <div key={a.id} style={{ marginBottom:6 }}>
+                            <div onClick={function(){setActOpen(openA?null:aKey);}} style={{ padding:"10px 12px", borderRadius:10, background:openA?rgba(CB,0.1):"rgba(255,255,255,0.04)", border:"1px solid "+(openA?rgba(CB,0.35):"rgba(255,255,255,0.08)"), cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
+                              <span style={{ fontSize:18 }}>{a.icon}</span>
+                              <div style={{ flex:1 }}>
+                                <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{a.label}</div>
+                                <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{a.desc}</div>
+                              </div>
+                              <span style={{ fontSize:11, color:openA?"#FFCC44":"rgba(255,255,255,0.4)", padding:"3px 8px", borderRadius:8, background:openA?"rgba(255,204,68,0.12)":"rgba(255,204,68,0.06)", border:"1px solid "+(openA?"rgba(255,204,68,0.4)":"rgba(255,204,68,0.18)"), whiteSpace:"nowrap", fontWeight:700 }}>✨ Coach</span>
+                            </div>
+                            {openA && (
+                              <div style={{ padding:"10px 14px", marginTop:4, borderRadius:10, background:"rgba(255,204,68,0.05)", border:"1px solid rgba(255,204,68,0.2)" }}>
+                                <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:1.3, marginBottom:6 }}>COACH SAMPLE OUTPUT</div>
+                                <div style={{ fontSize:12, color:"rgba(255,255,255,0.78)", lineHeight:1.55 }}>{a.sample}</div>
+                                <div style={{ display:"inline-block", marginTop:10, padding:"5px 12px", borderRadius:10, background:"rgba(255,204,68,0.15)", border:"1px solid rgba(255,204,68,0.45)", fontSize:11, fontWeight:700, color:"#FFCC44", cursor:"pointer" }}>Run with my team →</div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* Surveys */}
+                      <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginTop:16, marginBottom:8 }}>TEAM SURVEYS · DIAGNOSTICS</div>
+                      {TEAM_SURVEYS.map(function(s){
+                        var sKey = t.id + ":" + s.id;
+                        var openS = svyOpen===sKey;
+                        var teamSaved = (savedSurveys[t.id] || {})[s.id];
+                        var done = !!teamSaved;
+                        return (
+                          <div key={s.id} style={{ marginBottom:6 }}>
+                            <div onClick={function(){setSvyOpen(openS?null:sKey);}} style={{ padding:"10px 12px", borderRadius:10, background:openS?rgba(CB,0.1):"rgba(255,255,255,0.04)", border:"1px solid "+(openS?rgba(CB,0.35):"rgba(255,255,255,0.08)"), cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
+                              <span style={{ fontSize:18 }}>{s.icon}</span>
+                              <div style={{ flex:1 }}>
+                                <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{s.label}</div>
+                                <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{s.desc}</div>
+                              </div>
+                              {done?<span style={{ fontSize:10, color:"#7ad99a", padding:"3px 8px", borderRadius:8, background:"rgba(80,200,120,0.12)", border:"1px solid rgba(80,200,120,0.35)", fontWeight:700 }}>✓ Saved</span>
+                                   :<span style={{ fontSize:10, color:"rgba(255,255,255,0.6)", padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", fontWeight:700 }}>{s.scale}</span>}
+                            </div>
+                            {openS && (
+                              <div style={{ padding:"12px 14px", marginTop:4, borderRadius:10, background:"rgba(123,175,212,0.05)", border:"1px solid rgba(123,175,212,0.2)" }}>
+                                {s.questions.map(function(q,qi){
+                                  var ak = t.id + ":" + s.id + ":" + qi;
+                                  var v = answers[ak];
+                                  var isText = s.scale==="text" || s.scale==="open";
+                                  return (
+                                    <div key={qi} style={{ marginBottom:14 }}>
+                                      <div style={{ fontSize:12, color:"rgba(255,255,255,0.85)", lineHeight:1.45, marginBottom:6 }}>{(qi+1)+". "+q}</div>
+                                      {isText
+                                        ? <input type="text" value={v||""} onChange={function(ev){setAnswer(t.id,s.id,qi,ev.target.value);}} placeholder="Type your answer…" style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:6, padding:"7px 9px", color:"#fff", fontSize:12, fontFamily:FONT, outline:"none" }}/>
+                                        : <div style={{ display:"flex", gap:5 }}>{[1,2,3,4,5].map(function(n){ var on=v===n; return <div key={n} onClick={function(){setAnswer(t.id,s.id,qi,n);}} style={{ flex:1, padding:"6px 4px", borderRadius:6, background:on?rgba(CB,0.25):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.6):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.7)", fontSize:12, fontWeight:700, textAlign:"center", cursor:"pointer" }}>{n}</div>;})}</div>
+                                      }
+                                    </div>
+                                  );
+                                })}
+                                <div style={{ display:"flex", justifyContent:"flex-end", gap:8 }}>
+                                  <div onClick={function(){setSvyOpen(null);}} style={{ padding:"6px 12px", borderRadius:8, fontSize:12, color:"rgba(255,255,255,0.6)", cursor:"pointer" }}>Cancel</div>
+                                  <div onClick={function(){saveSurvey(t.id,s.id);}} style={{ padding:"6px 14px", borderRadius:8, background:rgba(CB,0.2), border:"1px solid "+rgba(CB,0.5), fontSize:12, color:"#fff", fontWeight:700, cursor:"pointer" }}>Save</div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+
+                      {/* Team Health Dashboard */}
+                      {(function(){
+                        var likertIds = ["trust","safety","conflict","commit","accountability"];
+                        var teamMap = savedSurveys[t.id] || {};
+                        var rows = likertIds.map(function(id){
+                          var sObj = TEAM_SURVEYS.filter(function(x){return x.id===id;})[0];
+                          var saved = teamMap[id];
+                          var avg = null;
+                          if (saved && saved.responses){
+                            var nums = saved.responses.filter(function(r){return typeof r==="number";});
+                            if (nums.length) avg = nums.reduce(function(a,b){return a+b;},0)/nums.length;
+                          }
+                          return { id:id, label:sObj.label, icon:sObj.icon, avg:avg };
+                        });
+                        var doneCount = rows.filter(function(r){return r.avg!==null;}).length;
+                        var nonNull = rows.filter(function(r){return r.avg!==null;});
+                        var overallAvg = nonNull.length ? nonNull.reduce(function(a,b){return a+b.avg;},0)/nonNull.length : null;
+                        var meanStd = DIMS.reduce(function(a,d){return a+stdev(members.map(function(m){return m.attrs[d];}));},0)/DIMS.length;
+                        var sup = members.length>=2 ? Math.max(0, Math.min(100, Math.round((1 - meanStd/1.2)*100))) : null;
+                        var comp = members.length>=2 ? Math.max(0, Math.min(100, Math.round(meanStd/1.2*100))) : null;
+                        return (
+                          <div style={{ marginTop:18 }}>
+                            <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>TEAM HEALTH DASHBOARD</div>
+                            <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.18), marginBottom:10 }}>
+                              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8 }}>
+                                <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>Health Report</div>
+                                <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>{doneCount}/{likertIds.length} surveys saved</div>
+                              </div>
+                              {overallAvg!==null && (
+                                <div style={{ display:"flex", alignItems:"baseline", gap:8, marginBottom:10 }}>
+                                  <div style={{ fontSize:24, fontWeight:800, color:"#fff" }}>{overallAvg.toFixed(1)}</div>
+                                  <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>average across saved scales · 1-5</div>
+                                </div>
+                              )}
+                              {rows.map(function(r){
+                                var pct = r.avg!==null ? (r.avg/5)*100 : 0;
+                                var col = r.avg===null ? "rgba(255,255,255,0.2)" : (r.avg>=4 ? "#7ad99a" : r.avg>=3 ? "#FFCC44" : "#ff8b6b");
+                                return (
+                                  <div key={r.id} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
+                                    <span style={{ fontSize:14, width:18 }}>{r.icon}</span>
+                                    <div style={{ flex:1, fontSize:12, color:"rgba(255,255,255,0.8)" }}>{r.label}</div>
+                                    <div style={{ width:90, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
+                                      <div style={{ position:"absolute", left:0, top:0, height:"100%", width:pct+"%", background:col, borderRadius:3 }}></div>
+                                    </div>
+                                    <div style={{ width:30, fontSize:11, fontWeight:700, color: r.avg!==null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.3)", textAlign:"right" }}>{r.avg!==null ? r.avg.toFixed(1) : "–"}</div>
+                                  </div>
+                                );
+                              })}
+                              {doneCount===0 && <div style={{ fontSize:11, color:"rgba(255,255,255,0.45)", marginTop:6, fontStyle:"italic" }}>Take any of the surveys above to populate this report.</div>}
+                            </div>
+                            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
+                              <div style={{ padding:"12px 12px", borderRadius:12, background:rgba("#7ad99a",0.06), border:"1px solid "+rgba("#7ad99a",0.25) }}>
+                                <div style={{ fontSize:11, fontWeight:700, color:"#7ad99a", letterSpacing:1.2 }}>SUPPLEMENTARY FIT</div>
+                                <div style={{ fontSize:22, fontWeight:800, color:"#fff", marginTop:4 }}>{sup!==null ? sup+"%" : "–"}</div>
+                                <div style={{ fontSize:10, color:"rgba(255,255,255,0.55)", marginTop:4, lineHeight:1.4 }}>How similar members are on PIVOT. High = aligned culture, fast trust.</div>
+                              </div>
+                              <div style={{ padding:"12px 12px", borderRadius:12, background:rgba("#FFCC44",0.06), border:"1px solid "+rgba("#FFCC44",0.25) }}>
+                                <div style={{ fontSize:11, fontWeight:700, color:"#FFCC44", letterSpacing:1.2 }}>COMPLEMENTARY FIT</div>
+                                <div style={{ fontSize:22, fontWeight:800, color:"#fff", marginTop:4 }}>{comp!==null ? comp+"%" : "–"}</div>
+                                <div style={{ fontSize:10, color:"rgba(255,255,255,0.55)", marginTop:4, lineHeight:1.4 }}>How different members are. High = cognitive variety, more friction worth managing.</div>
+                              </div>
+                            </div>
+                            <div style={{ padding:"10px 12px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.15) }}>
+                              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
+                                <div style={{ fontSize:12, fontWeight:700, color:"rgba(255,255,255,0.85)" }}>Skill Coverage</div>
+                                <div style={{ fontSize:12, color:"#7ad99a", fontWeight:700 }}>{coverageCount}/30</div>
+                              </div>
+                              <div style={{ marginTop:6, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
+                                <div style={{ position:"absolute", left:0, top:0, height:"100%", width:(coverageCount/30*100)+"%", background:"#7ad99a", borderRadius:3 }}></div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      <div style={{ marginTop:14 }}>
+                        <div onClick={function(){setTeamOpen(null);}} style={{ display:"inline-block", padding:"7px 14px", borderRadius:10, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.12)", fontSize:12, color:"rgba(255,255,255,0.7)", cursor:"pointer", fontWeight:600 }}>Close</div>
                       </div>
                     </div>
                   )}
@@ -3918,12 +4088,12 @@ function MBATeam(props) {
                   {/* Coach recommendation card */}
                   <div style={{ padding:"12px 14px", borderRadius:12, background:"linear-gradient(135deg,"+rgba(CB,0.1)+","+rgba("#FFCC44",0.04)+")", border:"1px solid "+rgba("#FFCC44",0.3), marginBottom:14 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6 }}>
-                      <span style={{ fontSize:14 }}>\u2728</span>
+                      <span style={{ fontSize:14 }}>✨</span>
                       <span style={{ fontSize:11, fontWeight:700, color:"#FFCC44", letterSpacing:1.3 }}>COACH SUGGESTS</span>
                     </div>
-                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)", lineHeight:1.5, marginBottom:10 }}>For a {tt.label.toLowerCase()}, weight toward <b style={{color:"#fff"}}>{DIMS.slice().sort(function(a,b){return tt.emphasis[b]-tt.emphasis[a];}).slice(0,2).map(function(d){return DIM_NAMES[d];}).join(" + ")}</b>. Aim for {tt.size} people with complementary dominant dimensions. Coverage on: {tt.needSkills.map(function(sk){var s=skillBy(sk);return s?s.label:sk;}).slice(0,3).join(" \u00b7 ")}\u2026</div>
+                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.7)", lineHeight:1.5, marginBottom:10 }}>For a {tt.label.toLowerCase()}, weight toward <b style={{color:"#fff"}}>{DIMS.slice().sort(function(a,b){return tt.emphasis[b]-tt.emphasis[a];}).slice(0,2).map(function(d){return DIM_NAMES[d];}).join(" + ")}</b>. Aim for {tt.size} people with complementary dominant dimensions. Coverage on: {tt.needSkills.map(function(sk){var s=skillBy(sk);return s?s.label:sk;}).slice(0,3).join(" · ")}…</div>
                     <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:8 }}>
-                      {coachRec.map(function(m){var dd=dominantDim(m);return <div key={m.id} style={{ padding:"4px 8px", borderRadius:12, background:rgba(PC[dd],0.15), border:"1px solid "+rgba(PC[dd],0.35), fontSize:11, color:"#fff" }}>{m.initials} \u00b7 {dd}</div>;})}
+                      {coachRec.map(function(m){var dd=dominantDim(m);return <div key={m.id} style={{ padding:"4px 8px", borderRadius:12, background:rgba(PC[dd],0.15), border:"1px solid "+rgba(PC[dd],0.35), fontSize:11, color:"#fff" }}>{m.initials} · {dd}</div>;})}
                     </div>
                     <div onClick={acceptCoach} style={{ display:"inline-block", padding:"6px 14px", borderRadius:10, background:"rgba(255,204,68,0.2)", border:"1px solid rgba(255,204,68,0.5)", fontSize:12, fontWeight:700, color:"#FFCC44", cursor:"pointer" }}>Accept this team</div>
                   </div>
@@ -3931,7 +4101,7 @@ function MBATeam(props) {
                   {/* Your selection preview */}
                   {picked.length>0 && (
                     <div style={{ padding:"10px 12px", borderRadius:10, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.15), marginBottom:12 }}>
-                      <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:6 }}>YOUR SELECTION \u00b7 {picked.length}/{tt.size}</div>
+                      <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.5)", letterSpacing:1.3, marginBottom:6 }}>YOUR SELECTION · {picked.length}/{tt.size}</div>
                       <div style={{ display:"flex", gap:6, marginBottom:6 }}>
                         {DIMS.map(function(d){return <div key={d} style={{ flex:1, textAlign:"center" }}><div style={{ fontSize:9, fontWeight:700, color:rgba(PC[d],0.75) }}>{d}</div><div style={{ fontSize:12, fontWeight:700, color:"#fff" }}>{(pickedMeans[d]||0).toFixed(1)}</div></div>;})}
                       </div>
@@ -3943,7 +4113,7 @@ function MBATeam(props) {
                   )}
 
                   {/* Ranked cohort — tap to add/remove */}
-                  <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginBottom:6 }}>COHORT \u00b7 RANKED BY FIT</div>
+                  <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.3, marginBottom:6 }}>COHORT · RANKED BY FIT</div>
                   <div>
                     {ranked.filter(function(s){return !s.isMe;}).slice(0,18).map(function(s){
                       var on = picks.indexOf(s.id)>=0;
@@ -3954,7 +4124,7 @@ function MBATeam(props) {
                           <div style={{ width:30, height:30, borderRadius:"50%", background:rgba(PC[dd],0.2), display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:"#fff" }}>{s.initials}</div>
                           <div style={{ flex:1 }}>
                             <div style={{ fontSize:13, fontWeight:600, color:"#fff" }}>{s.name}</div>
-                            <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>{s.focus} \u00b7 strongest {DIM_NAMES[dd]} {s.attrs[dd].toFixed(1)}</div>
+                            <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>{s.focus} · strongest {DIM_NAMES[dd]} {s.attrs[dd].toFixed(1)}</div>
                           </div>
                           <div style={{ fontSize:11, fontWeight:700, color:on?"#fff":"rgba(255,255,255,0.5)", minWidth:32, textAlign:"right" }}>{ms}%</div>
                         </div>
@@ -3962,170 +4132,6 @@ function MBATeam(props) {
                     })}
                   </div>
 
-                  {/* AI-assisted Activities */}
-                  <div style={{ marginTop:18 }}>
-                    <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>ACTIVITIES \u00b7 AI-ASSISTED</div>
-                    <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)", marginBottom:10, lineHeight:1.45 }}>Run any of these with the coach once your team is set.</div>
-                    {TEAM_ACTIVITIES.map(function(a){
-                      var open = actOpen===a.id;
-                      return (
-                        <div key={a.id} style={{ marginBottom:6 }}>
-                          <div onClick={function(){setActOpen(open?null:a.id);}} style={{ padding:"10px 12px", borderRadius:10, background:open?rgba(CB,0.1):"rgba(255,255,255,0.04)", border:"1px solid "+(open?rgba(CB,0.35):"rgba(255,255,255,0.08)"), cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
-                            <span style={{ fontSize:18 }}>{a.icon}</span>
-                            <div style={{ flex:1 }}>
-                              <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{a.label}</div>
-                              <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{a.desc}</div>
-                            </div>
-                            <span style={{ fontSize:11, color:open?"#FFCC44":"rgba(255,255,255,0.4)", padding:"3px 8px", borderRadius:8, background:open?"rgba(255,204,68,0.12)":"rgba(255,204,68,0.06)", border:"1px solid "+(open?"rgba(255,204,68,0.4)":"rgba(255,204,68,0.18)"), whiteSpace:"nowrap", fontWeight:700 }}>\u2728 Coach</span>
-                          </div>
-                          {open && (
-                            <div style={{ padding:"10px 14px", marginTop:4, borderRadius:10, background:"rgba(255,204,68,0.05)", border:"1px solid rgba(255,204,68,0.2)" }}>
-                              <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:1.3, marginBottom:6 }}>COACH SAMPLE OUTPUT</div>
-                              <div style={{ fontSize:12, color:"rgba(255,255,255,0.78)", lineHeight:1.55 }}>{a.sample}</div>
-                              <div onClick={function(e){e.stopPropagation();}} style={{ display:"inline-block", marginTop:10, padding:"5px 12px", borderRadius:10, background:"rgba(255,204,68,0.15)", border:"1px solid rgba(255,204,68,0.45)", fontSize:11, fontWeight:700, color:"#FFCC44", cursor:"pointer" }}>Run with my team \u2192</div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Team Surveys / Scales */}
-                  <div style={{ marginTop:18 }}>
-                    <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>TEAM SURVEYS \u00b7 DIAGNOSTICS</div>
-                    <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)", marginBottom:10, lineHeight:1.45 }}>Validated scales and quick reflections. Take any in 60 seconds; results feed your team health dashboard.</div>
-                    {TEAM_SURVEYS.map(function(s){
-                      var open = svyOpen===s.id;
-                      var done = !!savedSurveys[s.id];
-                      return (
-                        <div key={s.id} style={{ marginBottom:6 }}>
-                          <div onClick={function(){setSvyOpen(open?null:s.id);}} style={{ padding:"10px 12px", borderRadius:10, background:open?rgba(CB,0.1):"rgba(255,255,255,0.04)", border:"1px solid "+(open?rgba(CB,0.35):"rgba(255,255,255,0.08)"), cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
-                            <span style={{ fontSize:18 }}>{s.icon}</span>
-                            <div style={{ flex:1 }}>
-                              <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{s.label}</div>
-                              <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{s.desc}</div>
-                            </div>
-                            {done?<span style={{ fontSize:10, color:"#7ad99a", padding:"3px 8px", borderRadius:8, background:"rgba(80,200,120,0.12)", border:"1px solid rgba(80,200,120,0.35)", fontWeight:700 }}>\u2713 Saved</span>
-                                 :<span style={{ fontSize:10, color:"rgba(255,255,255,0.6)", padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", fontWeight:700 }}>{s.scale}</span>}
-                          </div>
-                          {open && (
-                            <div style={{ padding:"12px 14px", marginTop:4, borderRadius:10, background:"rgba(123,175,212,0.05)", border:"1px solid rgba(123,175,212,0.2)" }}>
-                              {s.questions.map(function(q,qi){
-                                var key = s.id + ":" + qi;
-                                var v = answers[key];
-                                var isText = s.scale==="text" || s.scale==="open";
-                                return (
-                                  <div key={qi} style={{ marginBottom:14 }}>
-                                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.85)", lineHeight:1.45, marginBottom:6 }}>{(qi+1)+". "+q}</div>
-                                    {isText
-                                      ? <input type="text" value={v||""} onChange={function(ev){setAnswer(s.id,qi,ev.target.value);}} placeholder="Type your answer\u2026" style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:6, padding:"7px 9px", color:"#fff", fontSize:12, fontFamily:FONT, outline:"none" }}/>
-                                      : <div style={{ display:"flex", gap:5 }}>{[1,2,3,4,5].map(function(n){ var on=v===n; return <div key={n} onClick={function(){setAnswer(s.id,qi,n);}} style={{ flex:1, padding:"6px 4px", borderRadius:6, background:on?rgba(CB,0.25):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.6):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.7)", fontSize:12, fontWeight:700, textAlign:"center", cursor:"pointer" }}>{n}</div>;})}</div>
-                                    }
-                                  </div>
-                                );
-                              })}
-                              <div style={{ display:"flex", justifyContent:"flex-end", gap:8 }}>
-                                <div onClick={function(){setSvyOpen(null);}} style={{ padding:"6px 12px", borderRadius:8, fontSize:12, color:"rgba(255,255,255,0.6)", cursor:"pointer" }}>Cancel</div>
-                                <div onClick={function(){saveSurvey(s.id);}} style={{ padding:"6px 14px", borderRadius:8, background:rgba(CB,0.2), border:"1px solid "+rgba(CB,0.5), fontSize:12, color:"#fff", fontWeight:700, cursor:"pointer" }}>Save</div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  {/* Team Health Dashboard */}
-                  {(function(){
-                    /* Compute average across saved Likert surveys (1-5 scale) — Likert IDs only */
-                    var likertIds = ["trust","safety","conflict","commit","accountability"];
-                    var rows = likertIds.map(function(id){
-                      var s = TEAM_SURVEYS.filter(function(x){return x.id===id;})[0];
-                      var saved = savedSurveys[id];
-                      var avg = null;
-                      if (saved && saved.responses){
-                        var nums = saved.responses.filter(function(r){return typeof r==="number";});
-                        if (nums.length) avg = nums.reduce(function(a,b){return a+b;},0)/nums.length;
-                      }
-                      return { id:id, label:s.label, icon:s.icon, avg:avg };
-                    });
-                    var doneCount = rows.filter(function(r){return r.avg!==null;}).length;
-                    var overallAvg = null;
-                    var nonNull = rows.filter(function(r){return r.avg!==null;});
-                    if (nonNull.length) overallAvg = nonNull.reduce(function(a,b){return a+b.avg;},0)/nonNull.length;
-
-                    /* Supplementary fit: how similar members are on PIVOT (low stdev = high sup fit) */
-                    var members = picks.map(getStudent).filter(Boolean);
-                    var sup = null, comp = null;
-                    if (members.length>=2){
-                      var meanStd = DIMS.reduce(function(a,d){return a+stdev(members.map(function(m){return m.attrs[d];}));},0)/DIMS.length;
-                      sup = Math.max(0, Math.min(100, Math.round((1 - meanStd/1.2)*100)));
-                      comp = Math.max(0, Math.min(100, Math.round(meanStd/1.2*100)));
-                    }
-                    var skillCover = {};
-                    members.forEach(function(m){ m.skills.forEach(function(sid){ skillCover[sid]=1; }); });
-                    var coverage = Object.keys(skillCover).length;
-
-                    return (
-                      <div style={{ marginTop:18 }}>
-                        <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>TEAM HEALTH DASHBOARD</div>
-
-                        {/* Health report */}
-                        <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.18), marginBottom:10 }}>
-                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8 }}>
-                            <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>Health Report</div>
-                            <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>{doneCount}/{likertIds.length} surveys saved</div>
-                          </div>
-                          {overallAvg!==null && (
-                            <div style={{ display:"flex", alignItems:"baseline", gap:8, marginBottom:10 }}>
-                              <div style={{ fontSize:24, fontWeight:800, color:"#fff" }}>{overallAvg.toFixed(1)}</div>
-                              <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>average across saved scales \u00b7 1-5</div>
-                            </div>
-                          )}
-                          {rows.map(function(r){
-                            var pct = r.avg!==null ? (r.avg/5)*100 : 0;
-                            var col = r.avg===null ? "rgba(255,255,255,0.2)" : (r.avg>=4 ? "#7ad99a" : r.avg>=3 ? "#FFCC44" : "#ff8b6b");
-                            return (
-                              <div key={r.id} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
-                                <span style={{ fontSize:14, width:18 }}>{r.icon}</span>
-                                <div style={{ flex:1, fontSize:12, color:"rgba(255,255,255,0.8)" }}>{r.label}</div>
-                                <div style={{ width:90, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
-                                  <div style={{ position:"absolute", left:0, top:0, height:"100%", width:pct+"%", background:col, borderRadius:3 }}></div>
-                                </div>
-                                <div style={{ width:30, fontSize:11, fontWeight:700, color: r.avg!==null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.3)", textAlign:"right" }}>{r.avg!==null ? r.avg.toFixed(1) : "\u2013"}</div>
-                              </div>
-                            );
-                          })}
-                          {doneCount===0 && <div style={{ fontSize:11, color:"rgba(255,255,255,0.45)", marginTop:6, fontStyle:"italic" }}>Take any of the surveys above to populate this report.</div>}
-                        </div>
-
-                        {/* Sup vs Comp fit */}
-                        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
-                          <div style={{ padding:"12px 12px", borderRadius:12, background:rgba("#7ad99a",0.06), border:"1px solid "+rgba("#7ad99a",0.25) }}>
-                            <div style={{ fontSize:11, fontWeight:700, color:"#7ad99a", letterSpacing:1.2 }}>SUPPLEMENTARY FIT</div>
-                            <div style={{ fontSize:22, fontWeight:800, color:"#fff", marginTop:4 }}>{sup!==null ? sup+"%" : "\u2013"}</div>
-                            <div style={{ fontSize:10, color:"rgba(255,255,255,0.55)", marginTop:4, lineHeight:1.4 }}>How similar members are on PIVOT. High = aligned culture, fast trust.</div>
-                          </div>
-                          <div style={{ padding:"12px 12px", borderRadius:12, background:rgba("#FFCC44",0.06), border:"1px solid "+rgba("#FFCC44",0.25) }}>
-                            <div style={{ fontSize:11, fontWeight:700, color:"#FFCC44", letterSpacing:1.2 }}>COMPLEMENTARY FIT</div>
-                            <div style={{ fontSize:22, fontWeight:800, color:"#fff", marginTop:4 }}>{comp!==null ? comp+"%" : "\u2013"}</div>
-                            <div style={{ fontSize:10, color:"rgba(255,255,255,0.55)", marginTop:4, lineHeight:1.4 }}>How different members are. High = cognitive variety, more friction worth managing.</div>
-                          </div>
-                        </div>
-
-                        {/* Coverage strip */}
-                        <div style={{ padding:"10px 12px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.15), marginBottom:6 }}>
-                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
-                            <div style={{ fontSize:12, fontWeight:700, color:"rgba(255,255,255,0.85)" }}>Skill Coverage</div>
-                            <div style={{ fontSize:12, color:"#7ad99a", fontWeight:700 }}>{coverage}/30</div>
-                          </div>
-                          <div style={{ marginTop:6, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
-                            <div style={{ position:"absolute", left:0, top:0, height:"100%", width:(coverage/30*100)+"%", background:"#7ad99a", borderRadius:3 }}></div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
                 </div>
               );
             })()}
@@ -4913,7 +4919,7 @@ function MBAAssistant(props) {
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 16, color: "#fff", fontWeight: 700,
             flexShrink: 0,
-          }}>{"\u2191"}</button>
+          }}>{"↑"}</button>
         </div>
       </div>
 
