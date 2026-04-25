@@ -528,7 +528,7 @@ function UBPJourney(props) {
   var pCol = path?path.color:CB;
   var careerSet = path?path.skills.reduce(function(a,k){a[k]=1;return a;},{}):null;
   var selSkillObj = selSkill?skillBy(selSkill):null;
-  var selExpObj = selExp?expBy(selExp):null;
+  var selExpObj = selExp?ubp_expBy(selExp):null;
   var earnedCount = Object.keys(EARNED).length;
   var totalCount = SKILLS.length;
 
@@ -776,14 +776,14 @@ function UBPJourney(props) {
               <div style={{marginBottom:10}}>
                 <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Earned through</div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                  {earnedVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.85)",cursor:"pointer"}}>{UBP_EXP_ICON[e.type]} {e.label}</span>;})}
+                  {ubp_earnedVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.1),border:"1px solid "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.85)",cursor:"pointer"}}>{UBP_EXP_ICON[e.type]} {e.label}</span>;})}
                 </div>
               </div>
             ):(
               <div style={{marginBottom:10}}>
                 <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Develop through</div>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                  {willEarnVia(selSkillObj.id, earnedPreset).length?willEarnVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.05),border:"1px dashed "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.65)",cursor:"pointer"}}>{UBP_EXP_ICON[e.type]} {e.label}</span>;}):<span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>No tagged experiences yet — explore electives and immersions.</span>}
+                  {ubp_willEarnVia(selSkillObj.id, earnedPreset).length?ubp_willEarnVia(selSkillObj.id, earnedPreset).map(function(e){return <span key={e.id} onClick={function(){toggleExp(e.id);}} style={{fontSize:11,padding:"4px 9px",borderRadius:10,background:rgba(PC[selSkillObj.dim],0.05),border:"1px dashed "+rgba(PC[selSkillObj.dim],0.3),color:"rgba(255,255,255,0.65)",cursor:"pointer"}}>{UBP_EXP_ICON[e.type]} {e.label}</span>;}):<span style={{fontSize:12,color:"rgba(255,255,255,0.35)"}}>No tagged experiences yet — explore electives and immersions.</span>}
                 </div>
               </div>
             )}
@@ -802,7 +802,7 @@ function UBPJourney(props) {
                       /* Coach-generated Socratic prompt, grounded in how this skill was earned (or will develop) */
                       var sk=selSkillObj;
                       var earned=!!earnedState[sk.id];
-                      var src=earned?earnedVia(sk.id,earnedPreset):willEarnVia(sk.id,earnedPreset);
+                      var src=earned?ubp_earnedVia(sk.id,earnedPreset):ubp_willEarnVia(sk.id,earnedPreset);
                       var sourceName = src.length ? src[0].label : (earned?"a recent experience":"an upcoming experience");
                       var prompts = earned ? [
                         "Think about "+sourceName+". What did you notice about yourself in a moment when this skill was tested?",
@@ -833,13 +833,13 @@ function UBPJourney(props) {
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
                   <span style={{fontSize:18}}>{UBP_EXP_ICON[selExpObj.type]||"★"}</span>
                   <span style={{fontSize:16,fontWeight:700,color:"#fff"}}>{selExpObj.label}</span>
-                  {isDone(selExpObj, earnedPreset)?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>DONE</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(CB,0.12),color:rgba(CB,0.85),fontWeight:600,letterSpacing:0.3}}>UPCOMING</span>}
+                  {ubp_isDone(selExpObj, earnedPreset)?<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba("#50C878",0.15),color:"#50C878",fontWeight:600,letterSpacing:0.3}}>DONE</span>:<span style={{fontSize:10,padding:"2px 8px",borderRadius:10,background:rgba(CB,0.12),color:rgba(CB,0.85),fontWeight:600,letterSpacing:0.3}}>UPCOMING</span>}
                 </div>
                 <div style={{fontSize:12,color:"rgba(255,255,255,0.4)"}}>{selExpObj.type.charAt(0).toUpperCase()+selExpObj.type.slice(1)} · {UBP_BUCKETS[selExpObj.bucket]?UBP_BUCKETS[selExpObj.bucket].label:""}</div>
               </div>
               <div onClick={function(){setSelExp(null);}} style={{padding:"4px 10px",borderRadius:8,cursor:"pointer",background:rgba(CB,0.08),fontSize:13,color:"rgba(255,255,255,0.5)"}}>✕</div>
             </div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{isDone(selExpObj, earnedPreset)?"Developed these skills":"Will develop these skills"}</div>
+            <div style={{fontSize:11,color:"rgba(255,255,255,0.4)",letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>{ubp_isDone(selExpObj, earnedPreset)?"Developed these skills":"Will develop these skills"}</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
               {selExpObj.skills.map(function(sid){var sk=skillBy(sid);if(!sk)return null;var col=PC[sk.dim];var ear=!!earnedState[sid];return <span key={sid} onClick={function(){toggleSkill(sid);}} style={{fontSize:11,padding:"4px 10px",borderRadius:10,background:rgba(col,ear?0.15:0.05),border:"1px "+(ear?"solid":"dashed")+" "+rgba(col,ear?0.5:0.3),color:ear?"#fff":"rgba(255,255,255,0.7)",cursor:"pointer",display:"inline-flex",alignItems:"center",gap:5}}><span style={{width:6,height:6,borderRadius:"50%",background:col,display:"inline-block"}}></span>{sk.label}</span>;})}
             </div>
@@ -1573,6 +1573,13 @@ var UBP_PATHS = [
   { id:"realestate",   label:"Real Estate",      color:"#C9A96E",  goalLabel:"Real Estate Analyst",
     skills:["s13","s15","s20","s7","s8","s24","s22","s4","s21","s29","s19","s11"],
     floor:{O:2.8, V:2.5, I:2.5} },
+  /* Idealistic / impact-oriented options — undergrads often weigh these alongside the mainstream */
+  { id:"social",       label:"Social Impact",    color:"#FF6B6B",  goalLabel:"Social Impact Leader",
+    skills:["s6","s3","s5","s4","s18","s14","s7","s11","s9","s19","s29","s25"],
+    floor:{P:3.0, I:2.8, V:2.5} },
+  { id:"innovation",   label:"Innovation / Climate", color:"#50C878", goalLabel:"Innovation & Sustainability",
+    skills:["s15","s17","s14","s30","s27","s26","s18","s19","s11","s6","s25","s13"],
+    floor:{V:2.7, T:2.7, P:2.7} },
 ];
 
 /* 5 milestone snapshots across the 4-year UBP journey */
@@ -1748,6 +1755,14 @@ var UBP_EXPERIENCES = [
   { id:"u20", label:"Graduation",                     type:"capstone",  bucket:7, x:96, done:false, skills:["s20","s28","s29"] },
 ];
 var UBP_EXP_ICON = { course:"📖", assessment:"📊", coaching:"🎯", club:"👥", immersion:"🌍", reflection:"✍️", project:"🏗️", event:"🎯", global:"🌍", internship:"💼", capstone:"🎓", competition:"🏆" };
+
+/* UBP-specific helpers (mirror MBA helpers but reference UBP data) */
+function ubp_isDone(e, preset){ return e.bucket <= (UBP_DONE_CUTOFF[preset] !== undefined ? UBP_DONE_CUTOFF[preset] : 1); }
+function ubp_earnedVia(sid, preset){return UBP_EXPERIENCES.filter(function(e){return ubp_isDone(e,preset||"y2") && e.skills.indexOf(sid)>=0;});}
+function ubp_willEarnVia(sid, preset){return UBP_EXPERIENCES.filter(function(e){return !ubp_isDone(e,preset||"y2") && e.skills.indexOf(sid)>=0;});}
+function ubp_expsTaggingSkill(sid){return UBP_EXPERIENCES.filter(function(e){return e.skills.indexOf(sid)>=0;});}
+function ubp_expBy(id){for(var i=0;i<UBP_EXPERIENCES.length;i++)if(UBP_EXPERIENCES[i].id===id)return UBP_EXPERIENCES[i];return null;}
+function ubp_getStudent(id){for(var i=0;i<UBP_COHORT.length;i++)if(UBP_COHORT[i].id===id)return UBP_COHORT[i];return null;}
 
 function UBPIndex(props) {
   var CB = "#4B9CD3";
