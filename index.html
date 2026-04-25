@@ -133,8 +133,8 @@ var DEFAULT_NAV_ITEMS = [
 ];
 /* MBA nav (new IA: Journey, Progress, Team, Network, Coach) */
 var MBA_NAV_ITEMS = [
-  { k: "journey",  l: "Journey",  i: "✦" },
   { k: "progress", l: "Progress", i: "◉" },
+  { k: "journey",  l: "Journey",  i: "✦" },
   { k: "team",     l: "Team",     i: "◈" },
   { k: "network",  l: "Network",  i: "◧" },
   { k: "coach",    l: "Coach",    i: "✧" },
@@ -4948,7 +4948,7 @@ function PIVOTApp() {
 
   function handleProgramSelect(prog) {
     setProgram(prog);
-    setScreen("journey");
+    setScreen(prog === "mba" ? "progress" : "journey");
     setTimeout(function () { setFadeIn(true); }, 50);
   }
 
