@@ -3608,6 +3608,44 @@ var TASK_TYPES = [
   { id:"pitch",    label:"Presentation Pitch",    size:3, desc:"Persuade an audience; narrative and presence matter.",                   emphasis:{V:0.3,I:0.3,P:0.2,O:0.15,T:0.05}, needSkills:["s14","s18","s6","s10","s12"] },
 ];
 
+/* ── Team Surveys / Scales (validated-style mocks for diagnostic prototyping) ── */
+var TEAM_SURVEYS = [
+  { id:"trust",    icon:"🤲", label:"Trust",                    desc:"Vulnerability-based trust (Lencioni).", scale:"Likert 1-5",
+    questions:["I admit weaknesses and mistakes openly with this team.","I ask for help when I need it.","I give the benefit of the doubt before reaching a negative conclusion.","I take risks in offering ideas, even half-formed ones.","I acknowledge the strengths of others, even when they outshine my own."] },
+  { id:"safety",   icon:"🛡️", label:"Psychological Safety",     desc:"Edmondson's 7-item team safety scale.", scale:"Likert 1-5",
+    questions:["If I make a mistake on this team, it is often held against me. (reverse)","Members of this team are able to bring up problems and tough issues.","People on this team sometimes reject others for being different. (reverse)","It is safe to take a risk on this team.","It is difficult to ask other members of this team for help. (reverse)","No one on this team would deliberately act in a way that undermines my efforts.","Working with members of this team, my unique skills and talents are valued and utilized."] },
+  { id:"conflict", icon:"⚔️", label:"Productive Conflict",       desc:"How the team handles disagreement.", scale:"Likert 1-5",
+    questions:["Our meetings are interesting, not boring.","We mine each other for opinions and perspectives.","We solve problems quickly because we engage them directly.","We do not have politics around tough topics.","We can call out each other's behavior without making it personal."] },
+  { id:"commit",   icon:"🤝", label:"Commitment",                desc:"Buy-in to team decisions, even when imperfect.", scale:"Likert 1-5",
+    questions:["Our team makes clear and timely decisions.","Everyone leaves meetings clear on next steps and owners.","We disagree, then commit \u2014 even when we don\u2019t fully agree.","We change direction without resentment when conditions shift.","Decisions stick; we don\u2019t rehash them."] },
+  { id:"accountability", icon:"⚖️", label:"Accountability",       desc:"Holding peers to standards and outcomes.", scale:"Likert 1-5",
+    questions:["I get on my teammates about poor performance and behavior.","Teammates hold me accountable, not just the leader.","We confront missed commitments quickly and respectfully.","Our team focuses on the most important issues, not personalities.","We celebrate clean execution as much as wins."] },
+  { id:"kai",      icon:"🧠", label:"KAI Inventory",              desc:"Kirton Adaption-Innovation cognitive style (mock).", scale:"Likert 1-5",
+    questions:["I prefer to work within established systems rather than challenge them.","I am energized by improving existing processes.","I generate many ideas, even ones that seem impractical.","I prefer detailed, methodical work over loosely-scoped exploration.","When stuck, I look for a different way to frame the problem."] },
+  { id:"big5",     icon:"🧬", label:"Big 5 Profile",              desc:"Five-factor personality (mock 10-item).", scale:"Likert 1-5",
+    questions:["I see myself as someone who is reserved. (reverse for E)","I see myself as someone who is generally trusting. (A)","I see myself as someone who tends to be lazy. (reverse for C)","I see myself as someone who is relaxed, handles stress well. (reverse for N)","I see myself as someone who has few artistic interests. (reverse for O)","I see myself as someone who is outgoing, sociable. (E)","I see myself as someone who tends to find fault with others. (reverse for A)","I see myself as someone who does a thorough job. (C)","I see myself as someone who gets nervous easily. (N)","I see myself as someone who has an active imagination. (O)"] },
+  { id:"ask",      icon:"💬", label:"Ask the Coach",              desc:"Free-text question for the coach about your team.", scale:"open",
+    questions:["What is one thing you would like the coach to weigh in on this week?"] },
+  { id:"360",      icon:"🔄", label:"360\u00b0 Feedback",            desc:"Multi-rater on a single observable behavior.", scale:"Likert 1-5",
+    questions:["This person communicates clearly under pressure.","This person follows through on commitments without prompting.","This person makes others feel safe to disagree.","This person owns mistakes before deflecting.","This person elevates the group\u2019s thinking, not just their own."] },
+  { id:"techskills", icon:"🛠️", label:"Top 3 Technical Skills",   desc:"Self-report. Helps the coach match team gaps to capacity.", scale:"text",
+    questions:["Skill 1","Skill 2","Skill 3"] },
+  { id:"peeves",   icon:"😤", label:"Pet Peeves",                  desc:"Three things that drain you in teams.", scale:"text",
+    questions:["Pet peeve 1","Pet peeve 2","Pet peeve 3"] },
+];
+
+/* ── Team Activities (AI-assisted, surfaced after a team is built) ── */
+var TEAM_ACTIVITIES = [
+  { id:"roles",    icon:"🎭", label:"Assign Roles",        desc:"Coach maps strengths to roles so each person plays where they will most contribute.",
+    sample:"Based on this team's PIVOT mix, the coach suggests: Diego leads strategy (high V), Rachel runs analytics (high O), Maya owns stakeholder mgmt (high I), and you orchestrate as Project Lead." },
+  { id:"goals",    icon:"🎯", label:"Set Goals",            desc:"Translate the task into a concrete outcome and milestones the whole team can rally around.",
+    sample:"Outcome: Recommendation deck with 3 scenario models. Milestones: Week 2 hypothesis tree, Week 4 client interim, Week 6 final." },
+  { id:"charter",  icon:"📜", label:"Create a Charter",     desc:"Working agreements for how the team operates: decisions, conflict, communication, and meeting cadence.",
+    sample:"Decisions: consent-based, escalate to lead after one re-vote. Conflict: name it within 24h. Comms: Slack for fast, decks for slow. Cadence: 30 min Mon + 60 min Thu." },
+  { id:"disagree", icon:"💬", label:"Surface Disagreement", desc:"Coach poses prompts that surface concerns before they harden into resentment.",
+    sample:"Round-robin prompt: 'What's one assumption in our approach you would challenge if there were no political cost?' (90 seconds each, no replies until everyone has spoken.)" },
+];
+
 function getStudent(id){ for(var i=0;i<COHORT.length;i++) if(COHORT[i].id===id) return COHORT[i]; return null; }
 /* Stdev across a list of numbers (proxy for team diversity on a dim) */
 function stdev(arr){ if(arr.length<2) return 0; var m=arr.reduce(function(a,b){return a+b;},0)/arr.length; var v=arr.reduce(function(a,b){return a+(b-m)*(b-m);},0)/arr.length; return Math.sqrt(v); }
@@ -3615,10 +3653,33 @@ function stdev(arr){ if(arr.length<2) return 0; var m=arr.reduce(function(a,b){r
 function MBATeam(props) {
   var CB = "#7BAFD4";
   var _nav = useState("team"); var activeNav = _nav[0], setActiveNav = _nav[1];
-  var _view = useState("org"); var view = _view[0], setView = _view[1];
+  var _view = useState("build"); var view = _view[0], setView = _view[1];
   var _task = useState(null); var taskId = _task[0], setTaskId = _task[1];
   var _picks = useState([]); var picks = _picks[0], setPicks = _picks[1];
   var _teamOpen = useState(null); var teamOpen = _teamOpen[0], setTeamOpen = _teamOpen[1];
+  var _act = useState(null); var actOpen = _act[0], setActOpen = _act[1];
+  var _svy = useState(null); var svyOpen = _svy[0], setSvyOpen = _svy[1];
+  var _ans = useState({}); var answers = _ans[0], setAnswers = _ans[1];
+  var _saved = useState({}); var savedSurveys = _saved[0], setSavedSurveys = _saved[1];
+
+  useEffect(function(){
+    try { var v = localStorage.getItem("team_surveys"); if (v) setSavedSurveys(JSON.parse(v)); } catch(e){}
+  }, []);
+
+  function setAnswer(svyId, qIdx, val){
+    var key = svyId + ":" + qIdx;
+    var next = Object.assign({}, answers); next[key] = val; setAnswers(next);
+  }
+  function saveSurvey(svyId){
+    var s = TEAM_SURVEYS.filter(function(x){return x.id===svyId;})[0];
+    if (!s) return;
+    var responses = s.questions.map(function(_,i){ return answers[svyId+":"+i] || null; });
+    var next = Object.assign({}, savedSurveys);
+    next[svyId] = { ts: Date.now(), responses: responses };
+    setSavedSurveys(next);
+    try { localStorage.setItem("team_surveys", JSON.stringify(next)); } catch(e){}
+    setSvyOpen(null);
+  }
 
   /* Org aggregates (anonymized) */
   var cohortSize = COHORT.length;
@@ -3652,7 +3713,7 @@ function MBATeam(props) {
 
       {/* Sub-view tabs */}
       <div style={{ display:"flex", gap:6, padding:"8px 16px 10px" }}>
-        {[{k:"org",l:"Org"},{k:"my",l:"My Teams"},{k:"build",l:"Build a Team"}].map(function(tb){
+        {[{k:"build",l:"Build a Team"},{k:"my",l:"My Teams"},{k:"org",l:"Org"}].map(function(tb){
           var on = view===tb.k;
           return <button key={tb.k} onClick={function(){setView(tb.k);}} style={{ flex:1, padding:"8px 10px", borderRadius:10, background:on?rgba(CB,0.18):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.55):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.6)", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:FONT }}>{tb.l}</button>;
         })}
@@ -3900,6 +3961,171 @@ function MBATeam(props) {
                       );
                     })}
                   </div>
+
+                  {/* AI-assisted Activities */}
+                  <div style={{ marginTop:18 }}>
+                    <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>ACTIVITIES \u00b7 AI-ASSISTED</div>
+                    <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)", marginBottom:10, lineHeight:1.45 }}>Run any of these with the coach once your team is set.</div>
+                    {TEAM_ACTIVITIES.map(function(a){
+                      var open = actOpen===a.id;
+                      return (
+                        <div key={a.id} style={{ marginBottom:6 }}>
+                          <div onClick={function(){setActOpen(open?null:a.id);}} style={{ padding:"10px 12px", borderRadius:10, background:open?rgba(CB,0.1):"rgba(255,255,255,0.04)", border:"1px solid "+(open?rgba(CB,0.35):"rgba(255,255,255,0.08)"), cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
+                            <span style={{ fontSize:18 }}>{a.icon}</span>
+                            <div style={{ flex:1 }}>
+                              <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{a.label}</div>
+                              <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{a.desc}</div>
+                            </div>
+                            <span style={{ fontSize:11, color:open?"#FFCC44":"rgba(255,255,255,0.4)", padding:"3px 8px", borderRadius:8, background:open?"rgba(255,204,68,0.12)":"rgba(255,204,68,0.06)", border:"1px solid "+(open?"rgba(255,204,68,0.4)":"rgba(255,204,68,0.18)"), whiteSpace:"nowrap", fontWeight:700 }}>\u2728 Coach</span>
+                          </div>
+                          {open && (
+                            <div style={{ padding:"10px 14px", marginTop:4, borderRadius:10, background:"rgba(255,204,68,0.05)", border:"1px solid rgba(255,204,68,0.2)" }}>
+                              <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:1.3, marginBottom:6 }}>COACH SAMPLE OUTPUT</div>
+                              <div style={{ fontSize:12, color:"rgba(255,255,255,0.78)", lineHeight:1.55 }}>{a.sample}</div>
+                              <div onClick={function(e){e.stopPropagation();}} style={{ display:"inline-block", marginTop:10, padding:"5px 12px", borderRadius:10, background:"rgba(255,204,68,0.15)", border:"1px solid rgba(255,204,68,0.45)", fontSize:11, fontWeight:700, color:"#FFCC44", cursor:"pointer" }}>Run with my team \u2192</div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Team Surveys / Scales */}
+                  <div style={{ marginTop:18 }}>
+                    <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>TEAM SURVEYS \u00b7 DIAGNOSTICS</div>
+                    <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)", marginBottom:10, lineHeight:1.45 }}>Validated scales and quick reflections. Take any in 60 seconds; results feed your team health dashboard.</div>
+                    {TEAM_SURVEYS.map(function(s){
+                      var open = svyOpen===s.id;
+                      var done = !!savedSurveys[s.id];
+                      return (
+                        <div key={s.id} style={{ marginBottom:6 }}>
+                          <div onClick={function(){setSvyOpen(open?null:s.id);}} style={{ padding:"10px 12px", borderRadius:10, background:open?rgba(CB,0.1):"rgba(255,255,255,0.04)", border:"1px solid "+(open?rgba(CB,0.35):"rgba(255,255,255,0.08)"), cursor:"pointer", display:"flex", alignItems:"center", gap:10 }}>
+                            <span style={{ fontSize:18 }}>{s.icon}</span>
+                            <div style={{ flex:1 }}>
+                              <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>{s.label}</div>
+                              <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{s.desc}</div>
+                            </div>
+                            {done?<span style={{ fontSize:10, color:"#7ad99a", padding:"3px 8px", borderRadius:8, background:"rgba(80,200,120,0.12)", border:"1px solid rgba(80,200,120,0.35)", fontWeight:700 }}>\u2713 Saved</span>
+                                 :<span style={{ fontSize:10, color:"rgba(255,255,255,0.6)", padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", fontWeight:700 }}>{s.scale}</span>}
+                          </div>
+                          {open && (
+                            <div style={{ padding:"12px 14px", marginTop:4, borderRadius:10, background:"rgba(123,175,212,0.05)", border:"1px solid rgba(123,175,212,0.2)" }}>
+                              {s.questions.map(function(q,qi){
+                                var key = s.id + ":" + qi;
+                                var v = answers[key];
+                                var isText = s.scale==="text" || s.scale==="open";
+                                return (
+                                  <div key={qi} style={{ marginBottom:14 }}>
+                                    <div style={{ fontSize:12, color:"rgba(255,255,255,0.85)", lineHeight:1.45, marginBottom:6 }}>{(qi+1)+". "+q}</div>
+                                    {isText
+                                      ? <input type="text" value={v||""} onChange={function(ev){setAnswer(s.id,qi,ev.target.value);}} placeholder="Type your answer\u2026" style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:6, padding:"7px 9px", color:"#fff", fontSize:12, fontFamily:FONT, outline:"none" }}/>
+                                      : <div style={{ display:"flex", gap:5 }}>{[1,2,3,4,5].map(function(n){ var on=v===n; return <div key={n} onClick={function(){setAnswer(s.id,qi,n);}} style={{ flex:1, padding:"6px 4px", borderRadius:6, background:on?rgba(CB,0.25):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.6):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.7)", fontSize:12, fontWeight:700, textAlign:"center", cursor:"pointer" }}>{n}</div>;})}</div>
+                                    }
+                                  </div>
+                                );
+                              })}
+                              <div style={{ display:"flex", justifyContent:"flex-end", gap:8 }}>
+                                <div onClick={function(){setSvyOpen(null);}} style={{ padding:"6px 12px", borderRadius:8, fontSize:12, color:"rgba(255,255,255,0.6)", cursor:"pointer" }}>Cancel</div>
+                                <div onClick={function(){saveSurvey(s.id);}} style={{ padding:"6px 14px", borderRadius:8, background:rgba(CB,0.2), border:"1px solid "+rgba(CB,0.5), fontSize:12, color:"#fff", fontWeight:700, cursor:"pointer" }}>Save</div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Team Health Dashboard */}
+                  {(function(){
+                    /* Compute average across saved Likert surveys (1-5 scale) — Likert IDs only */
+                    var likertIds = ["trust","safety","conflict","commit","accountability"];
+                    var rows = likertIds.map(function(id){
+                      var s = TEAM_SURVEYS.filter(function(x){return x.id===id;})[0];
+                      var saved = savedSurveys[id];
+                      var avg = null;
+                      if (saved && saved.responses){
+                        var nums = saved.responses.filter(function(r){return typeof r==="number";});
+                        if (nums.length) avg = nums.reduce(function(a,b){return a+b;},0)/nums.length;
+                      }
+                      return { id:id, label:s.label, icon:s.icon, avg:avg };
+                    });
+                    var doneCount = rows.filter(function(r){return r.avg!==null;}).length;
+                    var overallAvg = null;
+                    var nonNull = rows.filter(function(r){return r.avg!==null;});
+                    if (nonNull.length) overallAvg = nonNull.reduce(function(a,b){return a+b.avg;},0)/nonNull.length;
+
+                    /* Supplementary fit: how similar members are on PIVOT (low stdev = high sup fit) */
+                    var members = picks.map(getStudent).filter(Boolean);
+                    var sup = null, comp = null;
+                    if (members.length>=2){
+                      var meanStd = DIMS.reduce(function(a,d){return a+stdev(members.map(function(m){return m.attrs[d];}));},0)/DIMS.length;
+                      sup = Math.max(0, Math.min(100, Math.round((1 - meanStd/1.2)*100)));
+                      comp = Math.max(0, Math.min(100, Math.round(meanStd/1.2*100)));
+                    }
+                    var skillCover = {};
+                    members.forEach(function(m){ m.skills.forEach(function(sid){ skillCover[sid]=1; }); });
+                    var coverage = Object.keys(skillCover).length;
+
+                    return (
+                      <div style={{ marginTop:18 }}>
+                        <div style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:1.4, marginBottom:8 }}>TEAM HEALTH DASHBOARD</div>
+
+                        {/* Health report */}
+                        <div style={{ padding:"12px 14px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.18), marginBottom:10 }}>
+                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:8 }}>
+                            <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>Health Report</div>
+                            <div style={{ fontSize:11, color:"rgba(255,255,255,0.5)" }}>{doneCount}/{likertIds.length} surveys saved</div>
+                          </div>
+                          {overallAvg!==null && (
+                            <div style={{ display:"flex", alignItems:"baseline", gap:8, marginBottom:10 }}>
+                              <div style={{ fontSize:24, fontWeight:800, color:"#fff" }}>{overallAvg.toFixed(1)}</div>
+                              <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>average across saved scales \u00b7 1-5</div>
+                            </div>
+                          )}
+                          {rows.map(function(r){
+                            var pct = r.avg!==null ? (r.avg/5)*100 : 0;
+                            var col = r.avg===null ? "rgba(255,255,255,0.2)" : (r.avg>=4 ? "#7ad99a" : r.avg>=3 ? "#FFCC44" : "#ff8b6b");
+                            return (
+                              <div key={r.id} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5 }}>
+                                <span style={{ fontSize:14, width:18 }}>{r.icon}</span>
+                                <div style={{ flex:1, fontSize:12, color:"rgba(255,255,255,0.8)" }}>{r.label}</div>
+                                <div style={{ width:90, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
+                                  <div style={{ position:"absolute", left:0, top:0, height:"100%", width:pct+"%", background:col, borderRadius:3 }}></div>
+                                </div>
+                                <div style={{ width:30, fontSize:11, fontWeight:700, color: r.avg!==null ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.3)", textAlign:"right" }}>{r.avg!==null ? r.avg.toFixed(1) : "\u2013"}</div>
+                              </div>
+                            );
+                          })}
+                          {doneCount===0 && <div style={{ fontSize:11, color:"rgba(255,255,255,0.45)", marginTop:6, fontStyle:"italic" }}>Take any of the surveys above to populate this report.</div>}
+                        </div>
+
+                        {/* Sup vs Comp fit */}
+                        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:10 }}>
+                          <div style={{ padding:"12px 12px", borderRadius:12, background:rgba("#7ad99a",0.06), border:"1px solid "+rgba("#7ad99a",0.25) }}>
+                            <div style={{ fontSize:11, fontWeight:700, color:"#7ad99a", letterSpacing:1.2 }}>SUPPLEMENTARY FIT</div>
+                            <div style={{ fontSize:22, fontWeight:800, color:"#fff", marginTop:4 }}>{sup!==null ? sup+"%" : "\u2013"}</div>
+                            <div style={{ fontSize:10, color:"rgba(255,255,255,0.55)", marginTop:4, lineHeight:1.4 }}>How similar members are on PIVOT. High = aligned culture, fast trust.</div>
+                          </div>
+                          <div style={{ padding:"12px 12px", borderRadius:12, background:rgba("#FFCC44",0.06), border:"1px solid "+rgba("#FFCC44",0.25) }}>
+                            <div style={{ fontSize:11, fontWeight:700, color:"#FFCC44", letterSpacing:1.2 }}>COMPLEMENTARY FIT</div>
+                            <div style={{ fontSize:22, fontWeight:800, color:"#fff", marginTop:4 }}>{comp!==null ? comp+"%" : "\u2013"}</div>
+                            <div style={{ fontSize:10, color:"rgba(255,255,255,0.55)", marginTop:4, lineHeight:1.4 }}>How different members are. High = cognitive variety, more friction worth managing.</div>
+                          </div>
+                        </div>
+
+                        {/* Coverage strip */}
+                        <div style={{ padding:"10px 12px", borderRadius:12, background:rgba(CB,0.05), border:"1px solid "+rgba(CB,0.15), marginBottom:6 }}>
+                          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
+                            <div style={{ fontSize:12, fontWeight:700, color:"rgba(255,255,255,0.85)" }}>Skill Coverage</div>
+                            <div style={{ fontSize:12, color:"#7ad99a", fontWeight:700 }}>{coverage}/30</div>
+                          </div>
+                          <div style={{ marginTop:6, height:6, borderRadius:3, background:"rgba(255,255,255,0.06)", position:"relative" }}>
+                            <div style={{ position:"absolute", left:0, top:0, height:"100%", width:(coverage/30*100)+"%", background:"#7ad99a", borderRadius:3 }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               );
             })()}
