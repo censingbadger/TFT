@@ -295,6 +295,16 @@ var MBA_NAV_ITEMS = [
   { k: "coach",    l: "Coach",    i: "✧" },
 ];
 
+
+/* ── User-name helpers (loaded from localStorage; fall back to persona) ── */
+function getStoredName(programKey, fallback){
+  try { var v = localStorage.getItem(programKey + "_user_name"); return (v && v.trim()) ? v.trim() : fallback; } catch(e){ return fallback; }
+}
+function getInitials(name){
+  if (!name) return "";
+  return name.split(/\s+/).filter(Boolean).map(function(p){return p[0]||"";}).join("").slice(0,2).toUpperCase();
+}
+
 function BottomNav(props) {
   var active = props.active;
   var setActive = props.setActive;
@@ -626,6 +636,8 @@ var UBP_SN2 = UBP_genStars(30, 271);
 
 function UBPJourney(props) {
   var CB = "#4B9CD3";
+  var userName = getStoredName("ubp", "Jordan Sullivan");
+  var avatarInitials = getInitials(userName);
   var _nav=useState("journey"),nav=_nav[0],setNav=_nav[1];
   var _ns=useState(null),ns=_ns[0],setNs=_ns[1];
   var _ssk=useState(null),selSkill=_ssk[0],setSelSkill=_ssk[1];
@@ -635,7 +647,9 @@ function UBPJourney(props) {
   var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
   var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
   var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
-  var _preset=useState("today"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
+  var _onbName=useState(""),onbName=_onbName[0],setOnbName=_onbName[1];
+  function saveOnbName(){ if(onbName && onbName.trim()) try{ localStorage.setItem("ubp_user_name", onbName.trim()); }catch(e){} }
+  var _preset=useState("y2"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
   var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
   var scrollRef=useRef(null);
 
@@ -710,7 +724,7 @@ function UBPJourney(props) {
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div onClick={function(){setShowDemo(!showDemo);}} style={{padding:"5px 10px",borderRadius:12,background:showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08),border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)),cursor:"pointer",fontSize:10,fontWeight:700,color:showDemo?"#FFCC44":"rgba(255,255,255,0.55)",letterSpacing:"1",fontFamily:FONT}}>DEMO</div>
-          <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>JS</div>
+          <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>{avatarInitials}</div>
         </div>
       </div>
 
@@ -1921,6 +1935,8 @@ function ubp_getStudent(id){for(var i=0;i<UBP_COHORT.length;i++)if(UBP_COHORT[i]
 
 function UBPIndex(props) {
   var CB = "#4B9CD3";
+  var userName = getStoredName("ubp", "Jordan Sullivan");
+  var avatarInitials = getInitials(userName);
   var _nav = useState("index");
   var activeNav = _nav[0], setActiveNav = _nav[1];
   var _exp = useState(null);
@@ -2022,7 +2038,7 @@ function UBPIndex(props) {
           border: "2px solid " + rgba(CB, 0.4),
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: 15, fontWeight: 600, color: "#fff",
-        }}>JS</div>
+        }}>{avatarInitials}</div>
       </div>
 
       {/* ── Tagline ── */}
@@ -2044,7 +2060,7 @@ function UBPIndex(props) {
         }}>
           {/* Student context */}
           <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>
-            <span style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Jordan Sullivan</span>
+            <span style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>{userName}</span>
             <span style={{ margin: "0 8px", color: "rgba(255,255,255,0.15)" }}>|</span>
             BSBA · Junior · AOE: Finance{selectedPath ? " · " + selectedPath.label + " Pathway" : ""}
           </div>
@@ -2194,6 +2210,8 @@ function UBPIndex(props) {
 
 function UBPTeam(props) {
   var CB = "#4B9CD3";
+  var userName = getStoredName("ubp", "Jordan Sullivan");
+  var avatarInitials = getInitials(userName);
   var _nav = useState("team"); var activeNav = _nav[0], setActiveNav = _nav[1];
   var _view = useState("build"); var view = _view[0], setView = _view[1];
   var _task = useState(null); var taskId = _task[0], setTaskId = _task[1];
@@ -2286,7 +2304,7 @@ function UBPTeam(props) {
           <img src={UNC_LOGO} alt="UNC" style={{ width:34, height:34, objectFit:"contain" }} />
           <div style={{ fontSize:22, fontWeight:700, color:"#fff", letterSpacing:0.3 }}>PIVOT <span style={{ fontSize:15, fontWeight:400, color:rgba(CB,0.6), letterSpacing:2, textTransform:"uppercase", marginLeft:4 }}>Team</span></div>
         </div>
-        <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,"+CB+","+CN+")", border:"2px solid "+rgba(CB,0.4), display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:600, color:"#fff" }}>JS</div>
+        <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,"+CB+","+CN+")", border:"2px solid "+rgba(CB,0.4), display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:600, color:"#fff" }}>{avatarInitials}</div>
       </div>
 
       {/* Sub-view tabs */}
@@ -3730,6 +3748,8 @@ var PATHS = [
 
 function MBAJourney(props) {
   var CB = "#7BAFD4";
+  var userName = getStoredName("mba", "Mike Christian");
+  var avatarInitials = getInitials(userName);
   var _nav=useState("journey"),nav=_nav[0],setNav=_nav[1];
   var _ns=useState(null),ns=_ns[0],setNs=_ns[1];
   var _ssk=useState(null),selSkill=_ssk[0],setSelSkill=_ssk[1];
@@ -3814,7 +3834,7 @@ function MBAJourney(props) {
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div onClick={function(){setShowDemo(!showDemo);}} style={{padding:"5px 10px",borderRadius:12,background:showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08),border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)),cursor:"pointer",fontSize:10,fontWeight:700,color:showDemo?"#FFCC44":"rgba(255,255,255,0.55)",letterSpacing:"1",fontFamily:FONT}}>DEMO</div>
-          <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>MC</div>
+          <div style={{width:40,height:40,borderRadius:"50%",background:"linear-gradient(135deg,"+CB+","+CN+")",border:"2px solid "+rgba(CB,0.4),display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:600,color:"#fff"}}>{avatarInitials}</div>
         </div>
       </div>
 
@@ -4554,6 +4574,8 @@ function MBA_BossLevel(props) {
 
 function MBAProgress(props) {
   var CB = "#7BAFD4";
+  var userName = getStoredName("mba", "Mike Christian");
+  var avatarInitials = getInitials(userName);
   var _nav = useState("progress");
   var activeNav = _nav[0], setActiveNav = _nav[1];
   var _exp = useState(null);
@@ -4659,7 +4681,7 @@ function MBAProgress(props) {
             border: "2px solid " + rgba(CB, 0.4),
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 15, fontWeight: 600, color: "#fff",
-          }}>MC</div>
+          }}>{avatarInitials}</div>
         </div>
       </div>
 
@@ -4692,7 +4714,7 @@ function MBAProgress(props) {
         }}>
           {/* Student context */}
           <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>
-            <span style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Mike Christian</span>
+            <span style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>{userName}</span>
             <span style={{ margin: "0 8px", color: "rgba(255,255,255,0.15)" }}>|</span>
             MBA · Class of 2026{selectedPath ? " · " + selectedPath.label + " Pathway" : ""}
           </div>
@@ -4994,6 +5016,8 @@ function stdev(arr){ if(arr.length<2) return 0; var m=arr.reduce(function(a,b){r
 
 function MBATeam(props) {
   var CB = "#7BAFD4";
+  var userName = getStoredName("mba", "Mike Christian");
+  var avatarInitials = getInitials(userName);
   var _nav = useState("team"); var activeNav = _nav[0], setActiveNav = _nav[1];
   var _view = useState("build"); var view = _view[0], setView = _view[1];
   var _task = useState(null); var taskId = _task[0], setTaskId = _task[1];
@@ -5086,7 +5110,7 @@ function MBATeam(props) {
           <img src={UNC_LOGO} alt="UNC" style={{ width:34, height:34, objectFit:"contain" }} />
           <div style={{ fontSize:22, fontWeight:700, color:"#fff", letterSpacing:0.3 }}>PIVOT <span style={{ fontSize:15, fontWeight:400, color:rgba(CB,0.6), letterSpacing:2, textTransform:"uppercase", marginLeft:4 }}>Team</span></div>
         </div>
-        <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,"+CB+","+CN+")", border:"2px solid "+rgba(CB,0.4), display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:600, color:"#fff" }}>MC</div>
+        <div style={{ width:40, height:40, borderRadius:"50%", background:"linear-gradient(135deg,"+CB+","+CN+")", border:"2px solid "+rgba(CB,0.4), display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:600, color:"#fff" }}>{avatarInitials}</div>
       </div>
 
       {/* Sub-view tabs */}
