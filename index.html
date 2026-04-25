@@ -3466,7 +3466,27 @@ function MBAProgress(props) {
 
         {/* ── Experience Token Bars ── */}
         <div style={{ padding: "0 16px 8px" }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom: 6 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1 }}>Experience Tokens</div>
+          </div>
+          {/* Legend explaining the three tick marks */}
+          <div style={{ display:"flex", flexWrap:"wrap", gap:10, padding:"8px 10px", borderRadius:10, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", marginBottom:10 }}>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:11, color:"rgba(255,255,255,0.7)" }}>
+              <span style={{ display:"inline-block", width:2, height:12, background:"rgba(255,255,255,0.55)", borderRadius:1 }}></span>
+              <span><span style={{color:"#fff",fontWeight:700}}>Attribute max</span> <span style={{color:"rgba(255,255,255,0.4)"}}>(50% · ceiling for attributes alone)</span></span>
+            </div>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:11, color: selectedPath ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.35)" }}>
+              <span style={{ display:"inline-block", width:2, height:12, background:"#FFCC44", borderRadius:1 }}></span>
+              <span><span style={{color:"#FFCC44",fontWeight:700}}>Floor</span> <span style={{color:"rgba(255,255,255,0.45)"}}>(min attribute for {selectedPath?selectedPath.label:"career"})</span></span>
+            </div>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:6, fontSize:11, color: selectedPath ? "rgba(255,255,255,0.8)" : "rgba(255,255,255,0.35)" }}>
+              <span style={{ display:"inline-block", width:2, height:12, background:"#50C878", borderRadius:1 }}></span>
+              <span><span style={{color:"#7ad99a",fontWeight:700}}>Target</span> <span style={{color:"rgba(255,255,255,0.45)"}}>(ideal % for {selectedPath?selectedPath.label:"career"})</span></span>
+            </div>
+            {!selectedPath && (
+              <div style={{ fontSize:10, color:"rgba(255,255,255,0.4)", marginLeft:"auto", fontStyle:"italic" }}>Pick a North Star to see Floor + Target on each bar.</div>
+            )}
+          </div>
           {DIMS.map(function (d) {
             return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} attrs={myAttrs} earnedMap={myEarned} path={selectedPath} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
           })}
@@ -4068,7 +4088,7 @@ function MBATeam(props) {
                                 <div style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:1, lineHeight:1.4 }}>{s.desc}</div>
                               </div>
                               {done?<span style={{ fontSize:10, color:"#7ad99a", padding:"3px 8px", borderRadius:8, background:"rgba(80,200,120,0.12)", border:"1px solid rgba(80,200,120,0.35)", fontWeight:700 }}>{teamSaved.participants && teamSaved.total ? teamSaved.participants+"/"+teamSaved.total+" took it" : "✓ Saved"}</span>
-                                   :<span style={{ fontSize:10, color:"rgba(255,255,255,0.6)", padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", fontWeight:700 }}>0/{members.length} \u00b7 {s.scale}</span>}
+                                   :<span style={{ fontSize:10, color:"rgba(255,255,255,0.6)", padding:"3px 8px", borderRadius:8, background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.12)", fontWeight:700 }}>0/{members.length} · {s.scale}</span>}
                             </div>
                             {openS && (
                               <div style={{ padding:"12px 14px", marginTop:4, borderRadius:10, background:"rgba(123,175,212,0.05)", border:"1px solid rgba(123,175,212,0.2)" }}>
