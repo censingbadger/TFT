@@ -1105,10 +1105,17 @@ function UBP_TokenBar(props) {
   var data = props.data;
   var expanded = props.expanded;
   var onToggle = props.onToggle;
+  var attrs = props.attrs || {};
+  var earnedMap = props.earnedMap || {};
+  var path = props.path || null;
   var earned = data.earned.length;
   var total = data.total;
-  var pct = Math.round((earned / total) * 100);
   var color = PC[dim];
+  /* Readiness stack: attributes fill first 50%, skills the next 50% */
+  var r = computeReadiness(dim, earnedMap, attrs);
+  var target = path ? targetForPath(path)[dim] : null;
+  var floor = path && path.floor && path.floor[dim];
+  var floorPct = floor ? (floor/5)*50 : null;
 
   return (
     <div style={{ marginBottom: 6 }}>
@@ -1129,17 +1136,27 @@ function UBP_TokenBar(props) {
           fontSize: 15, fontWeight: 700, color: color,
         }}>{dim}</div>
         <div style={{ flex: 1 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-            <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>{DIM_NAMES[dim]}</span>
-            <span style={{ fontSize: 14, color: rgba(color, 0.7) }}>{earned}/{total}</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{DIM_NAMES[dim]}</span>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+              <span style={{ fontWeight: 700, color: "#fff" }}>{Math.round(r.totalPct)}%</span>
+              <span style={{ margin: "0 6px", color: "rgba(255,255,255,0.2)" }}>·</span>
+              <span>{earned}/{total} tokens</span>
+            </span>
           </div>
-          <div style={{ height: 6, background: rgba(color, 0.1), borderRadius: 3 }}>
-            <div style={{
-              height: "100%", borderRadius: 3, width: pct + "%",
-              background: "linear-gradient(90deg," + color + "," + rgba(color, 0.6) + ")",
-              transition: "width 1s ease",
-            }} />
+          <div style={{ position: "relative", height: 10, background: "rgba(255,255,255,0.05)", borderRadius: 5 }}>
+            <div style={{ position:"absolute", left:"50%", top:-2, bottom:-2, width:1, background:"rgba(255,255,255,0.22)" }}></div>
+            <div style={{ position:"absolute", left:r.attrPct+"%", top:0, height:"100%", width:Math.max(0,(r.totalPct-r.attrPct))+"%", background: rgba(color,0.45), transition:"width 0.8s ease" }}></div>
+            <div style={{ position:"absolute", left:0, top:0, height:"100%", width:r.attrPct+"%", borderRadius: "5px 0 0 5px", background: rgba(color,0.95), transition:"width 0.8s ease" }}></div>
+            {floorPct!==null && <div style={{ position:"absolute", left:floorPct+"%", top:-3, bottom:-3, width:2, background:"#FFCC44", opacity:0.9 }}></div>}
+            {target!==null && <div style={{ position:"absolute", left:target+"%", top:-4, bottom:-4, width:2, background:"#50C878" }}></div>}
           </div>
+          {path && (
+            <div style={{ display:"flex", gap:10, marginTop:4, fontSize:10, color:"rgba(255,255,255,0.45)" }}>
+              {floorPct!==null && <span style={{ display:"inline-flex", alignItems:"center", gap:4 }}><span style={{ display:"inline-block", width:2, height:8, background:"#FFCC44" }}></span>Floor {floor}</span>}
+              {target!==null && <span style={{ display:"inline-flex", alignItems:"center", gap:4 }}><span style={{ display:"inline-block", width:2, height:8, background:"#50C878" }}></span>Target {target}%</span>}
+            </div>
+          )}
         </div>
         <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</div>
       </div>
@@ -1296,6 +1313,53 @@ function UBP_BossLevel(props) {
   );
 }
 
+/* ── UBP data: career pathways, demo presets, attribute foundation ── */
+var UBP_ATTRIBUTES = [
+  { dim:"P", baseline:3.2, current:3.8 },
+  { dim:"I", baseline:2.8, current:3.5 },
+  { dim:"V", baseline:2.3, current:2.5 },
+  { dim:"O", baseline:2.6, current:3.1 },
+  { dim:"T", baseline:1.8, current:2.2 },
+];
+
+/* Same six career pathways as MBA, with undergrad-tuned attribute floors */
+var UBP_PATHS = [
+  { id:"consulting",   label:"Consulting",       color:"#7BAFD4", goalLabel:"Consulting Analyst",
+    skills:["s13","s16","s17","s11","s10","s12","s20","s22","s27","s1","s19","s18"],
+    floor:{V:3.0, O:2.8, I:2.8} },
+  { id:"banking",      label:"Banking",          color:PC.O,       goalLabel:"Investment Banking Analyst",
+    skills:["s20","s22","s24","s28","s29","s21","s13","s8","s4","s19","s7","s11"],
+    floor:{O:3.0, T:2.5, P:2.8} },
+  { id:"tech",         label:"Tech",             color:PC.T,       goalLabel:"Tech / Engineering Analyst",
+    skills:["s13","s17","s20","s22","s23","s27","s28","s29","s30","s26","s10","s25"],
+    floor:{T:2.7, O:2.8, V:2.5} },
+  { id:"pm",           label:"Product Mgmt",     color:PC.V,       goalLabel:"Product / Customer Roles",
+    skills:["s15","s16","s17","s11","s10","s9","s22","s13","s14","s18","s27","s12"],
+    floor:{V:2.7, I:2.8, O:2.7} },
+  { id:"entrepreneur", label:"Entrepreneurship", color:PC.P,       goalLabel:"Founder / Early-Stage",
+    skills:["s15","s14","s17","s19","s20","s26","s27","s28","s29","s30","s25","s18"],
+    floor:{V:2.8, T:2.7, O:2.7} },
+  { id:"realestate",   label:"Real Estate",      color:"#C9A96E",  goalLabel:"Real Estate Analyst",
+    skills:["s13","s15","s20","s7","s8","s24","s22","s4","s21","s29","s19","s11"],
+    floor:{O:2.8, V:2.5, I:2.5} },
+];
+
+/* 5 milestone snapshots across the 4-year UBP journey */
+var UBP_EARNED_PRESETS = {
+  "new":     {},
+  "y1":      {s1:1, s7:1, s11:1, s13:1, s27:1},
+  "y2":      {s1:1, s2:1, s3:1, s7:1, s11:1, s12:1, s13:1, s16:1, s27:1, s30:1},
+  "y3":      {s1:1, s2:1, s3:1, s4:1, s7:1, s10:1, s11:1, s12:1, s13:1, s16:1, s17:1, s19:1, s22:1, s24:1, s25:1, s27:1, s30:1},
+  "mastery": {s1:1,s2:1,s3:1,s4:1,s5:1,s6:1,s7:1,s8:1,s9:1,s10:1,s11:1,s12:1,s13:1,s14:1,s15:1,s16:1,s17:1,s18:1,s19:1,s20:1,s21:1,s22:1,s23:1,s24:1,s25:1,s26:1,s27:1,s28:1,s29:1,s30:1},
+};
+var UBP_DEMO_PRESETS_META = [
+  {id:"new",     label:"New student",  sub:"Pre-orientation"},
+  {id:"y1",      label:"End of Y1",    sub:"5 skills"},
+  {id:"y2",      label:"End of Y2",    sub:"10 skills"},
+  {id:"y3",      label:"End of Y3",    sub:"17 skills"},
+  {id:"mastery", label:"Senior",       sub:"All 30"},
+];
+
 function UBPIndex(props) {
   var CB = "#4B9CD3";
   var _nav = useState("index");
@@ -1306,8 +1370,36 @@ function UBPIndex(props) {
   var selfOpen = _selfOpen[0], setSelfOpen = _selfOpen[1];
   var _anim = useState(false);
   var anim = _anim[0], setAnim = _anim[1];
+  var _pth = useState(null); var pathId = _pth[0], setPathId = _pth[1];
+  var _pre = useState("y2"); var earnedPreset = _pre[0], setEarnedPreset = _pre[1];
+  var _demo = useState(false); var showDemo = _demo[0], setShowDemo = _demo[1];
 
-  useEffect(function () { setTimeout(function () { setAnim(true); }, 200); }, []);
+  function pickNorthStar(id){
+    setPathId(id);
+    try { if (id) localStorage.setItem("ubp_northstar", id); else localStorage.removeItem("ubp_northstar"); } catch(e){}
+  }
+  function pickPreset(id){
+    setEarnedPreset(id);
+    try { localStorage.setItem("ubp_preset", id); } catch(e){}
+  }
+
+  useEffect(function () {
+    setTimeout(function () { setAnim(true); }, 200);
+    try {
+      var ns = localStorage.getItem("ubp_northstar");
+      if (ns) setPathId(ns);
+      var pr = localStorage.getItem("ubp_preset");
+      if (pr && UBP_EARNED_PRESETS[pr]) setEarnedPreset(pr);
+    } catch(e){}
+  }, []);
+
+  /* Radar inputs */
+  var myAttrs = {};
+  UBP_ATTRIBUTES.forEach(function(a){ myAttrs[a.dim] = a.current; });
+  var myEarned = UBP_EARNED_PRESETS[earnedPreset] || UBP_EARNED_PRESETS["y2"];
+  var selectedPath = pathId ? UBP_PATHS.filter(function(p){return p.id===pathId;})[0] : null;
+  var radarTarget = selectedPath ? targetForPath(selectedPath) : null;
+  var radarColor = selectedPath ? selectedPath.color : CB;
 
   var totalEarned = 0;
   var totalAll = 0;
@@ -1383,7 +1475,15 @@ function UBPIndex(props) {
           <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginBottom: 10 }}>
             <span style={{ fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>Jordan Sullivan</span>
             <span style={{ margin: "0 8px", color: "rgba(255,255,255,0.15)" }}>|</span>
-            BSBA · Junior · AOE: Finance
+            BSBA · Junior · AOE: Finance{selectedPath ? " · " + selectedPath.label + " Pathway" : ""}
+          </div>
+
+          {/* Pathway switcher */}
+          <div style={{ display:"flex", gap:6, padding:"0 16px 12px", overflowX:"auto", flexWrap:"wrap", justifyContent:"center" }}>
+            {UBP_PATHS.map(function(p){
+              var on = pathId===p.id;
+              return <button key={p.id} onClick={function(){pickNorthStar(on?null:p.id);}} style={{ background:on?rgba(p.color,0.18):rgba(p.color,0.06), border:on?"2px solid "+rgba(p.color,0.7):"1px solid "+rgba(p.color,0.3), borderRadius:20, padding:"6px 12px", fontSize:12, fontWeight:700, color:on?p.color:rgba(p.color,0.85), cursor:"pointer", whiteSpace:"nowrap", fontFamily:FONT, flexShrink:0 }}>{p.label}</button>;
+            })}
           </div>
 
           <div style={{ position: "relative", width: ringSize, height: ringSize }}>
