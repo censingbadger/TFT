@@ -4715,14 +4715,14 @@ var MBA_chatMessages = [
     blocks: [
       {
         type: "text",
-        content: "Hey Mike! I'm your PIVOT Assistant — I know your assessment scores, every token you've earned, and your growth trajectory across all five dimensions. Think of me as a leadership advisor who actually remembers everything.\n\nWhat can I help with today?"
+        content: "Hey Mike — I just pulled your journal entry from the Adaptive Leadership PIVOT Lab on March 4. There's a moment in there that’s interview gold. You also flagged a team tension on Monday with Marcus. What do you want to work on first?"
       }
     ],
     time: "2:15 PM"
   },
   {
     role: "user",
-    content: "My Transformation score is still my weakest dimension. I had that big +0.4 jump from coaching session #4, but I'm not sure how to keep the momentum going. What should I focus on?",
+    content: "Let's start with the tension. Marcus pushed back on my framework on the Lenovo team and I shut him down. Things have been weird since and I'm not sure how to bring it up.",
     time: "2:16 PM"
   },
   {
@@ -4731,26 +4731,23 @@ var MBA_chatMessages = [
     blocks: [
       {
         type: "text",
-        content: "Great question — let me pull your Transformation trajectory and map what's actually driving your growth."
+        content: "OK. Before we talk about what to say, let’s reframe what actually happened. The fact that you noticed something is off — that itself is the move."
       },
       {
-        type: "pivot-cards",
-        cards: [
-          { dim: "T", score: "3.2", label: "Transformation", note: "Your +0.4 jump in Session #4 was the single biggest gain you've had in any dimension. The breakthrough? Reframing failure as data rather than identity. That's a cognitive shift that compounds — but only if you put yourself in situations that test it." },
-          { dim: "P", score: "4.6", label: "Purpose (for contrast)", note: "Your strongest dimension. You're clear on who you are as a leader. The risk: Purpose clarity can become a comfort zone that insulates you from the discomfort Transformation requires." },
-          { dim: "V", score: "4.1", label: "Vision (for contrast)", note: "Tokyo GIE gave you a +0.3 boost here. The cross-cultural exposure — especially learning nemawashi — was a Transformation experience disguised as a Vision one. That's a clue about what works for you." }
-        ]
+        type: "insight",
+        title: "A way to think about the tension",
+        content: "You shut him down because his pushback hit a frame you were already invested in. That’s not a Marcus problem; it’s a you-with-frame problem. The repair isn’t apologizing for shutting him down — it’s showing him you’ve reopened the frame. Walk in with one thing he was right about that you missed. Don’t perform humility. Just lead with what you actually re-saw."
       },
       {
         type: "text",
-        content: "Two things that would build on your momentum:\n\n1. Crisis Leadership Simulation (Year 2, Fall) — 72 hours of high-pressure ambiguity with live media pressure. This is where Transformation develops fastest because you can't plan your way through it. Your 'failure is data' reframe gets stress-tested in real time.\n\n2. Leading Change elective — gives you frameworks for navigating organizational uncertainty. Prof. Cannon's research on intelligent failure is basically the academic version of what you discovered in coaching.\n\nBoth are floating in your constellation sky right now. Want me to map a pathway that connects them?"
+        content: "If you want, I’ll help you draft an opening line. The principle: the team isn’t watching you say sorry — they’re watching whether your thinking actually moved."
       }
     ],
     time: "2:17 PM"
   },
   {
     role: "user",
-    content: "That's really helpful. I also have a Deloitte Strategy final round next week. Can you help me build a story for \"tell me about a time you failed and what you learned\"?",
+    content: "That helps. Switching gears — Deloitte Strategy final round is Friday. I need a story for \"tell me about a time you led when the plan fell apart.\" I keep coming up dry.",
     time: "2:19 PM"
   },
   {
@@ -4759,65 +4756,44 @@ var MBA_chatMessages = [
     blocks: [
       {
         type: "text",
-        content: "Perfect — this is actually your strongest behavioral question now, because of what happened in coaching. Here's a STAR-format story built from your actual experience:"
+        content: "Stop coming up dry — you already wrote this answer. Here’s what you journaled after the Adaptive Leadership PIVOT Lab:"
+      },
+      {
+        type: "insight",
+        title: "From your journal · Adaptive Leadership PIVOT Lab · March 4",
+        content: "\"Day 2, hour 14. The simulation pivoted twice. First the regulatory shift, then the supply chain collapse. Half my team froze. I almost did. I made the call to scrap our entire week-1 framework and go back to first principles in front of everyone. Deeply uncomfortable. Around hour 16 I stopped trying to be the smartest person in the room and started trying to be the most useful. That’s when the team unlocked. We didn’t have a clean answer at the end — but we had each other and a defensible direction. Dr. Cannon told me afterwards: ‘That’s what leading looks like when the plan fails. Most people defend the plan. You defended the team.’\""
+      },
+      {
+        type: "text",
+        content: "This is your Deloitte answer. Here’s the STAR built directly from what you wrote:"
       },
       {
         type: "story",
-        title: "Analytics Group Project — Failure & Recovery",
-        content: "Situation: \"In our Analytics for Decision Making course, I led a 4-person team on a market entry analysis for a healthcare client. I was confident in our quantitative approach — I'd done similar work pre-MBA.\"\n\nTask: \"I took ownership of the analytical framework and divided tasks based on what I thought was efficient. I essentially designed the whole approach myself and assigned execution.\"\n\nAction: \"We got the analysis technically right but missed the client's real question — they wanted strategic options, not just data. In our coaching debrief, Dr. Deal helped me see that I'd confused ownership with control. I'd shut down two teammates who had strategic instincts I dismissed as 'soft.' I went back to the team, acknowledged what happened, and we rebuilt the recommendation collaboratively. The final version was stronger because it integrated perspectives I'd initially ignored.\"\n\nResult: \"The client adopted our revised framework. More importantly, my peer feedback scores on 'creates space for others' went from 2.8 to 4.1 in the next cycle. My executive coach calls this my 'failure is data' moment — the point where I stopped treating mistakes as threats to my competence and started treating them as information.\""
+        title: "Adaptive Leadership Lab — Leading When the Plan Failed",
+        content: "Situation: \"In the Adaptive Leadership PIVOT Lab — a 48-hour live simulation — my team was 14 hours into executing a market-entry framework when the scenario pivoted twice in under two hours: a regulatory shock followed by a supply chain collapse.\"\n\nTask: \"Half the team froze. I was the de facto lead. I had to decide whether to defend the framework we’d already invested 14 hours in, or scrap it.\"\n\nAction: \"I made the call to scrap it — out loud, in front of the team, with the facilitator watching. I said the framework had answered yesterday’s question, not today’s. Then I shifted my role from ‘smartest person in the room’ to ‘most useful person in the room.’ I stopped pushing my analysis and started running the rebuild — tracking what we knew, surfacing what each teammate was best positioned to figure out, and making fast calls when consensus would have stalled us.\"\n\nResult: \"We didn’t reach a clean answer in the time we had — but we landed a defensible direction the facilitator called the strongest in the cohort. The team came out of it tighter, not splintered. Dr. Cannon’s debrief note: ‘You defended the team, not the plan. That’s adaptive leadership.’\""
+      },
+      {
+        type: "insight",
+        title: "Three skills you now own — and why Deloitte cares",
+        content: "1. Generative Problem Framing — you abandoned a frame in flight rather than fortify it. Deloitte’s hardest engagements (post-merger integration, regulatory restructurings) are won by partners who reframe under pressure rather than over-engineer the original brief.\n\n2. Functioning in Ambiguity — you delivered a defensible direction without a clean answer. Half your peers will pretend they had certainty they didn’t. You’ll be the one who calmly admits the gap and shows how you triangulated anyway. That’s senior-consultant signal.\n\n3. Psychological Safety Creation — you kept the team intact when it could have splintered. Deloitte’s toughest clients (the ones with internal politics, not just analytical complexity) need consultants who can hold a room together. You showed you can do that under live time pressure.\n\nThese three together are exactly what Deloitte’s Strategy & Operations partners are recruiting for on their crisis-response work. When they ask the failed-plan question, this is the answer."
       },
       {
         type: "text",
-        content: "This story hits Transformation (adaptive response to failure), Interrelating (recovering trust with teammates), and Ownership (taking responsibility without defensiveness). Deloitte Strategy specifically values what they call 'learning agility' — this story demonstrates it with concrete evidence.\n\nWant me to help you practice the delivery, or prep another behavioral question?"
+        content: "Want me to walk through delivery — pacing, where to pause, what to drop if they cut you short — or work on a follow-up question?"
       }
     ],
     time: "2:20 PM"
-  },
-  {
-    role: "user",
-    content: "This is great. One more thing — I'm trying to decide between the London GIE (fintech/strategy) and the India GIE (tech/social enterprise) for spring. Which one fits my PIVOT profile better?",
-    time: "2:22 PM"
-  },
-  {
-    role: "ai",
-    content: null,
-    blocks: [
-      {
-        type: "text",
-        content: "Honest answer: they serve different dimensions, and the right choice depends on what you're optimizing for."
-      },
-      {
-        type: "insight",
-        title: "The Case For London (Fintech/Strategy)",
-        content: "Directly reinforces your consulting pathway. Fintech exposure is high-signal for Deloitte Strategy and McKinsey Digital. Your Ownership and Vision dimensions both benefit — you'd be building domain expertise in a sector where KF alumni have strong placement. It's the 'safe-strong' choice that deepens your existing trajectory."
-      },
-      {
-        type: "insight",
-        title: "The Case Against London (The Honest Version)",
-        content: "London doesn't push your Transformation dimension — it's comfortable territory for someone with your profile. You already think strategically (V: 4.1) and you already own outcomes (O: 3.5 and climbing). London would make your strong dimensions stronger but wouldn't address your weakest one."
-      },
-      {
-        type: "insight",
-        title: "The Case For India (Tech/Social Enterprise)",
-        content: "India is the Transformation accelerator. Cross-cultural ambiguity, social enterprise complexity, and a completely different operating context. Your Tokyo GIE proved that immersive cross-cultural experiences drive your biggest growth spikes. India would stress-test your 'failure is data' reframe in a context where the rules are genuinely unfamiliar. Your Purpose dimension (4.6) would also deepen — connecting business skills to purpose-driven work tends to sharpen leadership identity."
-      },
-      {
-        type: "text",
-        content: "My recommendation: India — but only if you're willing to be uncomfortable. Your PIVOT data consistently shows that your biggest growth moments come from experiences that disrupt your default patterns (Tokyo, coaching session #4, the analytics project failure). London would be a good experience. India would be a transformative one.\n\nThat said — if Deloitte extends an offer and you want to signal fintech interest for staffing, London has tactical value. It depends on whether you're optimizing for your next job or your long-term leadership development."
-      }
-    ],
-    time: "2:23 PM"
   }
 ];
 
 /* ── Suggested Prompts ── */
 var MBA_suggestedPrompts = [
-  { text: "Prep me for \"why consulting?\"", dim: "P" },
-  { text: "Map a pathway to strengthen Transformation", dim: "T" },
-  { text: "Compare London vs India GIE for my profile", dim: "V" },
-  { text: "Draft a thank-you to my executive coach", dim: "I" },
-  { text: "How do my scores compare to cohort averages?", dim: "O" },
-  { text: "What does the research say about adaptive leadership?", dim: "T" },
+  { text: "Find a journal entry that fits Deloitte's values",       dim: "T" },
+  { text: "Build my answer for \"a time I disagreed with someone\"", dim: "I" },
+  { text: "Help me name a tension I've been avoiding",              dim: "I" },
+  { text: "Which 3 stories should I bring to consulting interviews?", dim: "V" },
+  { text: "Coach me through a difficult conversation script",        dim: "I" },
+  { text: "Pull a moment where I led under real pressure",           dim: "T" },
 ];
 
 
@@ -4924,7 +4900,7 @@ function MBAAssistant(props) {
           <img src={UNC_LOGO} alt="UNC" style={{ width: 34, height: 34, objectFit: "contain" }} />
           <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>
             PIVOT{" "}
-            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Assistant</span>
+            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Coach</span>
           </div>
         </div>
         <div style={{
@@ -4939,7 +4915,7 @@ function MBAAssistant(props) {
       {/* ── Tagline ── */}
       <div style={{ padding: "6px 20px 14px" }}>
         <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>
-          Your personal leadership advisor — powered by your PIVOT data, coaching history, and every experience you've built.
+          Your interview prep + experience coach — knows every journal entry, PIVOT lab moment, and team conversation you've recorded.
         </div>
       </div>
 
@@ -5031,7 +5007,7 @@ function MBAAssistant(props) {
           padding: "14px 18px",
           border: "1px solid " + rgba(CB, 0.08),
         }}>
-          <div style={{ flex: 1, fontSize: 15, color: "rgba(255,255,255,0.25)" }}>Ask about your leadership development...</div>
+          <div style={{ flex: 1, fontSize: 15, color: "rgba(255,255,255,0.25)" }}>Ask about a memory, a tension, or an interview...</div>
           <button style={{
             width: 38, height: 38, borderRadius: "50%",
             background: CB, border: "none",
