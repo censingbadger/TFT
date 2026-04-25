@@ -2038,14 +2038,27 @@ function UBPIndex(props) {
             <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Index</span>
           </div>
         </div>
-        <div style={{
-          width: 40, height: 40, borderRadius: "50%",
-          background: "linear-gradient(135deg," + CB + "," + CN + ")",
-          border: "2px solid " + rgba(CB, 0.4),
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 15, fontWeight: 600, color: "#fff",
-        }}>{avatarInitials}</div>
+        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+          <div onClick={function(){setShowDemo(!showDemo);}} style={{ padding:"5px 10px", borderRadius:12, background: showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08), border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)), cursor:"pointer", fontSize:10, fontWeight:700, color: showDemo?"#FFCC44":"rgba(255,255,255,0.55)", letterSpacing:"1", fontFamily:FONT }}>DEMO</div>
+          <div style={{
+            width: 40, height: 40, borderRadius: "50%",
+            background: "linear-gradient(135deg," + CB + "," + CN + ")",
+            border: "2px solid " + rgba(CB, 0.4),
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 15, fontWeight: 600, color: "#fff",
+          }}>{avatarInitials}</div>
+        </div>
       </div>
+
+      {/* Demo preset picker */}
+      {showDemo && (
+        <div style={{ margin:"0 16px 10px", padding:"10px 12px", borderRadius:12, background:"rgba(255,204,68,0.06)", border:"1px solid rgba(255,204,68,0.25)" }}>
+          <div style={{ fontSize:10, fontWeight:700, color:"#FFCC44", letterSpacing:"1.5", marginBottom:8 }}>DEMO · JUMP TO A MILESTONE</div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(5, 1fr)", gap:5 }}>
+            {UBP_DEMO_PRESETS_META.map(function(pr){ var on=earnedPreset===pr.id; return <div key={pr.id} onClick={function(){pickPreset(pr.id);}} style={{ padding:"7px 4px", borderRadius:8, background:on?"rgba(255,204,68,0.2)":"rgba(255,255,255,0.03)", border:"1px solid "+(on?"rgba(255,204,68,0.7)":"rgba(255,255,255,0.1)"), cursor:"pointer", textAlign:"center", fontFamily:FONT }}><div style={{ fontSize:11, fontWeight:700, color:on?"#FFCC44":"rgba(255,255,255,0.85)", lineHeight:1.2 }}>{pr.label}</div><div style={{ fontSize:9, color:on?"rgba(255,204,68,0.75)":"rgba(255,255,255,0.4)", marginTop:2 }}>{pr.sub}</div></div>;})}
+          </div>
+        </div>
+      )}
 
       {/* ── Tagline ── */}
       <div style={{ padding: "0 20px 12px" }}>
@@ -2128,6 +2141,42 @@ function UBPIndex(props) {
           </div>
         )}
 
+        {/* ── Experience Token Bars ── */}
+        <div style={{ padding: "0 16px 8px" }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
+          {DIMS.map(function (d) {
+            return <UBP_TokenBar key={d} dim={d} data={UBP_TOKENS[d]} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
+          })}
+        </div>
+
+        {/* ── Recent Growth ── */}
+        <div style={{ padding: "0 16px 14px" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 8 }}>Recent Growth</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {UBP_GROWTH.map(function (g, i) {
+              return (
+                <div key={"g" + i} style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "8px 12px", borderRadius: 10,
+                  background: rgba(PC[g.dim], 0.08),
+                  border: "1px solid " + rgba(PC[g.dim], 0.18),
+                }}>
+                  <div style={{
+                    width: 34, height: 34, borderRadius: "50%",
+                    background: rgba(PC[g.dim], 0.15),
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 13, fontWeight: 800, color: PC[g.dim],
+                  }}>{g.dim}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#fff" }}>{g.label} <span style={{ color: "#50C878", marginLeft: 4 }}>{g.change}</span></div>
+                    <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 1 }}>{g.note}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* ── AI Insight Card ── */}
         <div style={{ padding: "0 16px 12px" }}>
           <div style={{
@@ -2151,14 +2200,6 @@ function UBPIndex(props) {
               💡 View suggested experiences →
             </div>
           </div>
-        </div>
-
-        {/* ── Experience Token Bars ── */}
-        <div style={{ padding: "0 16px 8px" }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
-          {DIMS.map(function (d) {
-            return <UBP_TokenBar key={d} dim={d} data={UBP_TOKENS[d]} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
-          })}
         </div>
 
         {/* ── Boss Level (Senior Capstone) ── */}
