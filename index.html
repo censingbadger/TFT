@@ -285,7 +285,7 @@ function PIVOTRadar(props){
 /* Default nav (UBP legacy) */
 var DEFAULT_NAV_ITEMS = [
   { k: "index",     l: "Progress",  i: "◉" },
-  { k: "journey",   l: "Journey",   i: "✦" },
+  { k: "journey",   l: "Readiness",   i: "✦" },
   { k: "team",      l: "Team",      i: "◈" },
   { k: "network",   l: "Compass",   i: "🧭" },
   { k: "assistant", l: "Coach",     i: "✧" },
@@ -293,7 +293,7 @@ var DEFAULT_NAV_ITEMS = [
 /* MBA nav (new IA: Journey, Progress, Team, Network, Coach) */
 var MBA_NAV_ITEMS = [
   { k: "progress", l: "Progress", i: "◉" },
-  { k: "journey",  l: "Journey",  i: "✦" },
+  { k: "journey",  l: "Readiness",  i: "✦" },
   { k: "team",     l: "Team",     i: "◈" },
   { k: "network",  l: "Compass",  i: "🧭" },
   { k: "coach",    l: "Coach",    i: "✧" },
@@ -725,7 +725,7 @@ function UBPJourney(props) {
       <div style={{padding:"16px 20px 4px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <img src={UNC_LOGO} alt="UNC" style={{width:34,height:34,objectFit:"contain"}}/>
-          <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:0.3}}>PIVOT <span style={{fontSize:15,fontWeight:400,color:rgba(CB,0.6),letterSpacing:2,textTransform:"uppercase",marginLeft:4}}>Journey</span></div>
+          <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:0.3}}>PIVOT <span style={{fontSize:13,fontWeight:400,color:rgba(CB,0.6),letterSpacing:2,textTransform:"uppercase",marginLeft:4}}>Readiness</span></div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div onClick={function(){setShowDemo(!showDemo);}} style={{padding:"5px 10px",borderRadius:12,background:showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08),border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)),cursor:"pointer",fontSize:10,fontWeight:700,color:showDemo?"#FFCC44":"rgba(255,255,255,0.55)",letterSpacing:"1",fontFamily:FONT}}>DEMO</div>
@@ -1030,6 +1030,8 @@ function UBPJourney(props) {
         <img src={UNC_LOGO} alt="UNC" style={{width:14,height:14,objectFit:"contain"}}/>
         <span style={{fontSize:9,color:rgba(CB,0.5),letterSpacing:1.5,textTransform:"uppercase"}}>UNC Kenan-Flagler Business School</span>
       </div>
+
+      <PIVOTAssessment open={showAssessment} form={assessmentForm} initial={assessment && assessment.form===assessmentForm ? assessment.responses : {}} onSave={saveAssessment} onClose={function(){setShowAssessment(false);}}/>
 
       {/* First-login onboarding overlay */}
       {showOnboarding&&(
@@ -3863,7 +3865,7 @@ function MBAJourney(props) {
       <div style={{padding:"16px 20px 4px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",alignItems:"center",gap:12}}>
           <img src={UNC_LOGO} alt="UNC" style={{width:34,height:34,objectFit:"contain"}}/>
-          <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:0.3}}>PIVOT <span style={{fontSize:15,fontWeight:400,color:rgba(CB,0.6),letterSpacing:2,textTransform:"uppercase",marginLeft:4}}>Journey</span></div>
+          <div style={{fontSize:22,fontWeight:700,color:"#fff",letterSpacing:0.3}}>PIVOT <span style={{fontSize:13,fontWeight:400,color:rgba(CB,0.6),letterSpacing:2,textTransform:"uppercase",marginLeft:4}}>Readiness</span></div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div onClick={function(){setShowDemo(!showDemo);}} style={{padding:"5px 10px",borderRadius:12,background:showDemo?rgba("#FFCC44",0.18):rgba(CB,0.08),border:"1px solid "+(showDemo?rgba("#FFCC44",0.5):rgba(CB,0.25)),cursor:"pointer",fontSize:10,fontWeight:700,color:showDemo?"#FFCC44":"rgba(255,255,255,0.55)",letterSpacing:"1",fontFamily:FONT}}>DEMO</div>
@@ -4168,6 +4170,8 @@ function MBAJourney(props) {
         <img src={UNC_LOGO} alt="UNC" style={{width:14,height:14,objectFit:"contain"}}/>
         <span style={{fontSize:9,color:rgba(CB,0.5),letterSpacing:1.5,textTransform:"uppercase"}}>UNC Kenan-Flagler Business School</span>
       </div>
+
+      <PIVOTAssessment open={showAssessment} form={assessmentForm} initial={assessment && assessment.form===assessmentForm ? assessment.responses : {}} onSave={saveAssessment} onClose={function(){setShowAssessment(false);}}/>
 
       {/* First-login onboarding overlay */}
       {showOnboarding&&(
