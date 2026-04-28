@@ -1049,6 +1049,85 @@ function UBPJourney(props) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   PIVOT LABS (shared across UBP + MBA — applied leadership simulations)
+   ══════════════════════════════════════════════════════════════ */
+
+var PIVOT_LABS = [
+  {
+    id: "lab-cap-allocation",
+    title: "Capital Allocation Under Uncertainty",
+    areas: ["Finance"],
+    combo: false,
+    duration: "Half-day · Live simulation",
+    desc: "Allocate $50M across competing investments while market signals shift in real time. Defend your thesis to a partner who keeps moving the goalposts. The point is not the optimal answer — it is whether you can hold a defensible position, change your mind in flight, and own the call when the data is ambiguous.",
+    skills: ["s13","s20","s27","s21","s4"]
+  },
+  {
+    id: "lab-forensic-statements",
+    title: "Forensic Statement Investigation",
+    areas: ["Accounting","Ethics"],
+    combo: true,
+    duration: "Two-week case · Confidential reporting",
+    desc: "A whistleblower hands you anomalous financial statements from a Fortune 500 supplier. You have access, time, and one phone call to leadership. What do you escalate, what do you sit on, and how do you decide? The lab tests how you act on values when career incentives push the other way.",
+    skills: ["s5","s4","s11","s21","s12"]
+  },
+  {
+    id: "lab-data-as-influence",
+    title: "Data as Influence",
+    areas: ["Operations","Communications"],
+    combo: true,
+    duration: "Three-week project · Live client sponsor",
+    desc: "Your operations analysis is bulletproof. The CFO disagrees with your conclusion and has 30 minutes for you. Build the deck, run the room, defend the model — and decide which battles to fight on data versus which to win with narrative. Every team gets the same dataset; the differences will be entirely in how you wield it.",
+    skills: ["s18","s16","s22","s10","s11"]
+  },
+  {
+    id: "lab-ai-inside-org",
+    title: "Building AI Applications Inside the Org",
+    areas: ["Organizational Behavior","Marketing"],
+    combo: true,
+    duration: "Six-week studio · Cross-functional team",
+    desc: "Lead a 5-person team to ship an AI feature inside a real partner company. Engineering will under-deliver, marketing will move the deadline, and one teammate will fundamentally disagree with the product direction. The technical work is the easier half. The lab assesses how you build the conditions under which a diverse team can ship.",
+    skills: ["s9","s17","s30","s23","s7"]
+  },
+  {
+    id: "lab-brand-crisis",
+    title: "Brand Crisis · 72-Hour Response",
+    areas: ["Marketing","Communications"],
+    combo: true,
+    duration: "72-hour live exercise · Mock press cycle",
+    desc: "A product defect goes viral on a Friday at 4 PM. Reporters call. Customers post. Your VP is on a flight. You have three days, two interns, and one CEO who wants daily updates. Make the calls, write the statements, and explain in the debrief what you would do again and what you would never do again.",
+    skills: ["s28","s20","s12","s18","s24"]
+  },
+  {
+    id: "lab-pivoting-plain-sight",
+    title: "Pivoting in Plain Sight",
+    areas: ["Strategy","Marketing"],
+    combo: true,
+    duration: "Semester · Multi-stage simulation",
+    desc: "You inherit a brand whose category is collapsing. Sales are still positive but the trend line is unmistakable. Your team must rebrand, reposition, and re-launch — without losing the customers paying the bills today. Reframe the problem in front of the board, then deliver against the reframe.",
+    skills: ["s16","s15","s14","s17","s25"]
+  },
+  {
+    id: "lab-difficult-conversations",
+    title: "Difficult Conversations Theater",
+    areas: ["Organizational Behavior"],
+    combo: false,
+    duration: "Day-long · Trained actors + video review",
+    desc: "Six scripted scenes — feedback to a senior peer, a layoff conversation, a values disagreement with your manager, a colleague crossing a line. Trained actors push back the way real humans push back. Every scene gets recorded, played back, and debriefed by the cohort. You will not enjoy the playback. You will get better.",
+    skills: ["s12","s10","s9","s11","s2"]
+  },
+  {
+    id: "lab-leading-change",
+    title: "Leading Change Without Authority",
+    areas: ["Strategy","Organizational Behavior"],
+    combo: true,
+    duration: "Eight-week project · No formal title",
+    desc: "Pick a real change you want to drive in a real org you do not run. You have no authority, no budget, and no permission. Build the coalition, write the memo, sequence the moves, and persuade the people who can say yes. Win or lose, the lab teaches you what change requires when no one has to listen to you.",
+    skills: ["s3","s7","s18","s23","s5"]
+  }
+];
+
+/* ══════════════════════════════════════════════════════════════
    UBP — DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 
@@ -2943,6 +3022,7 @@ function UBPNetwork(props) {
 
   var tabs = [
     { k: "events", l: "Events", count: UBP_EVENTS.length },
+    { k: "labs", l: "Labs", count: PIVOT_LABS.length },
     { k: "learn", l: "Learn", count: UBP_CONTENT.length },
   ];
 
@@ -3081,6 +3161,84 @@ function UBPNetwork(props) {
         {}
         
         {}
+        {tab === "labs" && (
+          <div>
+            {/* Labs intro */}
+            <div style={Object.assign({
+              background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08),
+              borderRadius: 14, padding: "14px 16px", marginBottom: 14,
+            }, stagger(0))}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{ fontSize: 16 }}>🧪</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: rgba(CB, 0.85), textTransform: "uppercase", letterSpacing: 1 }}>Pivot Labs</span>
+              </div>
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>
+                Realistic, applied simulations where you practice durable leadership skills inside a specific business context. Some are single-discipline; many combine two areas in ways the work actually shows up.
+              </div>
+            </div>
+
+            {PIVOT_LABS.map(function (lab, i) {
+              return (
+                <div key={lab.id} style={Object.assign({
+                  background: rgba(CN, 0.4),
+                  border: "1px solid " + rgba(CB, lab.combo ? 0.18 : 0.06),
+                  borderRadius: 16, padding: "16px 18px", marginBottom: 12,
+                  position: "relative",
+                }, stagger((i + 1) * 0.06))}>
+                  {/* Areas + combo flag */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
+                    {lab.combo && (
+                      <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 8, background: "rgba(255,204,68,0.15)", border: "1px solid rgba(255,204,68,0.45)", color: "#FFCC44", letterSpacing: 1 }}>COMBO</span>
+                    )}
+                    {lab.areas.map(function (a, ai) {
+                      return (
+                        <span key={ai} style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 8, background: rgba(CB, 0.1), border: "1px solid " + rgba(CB, 0.25), color: "rgba(255,255,255,0.85)", letterSpacing: 0.5, textTransform: "uppercase" }}>{a}</span>
+                      );
+                    })}
+                  </div>
+                  {/* Title */}
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 4, lineHeight: 1.3 }}>{lab.title}</div>
+                  {/* Duration */}
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginBottom: 10, fontStyle: "italic" }}>{lab.duration}</div>
+                  {/* Description */}
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: 12 }}>{lab.desc}</div>
+                  {/* Skills */}
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 6 }}>SKILLS YOU WILL PRACTICE</div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                      {lab.skills.map(function (sid) {
+                        var sk = skillBy(sid); if (!sk) return null;
+                        var col = PC[sk.dim];
+                        return (
+                          <span key={sid} style={{
+                            display: "inline-flex", alignItems: "center", gap: 4,
+                            padding: "3px 8px", borderRadius: 10,
+                            background: rgba(col, 0.1),
+                            border: "1px solid " + rgba(col, 0.3),
+                            fontSize: 10, fontWeight: 600,
+                            color: "rgba(255,255,255,0.85)",
+                          }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: col }}></span>
+                            {sk.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {/* CTA */}
+                  <button style={{
+                    marginTop: 4, width: "100%", padding: "10px 0",
+                    background: rgba(CB, 0.1),
+                    border: "1px solid " + rgba(CB, 0.25),
+                    borderRadius: 10, cursor: "pointer",
+                    fontSize: 13, fontWeight: 700, color: rgba(CB, 0.9),
+                  }}>Express interest</button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {tab === "learn" && (
           <div>
             {/* Faculty Knowledge Base teaser */}
@@ -5758,6 +5916,7 @@ function MBANetwork(props) {
 
   var tabs = [
     { k: "events", l: "Events", count: MBA_EVENTS.length },
+    { k: "labs", l: "Labs", count: PIVOT_LABS.length },
     { k: "learn", l: "Learn", count: MBA_CONTENT.length },
   ];
 
@@ -5896,6 +6055,84 @@ function MBANetwork(props) {
         {}
         
         {}
+        {tab === "labs" && (
+          <div>
+            {/* Labs intro */}
+            <div style={Object.assign({
+              background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08),
+              borderRadius: 14, padding: "14px 16px", marginBottom: 14,
+            }, stagger(0))}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                <span style={{ fontSize: 16 }}>🧪</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: rgba(CB, 0.85), textTransform: "uppercase", letterSpacing: 1 }}>Pivot Labs</span>
+              </div>
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>
+                Realistic, applied simulations where you practice durable leadership skills inside a specific business context. Some are single-discipline; many combine two areas in ways the work actually shows up.
+              </div>
+            </div>
+
+            {PIVOT_LABS.map(function (lab, i) {
+              return (
+                <div key={lab.id} style={Object.assign({
+                  background: rgba(CN, 0.4),
+                  border: "1px solid " + rgba(CB, lab.combo ? 0.18 : 0.06),
+                  borderRadius: 16, padding: "16px 18px", marginBottom: 12,
+                  position: "relative",
+                }, stagger((i + 1) * 0.06))}>
+                  {/* Areas + combo flag */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
+                    {lab.combo && (
+                      <span style={{ fontSize: 9, fontWeight: 800, padding: "2px 7px", borderRadius: 8, background: "rgba(255,204,68,0.15)", border: "1px solid rgba(255,204,68,0.45)", color: "#FFCC44", letterSpacing: 1 }}>COMBO</span>
+                    )}
+                    {lab.areas.map(function (a, ai) {
+                      return (
+                        <span key={ai} style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 8, background: rgba(CB, 0.1), border: "1px solid " + rgba(CB, 0.25), color: "rgba(255,255,255,0.85)", letterSpacing: 0.5, textTransform: "uppercase" }}>{a}</span>
+                      );
+                    })}
+                  </div>
+                  {/* Title */}
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 4, lineHeight: 1.3 }}>{lab.title}</div>
+                  {/* Duration */}
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginBottom: 10, fontStyle: "italic" }}>{lab.duration}</div>
+                  {/* Description */}
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.7)", lineHeight: 1.6, marginBottom: 12 }}>{lab.desc}</div>
+                  {/* Skills */}
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 6 }}>SKILLS YOU WILL PRACTICE</div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                      {lab.skills.map(function (sid) {
+                        var sk = skillBy(sid); if (!sk) return null;
+                        var col = PC[sk.dim];
+                        return (
+                          <span key={sid} style={{
+                            display: "inline-flex", alignItems: "center", gap: 4,
+                            padding: "3px 8px", borderRadius: 10,
+                            background: rgba(col, 0.1),
+                            border: "1px solid " + rgba(col, 0.3),
+                            fontSize: 10, fontWeight: 600,
+                            color: "rgba(255,255,255,0.85)",
+                          }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: col }}></span>
+                            {sk.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {/* CTA */}
+                  <button style={{
+                    marginTop: 4, width: "100%", padding: "10px 0",
+                    background: rgba(CB, 0.1),
+                    border: "1px solid " + rgba(CB, 0.25),
+                    borderRadius: 10, cursor: "pointer",
+                    fontSize: 13, fontWeight: 700, color: rgba(CB, 0.9),
+                  }}>Express interest</button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {tab === "learn" && (
           <div>
             {/* Faculty Knowledge Base teaser */}
