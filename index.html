@@ -655,6 +655,11 @@ function UBPJourney(props) {
   function saveOnbName(){ if(onbName && onbName.trim()) try{ localStorage.setItem("ubp_user_name", onbName.trim()); }catch(e){} }
   var _preset=useState("y2"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
   var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
+  var _ass = useState(null); var assessment = _ass[0], setAssessment = _ass[1];
+  var _showA = useState(false); var showAssessment = _showA[0], setShowAssessment = _showA[1];
+  var _form = useState("long"); var assessmentForm = _form[0], setAssessmentForm = _form[1];
+  function startAssessment(form){ setAssessmentForm(form); setShowAssessment(true); }
+  function saveAssessment(payload){ setAssessment(payload); try { localStorage.setItem("ubp_pivot_assessment", JSON.stringify(payload)); } catch(e){} setShowAssessment(false); }
   var scrollRef=useRef(null);
 
   useEffect(function(){
@@ -1110,7 +1115,7 @@ var PIVOT_LABS = [
   {
     id: "lab-difficult-conversations",
     title: "Difficult Conversations Theater",
-    areas: ["Organizational Behavior"],
+    areas: ["Communications"],
     combo: false,
     duration: "Day-long · Trained actors + video review",
     desc: "Six scripted scenes — feedback to a senior peer, a layoff conversation, a values disagreement with your manager, a colleague crossing a line. Trained actors push back the way real humans push back. Every scene gets recorded, played back, and debriefed by the cohort. You will not enjoy the playback. You will get better.",
@@ -3924,6 +3929,11 @@ function MBAJourney(props) {
   function saveOnbName(){ if(onbName && onbName.trim()) try{ localStorage.setItem("mba_user_name", onbName.trim()); }catch(e){} }
   var _preset=useState("today"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
   var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
+  var _ass = useState(null); var assessment = _ass[0], setAssessment = _ass[1];
+  var _showA = useState(false); var showAssessment = _showA[0], setShowAssessment = _showA[1];
+  var _form = useState("long"); var assessmentForm = _form[0], setAssessmentForm = _form[1];
+  function startAssessment(form){ setAssessmentForm(form); setShowAssessment(true); }
+  function saveAssessment(payload){ setAssessment(payload); try { localStorage.setItem("mba_pivot_assessment", JSON.stringify(payload)); } catch(e){} setShowAssessment(false); }
   var scrollRef=useRef(null);
 
   useEffect(function(){
