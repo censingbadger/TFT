@@ -4979,6 +4979,30 @@ function MBAProgress(props) {
           </div>
         </div>
 
+        {/* PIVOT Assessment TODO */}
+        {!assessment && (
+          <div onClick={function(){setShowAssessment(true);}} style={{ margin:"0 16px 14px", padding:"14px 16px", borderRadius:14, background:"linear-gradient(135deg, rgba(255,204,68,0.14), rgba(123,175,212,0.08))", border:"1px solid rgba(255,204,68,0.45)", cursor:"pointer" }}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
+              <span style={{fontSize:16}}>📋</span>
+              <span style={{fontSize:11,fontWeight:800,color:"#FFCC44",letterSpacing:1.4}}>TO DO · TAKE YOUR PIVOT ASSESSMENT</span>
+            </div>
+            <div style={{fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.5, marginBottom:8}}>Your foundation is uncalibrated — the radar is using placeholder values. Take the 60-item self-assessment (~5 min) and the foundation will reflect you.</div>
+            <div style={{display:"flex", gap:8, flexWrap:"wrap"}}>
+              <div onClick={function(ev){ev.stopPropagation();startAssessment("short");}} style={{padding:"6px 12px", borderRadius:10, background:"rgba(255,204,68,0.2)", border:"1px solid rgba(255,204,68,0.55)", fontSize:11, fontWeight:800, color:"#FFCC44", cursor:"pointer"}}>Short (15) →</div>
+              <div onClick={function(ev){ev.stopPropagation();startAssessment("long");}} style={{padding:"6px 12px", borderRadius:10, background:"rgba(123,175,212,0.18)", border:"1px solid rgba(123,175,212,0.45)", fontSize:11, fontWeight:800, color:"#9bcfee", cursor:"pointer"}}>Long (60) →</div>
+            </div>
+          </div>
+        )}
+        {assessment && (
+          <div style={{ margin:"0 16px 14px", padding:"10px 14px", borderRadius:12, background: assessment.demo?"rgba(255,204,68,0.06)":"rgba(80,200,120,0.06)", border:"1px solid "+(assessment.demo?"rgba(255,204,68,0.3)":"rgba(80,200,120,0.25)"), display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{fontSize:11, color:"rgba(255,255,255,0.7)"}}>{assessment.demo ? "📋 Demo scores loaded · take the assessment to calibrate to you" : "✓ PIVOT Assessment taken · foundation calibrated to you"}</div>
+            <div style={{display:"flex", gap:8}}>
+              <div onClick={function(){startAssessment("short");}} style={{fontSize:11, color: "#FFCC44", fontWeight:700, cursor:"pointer"}}>{assessment.demo ? "Short →" : "Retake (Short) →"}</div>
+              <div onClick={function(){startAssessment("long");}} style={{fontSize:11, color: "#9bcfee", fontWeight:700, cursor:"pointer"}}>{assessment.demo ? "Long →" : "Retake (Long) →"}</div>
+            </div>
+          </div>
+        )}
+
         {/* ── Experience Token Bars ── */}
         <div style={{ padding: "0 16px 8px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom: 6 }}>
@@ -5006,30 +5030,6 @@ function MBAProgress(props) {
             return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} attrs={myAttrs} earnedMap={myEarned} path={selectedPath} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
           })}
         </div>
-
-        {/* PIVOT Assessment TODO */}
-        {!assessment && (
-          <div onClick={function(){setShowAssessment(true);}} style={{ margin:"0 16px 14px", padding:"14px 16px", borderRadius:14, background:"linear-gradient(135deg, rgba(255,204,68,0.14), rgba(123,175,212,0.08))", border:"1px solid rgba(255,204,68,0.45)", cursor:"pointer" }}>
-            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
-              <span style={{fontSize:16}}>📋</span>
-              <span style={{fontSize:11,fontWeight:800,color:"#FFCC44",letterSpacing:1.4}}>TO DO · TAKE YOUR PIVOT ASSESSMENT</span>
-            </div>
-            <div style={{fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.5, marginBottom:8}}>Your foundation is uncalibrated — the radar is using placeholder values. Take the 60-item self-assessment (~5 min) and the foundation will reflect you.</div>
-            <div style={{display:"flex", gap:8, flexWrap:"wrap"}}>
-              <div onClick={function(ev){ev.stopPropagation();startAssessment("short");}} style={{padding:"6px 12px", borderRadius:10, background:"rgba(255,204,68,0.2)", border:"1px solid rgba(255,204,68,0.55)", fontSize:11, fontWeight:800, color:"#FFCC44", cursor:"pointer"}}>Short (15) →</div>
-              <div onClick={function(ev){ev.stopPropagation();startAssessment("long");}} style={{padding:"6px 12px", borderRadius:10, background:"rgba(123,175,212,0.18)", border:"1px solid rgba(123,175,212,0.45)", fontSize:11, fontWeight:800, color:"#9bcfee", cursor:"pointer"}}>Long (60) →</div>
-            </div>
-          </div>
-        )}
-        {assessment && (
-          <div style={{ margin:"0 16px 14px", padding:"10px 14px", borderRadius:12, background: assessment.demo?"rgba(255,204,68,0.06)":"rgba(80,200,120,0.06)", border:"1px solid "+(assessment.demo?"rgba(255,204,68,0.3)":"rgba(80,200,120,0.25)"), display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <div style={{fontSize:11, color:"rgba(255,255,255,0.7)"}}>{assessment.demo ? "📋 Demo scores loaded · take the assessment to calibrate to you" : "✓ PIVOT Assessment taken · foundation calibrated to you"}</div>
-            <div style={{display:"flex", gap:8}}>
-              <div onClick={function(){startAssessment("short");}} style={{fontSize:11, color: "#FFCC44", fontWeight:700, cursor:"pointer"}}>{assessment.demo ? "Short →" : "Retake (Short) →"}</div>
-              <div onClick={function(){startAssessment("long");}} style={{fontSize:11, color: "#9bcfee", fontWeight:700, cursor:"pointer"}}>{assessment.demo ? "Long →" : "Retake (Long) →"}</div>
-            </div>
-          </div>
-        )}
 
         {/* ── Recent Growth (from Dashboard) ── */}
         <div style={{ padding: "0 16px 14px" }}>
