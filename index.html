@@ -3036,7 +3036,7 @@ function UBPNetwork(props) {
   var CB = "#4B9CD3";
   var _nav = useState("network");
   var activeNav = _nav[0], setActiveNav = _nav[1];
-  var _tab = useState("events");
+  var _tab = useState("labs");
   var tab = _tab[0], setTab = _tab[1];
   var _vis = useState(false);
   var visible = _vis[0], setVisible = _vis[1];
@@ -3051,8 +3051,8 @@ function UBPNetwork(props) {
   }
 
   var tabs = [
-    { k: "events", l: "Events", count: UBP_EVENTS.length },
     { k: "labs", l: "Labs", count: PIVOT_LABS.length },
+    { k: "events", l: "Events", count: UBP_EVENTS.length },
     { k: "learn", l: "Learn", count: UBP_CONTENT.length },
   ];
 
@@ -5960,7 +5960,7 @@ function MBANetwork(props) {
   var CB = "#7BAFD4";
   var _nav = useState("network");
   var activeNav = _nav[0], setActiveNav = _nav[1];
-  var _tab = useState("events");
+  var _tab = useState("labs");
   var tab = _tab[0], setTab = _tab[1];
   var _vis = useState(false);
   var visible = _vis[0], setVisible = _vis[1];
@@ -5975,8 +5975,8 @@ function MBANetwork(props) {
   }
 
   var tabs = [
-    { k: "events", l: "Events", count: MBA_EVENTS.length },
     { k: "labs", l: "Labs", count: PIVOT_LABS.length },
+    { k: "events", l: "Events", count: MBA_EVENTS.length },
     { k: "learn", l: "Learn", count: MBA_CONTENT.length },
   ];
 
