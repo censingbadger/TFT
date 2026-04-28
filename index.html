@@ -665,6 +665,7 @@ function UBPJourney(props) {
   useEffect(function(){
     setTimeout(function(){setAnim(true);},300);
     try{var v=localStorage.getItem("ubp_reflections");if(v)setReflections(JSON.parse(v));}catch(e){}
+    try { var __a = loadSavedAssessment("ubp"); setAssessment(__a || UBP_DEMO_ASSESSMENT); } catch(e){ setAssessment(UBP_DEMO_ASSESSMENT); }
     try{
       var sp=localStorage.getItem("ubp_preset");
       if(sp && UBP_EARNED_PRESETS[sp]) setEarnedPreset(sp);
@@ -758,6 +759,30 @@ function UBPJourney(props) {
       <div style={{display:"flex",gap:7,padding:"0 20px 10px",overflowX:"auto"}}>
         {UBP_PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){pickNorthStar(on?null:p.id);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.18):rgba(p.color,0.06),border:on?"2px solid "+rgba(p.color,0.7):"1px solid "+rgba(p.color,0.3),borderRadius:20,padding:"7px 14px",fontSize:13,fontWeight:700,color:on?p.color:rgba(p.color,0.85),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
       </div>
+
+      {/* PIVOT Assessment TODO (top of Readiness) */}
+      {!assessment && (
+        <div onClick={function(){startAssessment("long");}} style={{ margin:"0 16px 10px", padding:"12px 14px", borderRadius:12, background:"linear-gradient(135deg, rgba(255,204,68,0.14), rgba(123,175,212,0.06))", border:"1px solid rgba(255,204,68,0.45)", cursor:"pointer" }}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
+            <span style={{fontSize:14}}>📋</span>
+            <span style={{fontSize:10,fontWeight:800,color:"#FFCC44",letterSpacing:1.4}}>TO DO · TAKE YOUR PIVOT ASSESSMENT</span>
+          </div>
+          <div style={{fontSize:12, color:"rgba(255,255,255,0.78)", lineHeight:1.45, marginBottom:6}}>Calibrate your foundation so the constellation reflects you.</div>
+          <div style={{display:"flex", gap:6}}>
+            <div onClick={function(ev){ev.stopPropagation();startAssessment("short");}} style={{padding:"5px 10px",borderRadius:8,background:"rgba(255,204,68,0.2)",border:"1px solid rgba(255,204,68,0.55)",fontSize:10,fontWeight:800,color:"#FFCC44",cursor:"pointer"}}>Short (15) →</div>
+            <div onClick={function(ev){ev.stopPropagation();startAssessment("long");}} style={{padding:"5px 10px",borderRadius:8,background:"rgba(123,175,212,0.18)",border:"1px solid rgba(123,175,212,0.45)",fontSize:10,fontWeight:800,color:"#9bcfee",cursor:"pointer"}}>Long (60) →</div>
+          </div>
+        </div>
+      )}
+      {assessment && assessment.demo && (
+        <div onClick={function(){startAssessment("long");}} style={{ margin:"0 16px 10px", padding:"8px 12px", borderRadius:10, background:"rgba(255,204,68,0.06)", border:"1px solid rgba(255,204,68,0.3)", display:"flex", justifyContent:"space-between", alignItems:"center", cursor:"pointer" }}>
+          <div style={{fontSize:11, color:"rgba(255,255,255,0.72)"}}>📋 Demo scores loaded · take the assessment to calibrate</div>
+          <div style={{display:"flex", gap:6}}>
+            <span onClick={function(ev){ev.stopPropagation();startAssessment("short");}} style={{fontSize:10, color:"#FFCC44", fontWeight:800}}>Short →</span>
+            <span onClick={function(ev){ev.stopPropagation();startAssessment("long");}} style={{fontSize:10, color:"#9bcfee", fontWeight:800}}>Long →</span>
+          </div>
+        </div>
+      )}
 
       {/* Vertical sky map — full-bleed, scrollable */}
       <div style={{flex:1,position:"relative",minHeight:0,overflowY:"auto",overflowX:"hidden",WebkitOverflowScrolling:"touch",background:"#020308"}}>
@@ -3939,6 +3964,7 @@ function MBAJourney(props) {
   useEffect(function(){
     setTimeout(function(){setAnim(true);},300);
     try{var v=localStorage.getItem("mba_reflections");if(v)setReflections(JSON.parse(v));}catch(e){}
+    try { var __a = loadSavedAssessment("mba"); setAssessment(__a || MBA_DEMO_ASSESSMENT); } catch(e){ setAssessment(MBA_DEMO_ASSESSMENT); }
     try{
       var sp=localStorage.getItem("mba_preset");
       if(sp && EARNED_PRESETS[sp]) setEarnedPreset(sp);
@@ -4033,6 +4059,30 @@ function MBAJourney(props) {
       <div style={{display:"flex",gap:7,padding:"0 20px 10px",overflowX:"auto"}}>
         {PATHS.map(function(p){var on=ns===p.id;return <button key={p.id} onClick={function(){pickNorthStar(on?null:p.id);setSelSkill(null);setSelExp(null);}} style={{background:on?rgba(p.color,0.18):rgba(p.color,0.06),border:on?"2px solid "+rgba(p.color,0.7):"1px solid "+rgba(p.color,0.3),borderRadius:20,padding:"7px 14px",fontSize:13,fontWeight:700,color:on?p.color:rgba(p.color,0.85),cursor:"pointer",whiteSpace:"nowrap",fontFamily:FONT,flexShrink:0}}>{p.label}</button>;})}
       </div>
+
+      {/* PIVOT Assessment TODO (top of Readiness) */}
+      {!assessment && (
+        <div onClick={function(){startAssessment("long");}} style={{ margin:"0 16px 10px", padding:"12px 14px", borderRadius:12, background:"linear-gradient(135deg, rgba(255,204,68,0.14), rgba(123,175,212,0.06))", border:"1px solid rgba(255,204,68,0.45)", cursor:"pointer" }}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:4}}>
+            <span style={{fontSize:14}}>📋</span>
+            <span style={{fontSize:10,fontWeight:800,color:"#FFCC44",letterSpacing:1.4}}>TO DO · TAKE YOUR PIVOT ASSESSMENT</span>
+          </div>
+          <div style={{fontSize:12, color:"rgba(255,255,255,0.78)", lineHeight:1.45, marginBottom:6}}>Calibrate your foundation so the constellation reflects you.</div>
+          <div style={{display:"flex", gap:6}}>
+            <div onClick={function(ev){ev.stopPropagation();startAssessment("short");}} style={{padding:"5px 10px",borderRadius:8,background:"rgba(255,204,68,0.2)",border:"1px solid rgba(255,204,68,0.55)",fontSize:10,fontWeight:800,color:"#FFCC44",cursor:"pointer"}}>Short (15) →</div>
+            <div onClick={function(ev){ev.stopPropagation();startAssessment("long");}} style={{padding:"5px 10px",borderRadius:8,background:"rgba(123,175,212,0.18)",border:"1px solid rgba(123,175,212,0.45)",fontSize:10,fontWeight:800,color:"#9bcfee",cursor:"pointer"}}>Long (60) →</div>
+          </div>
+        </div>
+      )}
+      {assessment && assessment.demo && (
+        <div onClick={function(){startAssessment("long");}} style={{ margin:"0 16px 10px", padding:"8px 12px", borderRadius:10, background:"rgba(255,204,68,0.06)", border:"1px solid rgba(255,204,68,0.3)", display:"flex", justifyContent:"space-between", alignItems:"center", cursor:"pointer" }}>
+          <div style={{fontSize:11, color:"rgba(255,255,255,0.72)"}}>📋 Demo scores loaded · take the assessment to calibrate</div>
+          <div style={{display:"flex", gap:6}}>
+            <span onClick={function(ev){ev.stopPropagation();startAssessment("short");}} style={{fontSize:10, color:"#FFCC44", fontWeight:800}}>Short →</span>
+            <span onClick={function(ev){ev.stopPropagation();startAssessment("long");}} style={{fontSize:10, color:"#9bcfee", fontWeight:800}}>Long →</span>
+          </div>
+        </div>
+      )}
 
       {/* Vertical sky map — full-bleed, scrollable */}
       <div style={{flex:1,position:"relative",minHeight:0,overflowY:"auto",overflowX:"hidden",WebkitOverflowScrolling:"touch",background:"#020308"}}>
