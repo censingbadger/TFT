@@ -287,7 +287,7 @@ var DEFAULT_NAV_ITEMS = [
   { k: "index",     l: "Progress",  i: "◉" },
   { k: "journey",   l: "Readiness",   i: "✦" },
   { k: "team",      l: "Team",      i: "◈" },
-  { k: "network",   l: "Compass",   i: "🧭" },
+  { k: "network",   l: "Experiences",   i: "🧪" },
   { k: "assistant", l: "Coach",     i: "✧" },
 ];
 /* MBA nav (new IA: Journey, Progress, Team, Network, Coach) */
@@ -295,7 +295,7 @@ var MBA_NAV_ITEMS = [
   { k: "progress", l: "Progress", i: "◉" },
   { k: "journey",  l: "Readiness",  i: "✦" },
   { k: "team",     l: "Team",     i: "◈" },
-  { k: "network",  l: "Compass",  i: "🧭" },
+  { k: "network",  l: "Experiences",  i: "🧪" },
   { k: "coach",    l: "Coach",    i: "✧" },
 ];
 
@@ -2943,7 +2943,6 @@ function UBPNetwork(props) {
 
   var tabs = [
     { k: "events", l: "Events", count: UBP_EVENTS.length },
-    { k: "mentors", l: "Mentors", count: UBP_MENTORS.length },
     { k: "learn", l: "Learn", count: UBP_CONTENT.length },
   ];
 
@@ -2962,7 +2961,7 @@ function UBPNetwork(props) {
           <img src={UNC_LOGO} alt="UNC" style={{ width: 34, height: 34, objectFit: "contain" }} />
           <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>
             PIVOT{" "}
-            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Compass</span>
+            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Experiences</span>
           </div>
         </div>
         <div style={{
@@ -3080,73 +3079,7 @@ function UBPNetwork(props) {
         )}
 
         {}
-        {tab === "mentors" && (
-          <div>
-            {/* Mentor intro */}
-            <div style={Object.assign({
-              background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08),
-              borderRadius: 14, padding: "14px 16px", marginBottom: 14,
-            }, stagger(0))}>
-              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
-                Mentors are recent KF undergrad alumni who volunteered to help current students. They've been where you are.
-              </div>
-            </div>
-
-            {UBP_MENTORS.map(function (m, i) {
-              return (
-                <div key={i} style={Object.assign({
-                  background: rgba(CN, 0.4),
-                  border: "1px solid " + rgba(CB, 0.06),
-                  borderRadius: 16, padding: "16px 18px", marginBottom: 12,
-                }, stagger((i + 1) * 0.08))}>
-                  <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    {/* Avatar */}
-                    <div style={{
-                      width: 48, height: 48, borderRadius: "50%", flexShrink: 0,
-                      background: "linear-gradient(135deg," + rgba(CB, 0.3) + "," + rgba(CN, 0.8) + ")",
-                      border: "2px solid " + rgba(CB, 0.3),
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 16, fontWeight: 600, color: rgba(CB, 0.8),
-                    }}>{m.initials}</div>
-                    <div style={{ flex: 1 }}>
-                      {/* Name + Availability */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
-                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>{m.name}</span>
-                        {m.avail && (
-                          <div style={{
-                            width: 8, height: 8, borderRadius: "50%", background: "#50C878",
-                            boxShadow: "0 0 6px " + rgba("#50C878", 0.4),
-                          }} />
-                        )}
-                      </div>
-                      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 2 }}>{m.role}</div>
-                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: 8 }}>{m.grad} · {m.focus}</div>
-                      {/* Dims */}
-                      <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-                        {m.dims.map(function (d, di) { return <UBP_DimDot key={di} dim={d} />; })}
-                      </div>
-                      {/* Action */}
-                      <button style={{
-                        padding: "9px 20px", borderRadius: 10,
-                        background: m.avail ? rgba(CB, 0.12) : rgba(CN, 0.6),
-                        border: "1px solid " + (m.avail ? rgba(CB, 0.2) : rgba(CB, 0.06)),
-                        fontSize: 13, fontWeight: 600, cursor: "pointer",
-                        color: m.avail ? rgba(CB, 0.9) : "rgba(255,255,255,0.25)",
-                      }}>{m.avail ? "Request Connection" : "Waitlist"}</button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* View all link */}
-            <div style={{
-              textAlign: "center", padding: "12px 0 20px",
-              fontSize: 14, color: rgba(CB, 0.6), cursor: "pointer",
-            }}>View all 32 mentors →</div>
-          </div>
-        )}
-
+        
         {}
         {tab === "learn" && (
           <div>
@@ -3403,6 +3336,7 @@ function UBPAssistant(props) {
   var activeNav = _nav[0], setActiveNav = _nav[1];
   var _vis = useState(false);
   var visible = _vis[0], setVisible = _vis[1];
+  var _ct = useState("chat"); var coachTab = _ct[0], setCoachTab = _ct[1];
   useEffect(function () { setTimeout(function () { setVisible(true); }, 100); }, []);
 
   return (
@@ -3439,7 +3373,16 @@ function UBPAssistant(props) {
         </div>
       </div>
 
+      {/* Coach sub-tabs: Chat / Mentors */}
+      <div style={{ display:"flex", gap:6, padding:"0 20px 10px" }}>
+        {[{k:"chat",l:"Chat"},{k:"mentors",l:"Mentors"}].map(function(tb){
+          var on = coachTab===tb.k;
+          return <button key={tb.k} onClick={function(){setCoachTab(tb.k);}} style={{ flex:1, padding:"8px 10px", borderRadius:10, background: on?rgba(CB,0.18):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.55):"rgba(255,255,255,0.1)"), color: on?"#fff":"rgba(255,255,255,0.6)", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:FONT }}>{tb.l}</button>;
+        })}
+      </div>
+
       {/* ── Chat Area ── */}
+      {coachTab === "chat" && (
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "8px 20px 0" }}>
         {UBP_chatMessages.map(function (msg, idx) {
           var isUser = msg.role === "user";
@@ -3518,8 +3461,10 @@ function UBPAssistant(props) {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Input Bar ── */}
+      {coachTab === "chat" && (
       <div style={{ padding: "12px 20px 14px", borderTop: "1px solid " + rgba(CB, 0.06) }}>
         <div style={{
           display: "flex", alignItems: "center", gap: 12,
@@ -3538,6 +3483,33 @@ function UBPAssistant(props) {
           }}>{"↑"}</button>
         </div>
       </div>
+      )}
+
+      {/* ── Mentors view (moved from Experiences) ── */}
+      {coachTab === "mentors" && (
+        <div style={{ flex:1, overflowY:"auto", overflowX:"hidden", padding:"6px 20px 16px" }}>
+          <div style={{ background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08), borderRadius: 14, padding: "12px 14px", marginBottom: 14, fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+            Mentors are people you can reach out to for guidance — alumni, coaches, faculty. Connection requests go through the PIVOT team.
+          </div>
+          {UBP_MENTORS.map(function (m, i) {
+            return (
+              <div key={i} style={{ background: rgba(CN, 0.4), border: "1px solid " + rgba(CB, 0.06), borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, background: "linear-gradient(135deg," + rgba(CB, 0.3) + "," + rgba(CN, 0.8) + ")", border: "2px solid " + rgba(CB, 0.3), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 600, color: rgba(CB, 0.9) }}>{m.initials}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{m.name}</span>
+                    {m.avail && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#50C878", boxShadow: "0 0 5px " + rgba("#50C878", 0.4) }} />}
+                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{m.role}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 1 }}>{m.grad} · {m.focus}</div>
+                  <button style={{ marginTop: 8, padding: "7px 14px", borderRadius: 9, background: m.avail ? rgba(CB, 0.12) : rgba(CN, 0.6), border: "1px solid " + (m.avail ? rgba(CB, 0.2) : rgba(CB, 0.06)), fontSize: 12, fontWeight: 600, cursor: m.avail ? "pointer" : "default", color: m.avail ? rgba(CB, 0.9) : "rgba(255,255,255,0.25)" }}>{m.avail ? "Request Connection" : "Waitlist"}</button>
+                </div>
+              </div>
+            );
+          })}
+          <div style={{ textAlign: "center", padding: "8px 0 16px", fontSize: 13, color: rgba(CB, 0.6), cursor: "pointer" }}>View all mentors →</div>
+        </div>
+      )}
 
       {/* ── Bottom Nav ── */}
       <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} />
@@ -5786,7 +5758,6 @@ function MBANetwork(props) {
 
   var tabs = [
     { k: "events", l: "Events", count: MBA_EVENTS.length },
-    { k: "mentors", l: "Mentors", count: MBA_MENTORS.length },
     { k: "learn", l: "Learn", count: MBA_CONTENT.length },
   ];
 
@@ -5805,7 +5776,7 @@ function MBANetwork(props) {
           <img src={UNC_LOGO} alt="UNC" style={{ width: 34, height: 34, objectFit: "contain" }} />
           <div style={{ fontSize: 22, fontWeight: 700, color: "#fff", letterSpacing: 0.3 }}>
             PIVOT{" "}
-            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Compass</span>
+            <span style={{ fontSize: 15, fontWeight: 400, color: rgba(CB, 0.6), letterSpacing: 2, textTransform: "uppercase", marginLeft: 4 }}>Experiences</span>
           </div>
         </div>
         <div style={{
@@ -5923,73 +5894,7 @@ function MBANetwork(props) {
         )}
 
         {}
-        {tab === "mentors" && (
-          <div>
-            {/* Mentor intro */}
-            <div style={Object.assign({
-              background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08),
-              borderRadius: 14, padding: "14px 16px", marginBottom: 14,
-            }, stagger(0))}>
-              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }}>
-                Your network includes executive coaches, faculty mentors, and MBA alumni who've walked your path. Connection requests go through the PIVOT team.
-              </div>
-            </div>
-
-            {MBA_MENTORS.map(function (m, i) {
-              return (
-                <div key={i} style={Object.assign({
-                  background: rgba(CN, 0.4),
-                  border: "1px solid " + rgba(CB, 0.06),
-                  borderRadius: 16, padding: "16px 18px", marginBottom: 12,
-                }, stagger((i + 1) * 0.08))}>
-                  <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                    {/* Avatar */}
-                    <div style={{
-                      width: 48, height: 48, borderRadius: "50%", flexShrink: 0,
-                      background: "linear-gradient(135deg," + rgba(CB, 0.3) + "," + rgba(CN, 0.8) + ")",
-                      border: "2px solid " + rgba(CB, 0.3),
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: 16, fontWeight: 600, color: rgba(CB, 0.8),
-                    }}>{m.initials}</div>
-                    <div style={{ flex: 1 }}>
-                      {/* Name + Availability */}
-                      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 3 }}>
-                        <span style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>{m.name}</span>
-                        {m.avail && (
-                          <div style={{
-                            width: 8, height: 8, borderRadius: "50%", background: "#50C878",
-                            boxShadow: "0 0 6px " + rgba("#50C878", 0.4),
-                          }} />
-                        )}
-                      </div>
-                      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 2 }}>{m.role}</div>
-                      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginBottom: 8 }}>{m.grad} · {m.focus}</div>
-                      {/* Dims */}
-                      <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
-                        {m.dims.map(function (d, di) { return <MBA_DimDot key={di} dim={d} />; })}
-                      </div>
-                      {/* Action */}
-                      <button style={{
-                        padding: "9px 20px", borderRadius: 10,
-                        background: m.avail ? rgba(CB, 0.12) : rgba(CN, 0.6),
-                        border: "1px solid " + (m.avail ? rgba(CB, 0.2) : rgba(CB, 0.06)),
-                        fontSize: 13, fontWeight: 600, cursor: "pointer",
-                        color: m.avail ? rgba(CB, 0.9) : "rgba(255,255,255,0.25)",
-                      }}>{m.avail ? "Request Connection" : "Waitlist"}</button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-            {/* View all link */}
-            <div style={{
-              textAlign: "center", padding: "12px 0 20px",
-              fontSize: 14, color: rgba(CB, 0.6), cursor: "pointer",
-            }}>View all 48 mentors & coaches →</div>
-          </div>
-        )}
-
+        
         {}
         {tab === "learn" && (
           <div>
@@ -6280,6 +6185,7 @@ function MBAAssistant(props) {
   var activeNav = _nav[0], setActiveNav = _nav[1];
   var _vis = useState(false);
   var visible = _vis[0], setVisible = _vis[1];
+  var _ct = useState("chat"); var coachTab = _ct[0], setCoachTab = _ct[1];
   useEffect(function () { setTimeout(function () { setVisible(true); }, 100); }, []);
 
   return (
@@ -6316,7 +6222,16 @@ function MBAAssistant(props) {
         </div>
       </div>
 
+      {/* Coach sub-tabs: Chat / Mentors */}
+      <div style={{ display:"flex", gap:6, padding:"0 20px 10px" }}>
+        {[{k:"chat",l:"Chat"},{k:"mentors",l:"Mentors"}].map(function(tb){
+          var on = coachTab===tb.k;
+          return <button key={tb.k} onClick={function(){setCoachTab(tb.k);}} style={{ flex:1, padding:"8px 10px", borderRadius:10, background: on?rgba(CB,0.18):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.55):"rgba(255,255,255,0.1)"), color: on?"#fff":"rgba(255,255,255,0.6)", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:FONT }}>{tb.l}</button>;
+        })}
+      </div>
+
       {/* ── Chat Area ── */}
+      {coachTab === "chat" && (
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", padding: "8px 20px 0" }}>
         {MBA_chatMessages.map(function (msg, idx) {
           var isUser = msg.role === "user";
@@ -6395,8 +6310,10 @@ function MBAAssistant(props) {
           </div>
         </div>
       </div>
+      )}
 
       {/* ── Input Bar ── */}
+      {coachTab === "chat" && (
       <div style={{ padding: "12px 20px 14px", borderTop: "1px solid " + rgba(CB, 0.06) }}>
         <div style={{
           display: "flex", alignItems: "center", gap: 12,
@@ -6415,6 +6332,33 @@ function MBAAssistant(props) {
           }}>{"↑"}</button>
         </div>
       </div>
+      )}
+
+      {/* ── Mentors view (moved from Experiences) ── */}
+      {coachTab === "mentors" && (
+        <div style={{ flex:1, overflowY:"auto", overflowX:"hidden", padding:"6px 20px 16px" }}>
+          <div style={{ background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08), borderRadius: 14, padding: "12px 14px", marginBottom: 14, fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
+            Mentors are people you can reach out to for guidance — alumni, coaches, faculty. Connection requests go through the PIVOT team.
+          </div>
+          {MBA_MENTORS.map(function (m, i) {
+            return (
+              <div key={i} style={{ background: rgba(CN, 0.4), border: "1px solid " + rgba(CB, 0.06), borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
+                <div style={{ width: 44, height: 44, borderRadius: "50%", flexShrink: 0, background: "linear-gradient(135deg," + rgba(CB, 0.3) + "," + rgba(CN, 0.8) + ")", border: "2px solid " + rgba(CB, 0.3), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 600, color: rgba(CB, 0.9) }}>{m.initials}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: "#fff" }}>{m.name}</span>
+                    {m.avail && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#50C878", boxShadow: "0 0 5px " + rgba("#50C878", 0.4) }} />}
+                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>{m.role}</div>
+                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginTop: 1 }}>{m.grad} · {m.focus}</div>
+                  <button style={{ marginTop: 8, padding: "7px 14px", borderRadius: 9, background: m.avail ? rgba(CB, 0.12) : rgba(CN, 0.6), border: "1px solid " + (m.avail ? rgba(CB, 0.2) : rgba(CB, 0.06)), fontSize: 12, fontWeight: 600, cursor: m.avail ? "pointer" : "default", color: m.avail ? rgba(CB, 0.9) : "rgba(255,255,255,0.25)" }}>{m.avail ? "Request Connection" : "Waitlist"}</button>
+                </div>
+              </div>
+            );
+          })}
+          <div style={{ textAlign: "center", padding: "8px 0 16px", fontSize: 13, color: rgba(CB, 0.6), cursor: "pointer" }}>View all mentors →</div>
+        </div>
+      )}
 
       {/* ── Bottom Nav ── */}
       <BottomNav active={activeNav} setActive={setActiveNav} color={CB} onSwitch={props.onSwitch} items={MBA_NAV_ITEMS} />
