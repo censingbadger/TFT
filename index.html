@@ -2244,7 +2244,7 @@ function UBPTeam(props) {
   var userName = getStoredName("ubp", "Jordan Sullivan");
   var avatarInitials = getInitials(userName);
   var _nav = useState("team"); var activeNav = _nav[0], setActiveNav = _nav[1];
-  var _view = useState("build"); var view = _view[0], setView = _view[1];
+  var _view = useState("my"); var view = _view[0], setView = _view[1];
   var _task = useState(null); var taskId = _task[0], setTaskId = _task[1];
   var _picks = useState([]); var picks = _picks[0], setPicks = _picks[1];
   var _teamOpen = useState(null); var teamOpen = _teamOpen[0], setTeamOpen = _teamOpen[1];
@@ -2340,7 +2340,7 @@ function UBPTeam(props) {
 
       {/* Sub-view tabs */}
       <div style={{ display:"flex", gap:6, padding:"8px 16px 10px" }}>
-        {[{k:"build",l:"Build a Team"},{k:"my",l:"Manage My Teams"},{k:"org",l:"Org"}].map(function(tb){
+        {[{k:"my",l:"Manage My Teams"},{k:"build",l:"Build a Team"},{k:"org",l:"Org"}].map(function(tb){
           var on = view===tb.k;
           return <button key={tb.k} onClick={function(){setView(tb.k);}} style={{ flex:1, padding:"8px 10px", borderRadius:10, background:on?rgba(CB,0.18):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.55):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.6)", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:FONT }}>{tb.l}</button>;
         })}
@@ -5056,7 +5056,7 @@ function MBATeam(props) {
   var userName = getStoredName("mba", "Mike Christian");
   var avatarInitials = getInitials(userName);
   var _nav = useState("team"); var activeNav = _nav[0], setActiveNav = _nav[1];
-  var _view = useState("build"); var view = _view[0], setView = _view[1];
+  var _view = useState("my"); var view = _view[0], setView = _view[1];
   var _task = useState(null); var taskId = _task[0], setTaskId = _task[1];
   var _picks = useState([]); var picks = _picks[0], setPicks = _picks[1];
   var _teamOpen = useState(null); var teamOpen = _teamOpen[0], setTeamOpen = _teamOpen[1];
@@ -5152,7 +5152,7 @@ function MBATeam(props) {
 
       {/* Sub-view tabs */}
       <div style={{ display:"flex", gap:6, padding:"8px 16px 10px" }}>
-        {[{k:"build",l:"Build a Team"},{k:"my",l:"Manage My Teams"},{k:"org",l:"Org"}].map(function(tb){
+        {[{k:"my",l:"Manage My Teams"},{k:"build",l:"Build a Team"},{k:"org",l:"Org"}].map(function(tb){
           var on = view===tb.k;
           return <button key={tb.k} onClick={function(){setView(tb.k);}} style={{ flex:1, padding:"8px 10px", borderRadius:10, background:on?rgba(CB,0.18):"rgba(255,255,255,0.04)", border:"1px solid "+(on?rgba(CB,0.55):"rgba(255,255,255,0.1)"), color:on?"#fff":"rgba(255,255,255,0.6)", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:FONT }}>{tb.l}</button>;
         })}
