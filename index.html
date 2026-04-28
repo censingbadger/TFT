@@ -3554,10 +3554,12 @@ function UBPAssistant(props) {
         }}>JS</div>
       </div>
 
-      {/* ── Tagline ── */}
+      {/* ── Tagline (sub-tab aware) ── */}
       <div style={{ padding: "6px 20px 14px" }}>
         <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>
-          Your personal leadership advisor — powered by every experience you've built.
+          {coachTab === "mentors"
+            ? "Recent KF alumni, faculty coaches, and exec mentors who volunteered to help current students. They have been where you are."
+            : "Your interview prep and experience coach — knows every journal entry, course reflection, and team conversation you have recorded."}
         </div>
       </div>
 
@@ -3676,9 +3678,6 @@ function UBPAssistant(props) {
       {/* ── Mentors view (moved from Experiences) ── */}
       {coachTab === "mentors" && (
         <div style={{ flex:1, overflowY:"auto", overflowX:"hidden", padding:"6px 20px 16px" }}>
-          <div style={{ background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08), borderRadius: 14, padding: "12px 14px", marginBottom: 14, fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
-            Mentors are people you can reach out to for guidance — alumni, coaches, faculty. Connection requests go through the PIVOT team.
-          </div>
           {UBP_MENTORS.map(function (m, i) {
             return (
               <div key={i} style={{ background: rgba(CN, 0.4), border: "1px solid " + rgba(CB, 0.06), borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
@@ -6512,10 +6511,12 @@ function MBAAssistant(props) {
         }}>MC</div>
       </div>
 
-      {/* ── Tagline ── */}
+      {/* ── Tagline (sub-tab aware) ── */}
       <div style={{ padding: "6px 20px 14px" }}>
         <div style={{ fontSize: 14, color: "rgba(255,255,255,0.4)", lineHeight: 1.5 }}>
-          Your interview prep + experience coach — knows every journal entry, PIVOT lab moment, and team conversation you've recorded.
+          {coachTab === "mentors"
+            ? "Recent KF alumni, faculty coaches, and exec mentors who volunteered to help current students. They have been where you are."
+            : "Your interview prep and experience coach — knows every journal entry, PIVOT lab moment, and team conversation you have recorded."}
         </div>
       </div>
 
@@ -6634,9 +6635,6 @@ function MBAAssistant(props) {
       {/* ── Mentors view (moved from Experiences) ── */}
       {coachTab === "mentors" && (
         <div style={{ flex:1, overflowY:"auto", overflowX:"hidden", padding:"6px 20px 16px" }}>
-          <div style={{ background: rgba(CB, 0.04), border: "1px solid " + rgba(CB, 0.08), borderRadius: 14, padding: "12px 14px", marginBottom: 14, fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.55 }}>
-            Mentors are people you can reach out to for guidance — alumni, coaches, faculty. Connection requests go through the PIVOT team.
-          </div>
           {MBA_MENTORS.map(function (m, i) {
             return (
               <div key={i} style={{ background: rgba(CN, 0.4), border: "1px solid " + rgba(CB, 0.06), borderRadius: 16, padding: "14px 16px", marginBottom: 10, display: "flex", gap: 12, alignItems: "flex-start" }}>
