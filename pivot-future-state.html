@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PIVOT — Future State</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: #f7f8fc;
+      color: #13294B;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 1400px; margin: 0 auto; padding: 32px 28px 60px; }
+    header { margin-bottom: 24px; }
+    .eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: rgba(19,41,75,0.55); text-transform: uppercase; margin-bottom: 8px;
+    }
+    h1 {
+      font-size: 34px; font-weight: 800; color: #13294B;
+      margin-bottom: 6px; letter-spacing: -0.5px;
+    }
+    h1 .sub {
+      font-weight: 400; color: rgba(19,41,75,0.65);
+      margin-left: 10px; font-size: 22px;
+    }
+    .lede {
+      font-size: 15px; line-height: 1.55;
+      color: rgba(19,41,75,0.78); max-width: 920px; margin-top: 6px;
+    }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      margin: 22px 0 18px; font-size: 12px; font-weight: 600;
+    }
+    .legend-item {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 6px 11px; border-radius: 999px;
+      background: #fff; border: 1px solid rgba(19,41,75,0.1);
+    }
+    .swatch { width: 12px; height: 12px; border-radius: 3px; }
+    .diagram-wrap {
+      background: #fff; border-radius: 14px;
+      border: 1px solid rgba(19,41,75,0.08);
+      box-shadow: 0 6px 24px rgba(19,41,75,0.06);
+      padding: 24px 18px; overflow: auto;
+    }
+    .mermaid { font-family: 'DM Sans', system-ui, sans-serif; text-align: center; }
+    footer {
+      margin-top: 22px; font-size: 12px;
+      color: rgba(19,41,75,0.55); line-height: 1.65; max-width: 920px;
+    }
+    footer code {
+      background: rgba(19,41,75,0.06);
+      padding: 1px 6px; border-radius: 4px; font-size: 11px;
+    }
+    @media print {
+      body { background: #fff; }
+      .diagram-wrap { box-shadow: none; border: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">Kenan-Flagler Business School · UNC Chapel Hill</div>
+      <h1>PIVOT <span class="sub">Future State</span></h1>
+      <p class="lede">A donor briefing on how the PIVOT leadership-development app will work — the journey a student takes through it, the data sources and aggregates that power it, and what each phase of giving unlocks.</p>
+      <div class="legend">
+        <span class="legend-item"><span class="swatch" style="background:#FFF7E6;border:1.5px solid #FFCC44"></span>Student Journey</span>
+        <span class="legend-item"><span class="swatch" style="background:#EFEBFF;border:1.5px solid #7B68EE"></span>PIVOT App (5 Tabs)</span>
+        <span class="legend-item"><span class="swatch" style="background:#E2F5F5;border:1.5px solid #00A6B0"></span>Infrastructure</span>
+        <span class="legend-item"><span class="swatch" style="background:#FFEAEA;border:1.5px solid #FF6B6B"></span>Roadmap &amp; Resourcing</span>
+      </div>
+    </header>
+
+    <div class="diagram-wrap">
+      <pre class="mermaid">
+flowchart LR
+
+  subgraph JOURNEY["STUDENT JOURNEY -- Maya, a UNC junior"]
+    direction LR
+    M1["Maya<br/>UNC junior<br/>opens PIVOT"]
+    M2["Onboarding +<br/>PIVOT self-assessment<br/>60 items, ~5 min"]
+    M3["Radar baseline<br/>Purpose Interrelating<br/>Vision Ownership<br/>Transformation"]
+    M4["Picks Northstar<br/>and growth focus"]
+    M5["Earns Experiences<br/>Labs, simulations,<br/>reflections, tokens"]
+    M6["Joins or builds<br/>a team; runs<br/>peer surveys"]
+    M7["Coach guidance<br/>tailored to<br/>each sub-tab"]
+    M8["Re-assesses;<br/>tracks Progress<br/>over time"]
+    M9["Graduates with<br/>measurable<br/>leadership growth"]
+    M1 --> M2 --> M3 --> M4 --> M5 --> M6 --> M7 --> M8 --> M9
+  end
+
+  subgraph APP["PIVOT APP -- five dimensions delivered through five tabs"]
+    direction LR
+    T1["Readiness<br/>assessment + plan"]
+    T2["Coach<br/>mentor + content"]
+    T3["Experiences<br/>Labs + tokens"]
+    T4["Team<br/>peers + surveys"]
+    T5["Progress<br/>radar over time"]
+  end
+
+  subgraph INFRA["INFRASTRUCTURE -- the supporting layer"]
+    direction LR
+    I1["UNC SSO<br/>Onyen / SAML"]
+    I2["Assessment Store<br/>responses + scores<br/>per student over time"]
+    I3["Cohort Aggregator<br/>nightly anonymized<br/>roll-up job"]
+    I4["Content CMS<br/>tokens, experiences,<br/>coach copy"]
+    I5["LMS / SIS link<br/>enrollment +<br/>experience credit"]
+    I6["Impact Dashboard<br/>for KFBS faculty<br/>and program leads"]
+  end
+
+  subgraph ROADMAP["ROADMAP AND RESOURCING -- what the gift unlocks"]
+    direction LR
+    P1["PHASE 1<br/>MVP -- UBP cohort live<br/>~6 months<br/>2 engineers + 1 designer<br/>+ part-time PM"]
+    P2["PHASE 2<br/>MBA + multi-cohort<br/>aggregates and CMS<br/>~12 months<br/>add 1 data engineer<br/>+ full-time PM"]
+    P3["PHASE 3<br/>Multi-school platform<br/>+ longitudinal research<br/>~24 months<br/>add research lead<br/>+ partnerships staff"]
+    P1 --> P2 --> P3
+  end
+
+  M2 -.-> T1
+  M5 -.-> T3
+  M6 -.-> T4
+  M7 -.-> T2
+  M8 -.-> T5
+
+  I1 -.-> T1
+  T1 -.-> I2
+  T4 -.-> I2
+  T2 -.-> I4
+  T3 -.-> I4
+  T5 -.-> I3
+  I5 -.-> I2
+  I3 -.-> I6
+
+  classDef journey fill:#FFF7E6,stroke:#FFCC44,color:#13294B,stroke-width:2px
+  classDef app fill:#EFEBFF,stroke:#7B68EE,color:#13294B,stroke-width:2px
+  classDef infra fill:#E2F5F5,stroke:#00A6B0,color:#13294B,stroke-width:2px
+  classDef roadmap fill:#FFEAEA,stroke:#FF6B6B,color:#13294B,stroke-width:2px
+
+  class M1,M2,M3,M4,M5,M6,M7,M8,M9 journey
+  class T1,T2,T3,T4,T5 app
+  class I1,I2,I3,I4,I5,I6 infra
+  class P1,P2,P3 roadmap
+      </pre>
+    </div>
+
+    <footer>
+      <strong>How to edit.</strong> Open <code>pivot-future-state.html</code> in any text editor (or directly on GitHub). The diagram lives between the <code>&lt;pre class="mermaid"&gt;</code> tags — change any label inside the quotes, save, and refresh this page in your browser to see the new version.
+      <br /><br />
+      <strong>For a donor slide.</strong> Open this page on a laptop, take a screenshot, and paste into PowerPoint. For fully editable shapes inside PowerPoint, use your browser's <em>Save Page As</em> to grab the rendered SVG, then <em>Insert &rarr; Picture</em> in PowerPoint and right-click &rarr; <em>Convert to Shape</em>.
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      themeVariables: {
+        fontFamily: "'DM Sans', system-ui, sans-serif",
+        fontSize: '14px',
+        primaryColor: '#ffffff',
+        primaryTextColor: '#13294B',
+        primaryBorderColor: '#13294B',
+        lineColor: 'rgba(19,41,75,0.5)',
+        secondaryColor: '#f7f8fc',
+        tertiaryColor: '#ffffff',
+        clusterBkg: '#fbfbfd',
+        clusterBorder: 'rgba(19,41,75,0.18)'
+      },
+      flowchart: {
+        curve: 'basis',
+        nodeSpacing: 40,
+        rankSpacing: 60,
+        htmlLabels: true,
+        useMaxWidth: true
+      }
+    });
+  </script>
+</body>
+</html>
