@@ -1067,6 +1067,7 @@ var PIVOT_LABS = [
     venue: "Live multi-day simulation",
     setup: "Manage a multi-product, multi-level organization with allocated people and material resources. Coordinate dynamic decisions as new issues emerge in real time.",
     pivotMoment: "A key personnel loss or product line failure forces leaders to restructure reporting, reallocate resources, and restore team confidence — mid-exercise, with no time to plan.",
+    disruptionType: "Personnel",
     skills: ["s17","s22","s23","s27","s9"]
   },
   {
@@ -1075,6 +1076,7 @@ var PIVOT_LABS = [
     venue: "Multi-week field structure (NBA-MBA format)",
     setup: "Design and recruit multiple divisions within a mixed collaborative-competitive organization. Divisions collectively produce, but also compete for profit and resources.",
     pivotMoment: "A partner division breaks a collaboration agreement, forcing leaders to choose between retaliation, renegotiation, or adaptation — while managing team trust and competitive stakes simultaneously.",
+    disruptionType: "Strategic",
     skills: ["s8","s12","s7","s17","s4"]
   },
   {
@@ -1083,6 +1085,7 @@ var PIVOT_LABS = [
     venue: "High-stakes simulation (ExperiencePoint, Everest)",
     setup: "Small-group simulations with emergent threats and interdependent outcomes. Collective judgment under uncertainty drives the team's results.",
     pivotMoment: "Critical misinformation or a forced ethical trade-off (mission success vs. team safety) surfaces mid-simulation. There is no clean answer — leaders must commit and own the consequences.",
+    disruptionType: "Ethical",
     skills: ["s5","s20","s21","s27","s16"]
   },
   {
@@ -1091,6 +1094,7 @@ var PIVOT_LABS = [
     venue: "Multi-day competitive sprint (Shark Tank format)",
     setup: "Develop and execute revenue-generating strategies in a multi-day simulation — service organizations, sales challenges, or performance-based exercises with judges.",
     pivotMoment: "The team's core strategy is disqualified or rendered unviable by a mid-exercise market shift, competitor action, or judge ruling. Teams must build a new pitch from scratch under time pressure.",
+    disruptionType: "Market",
     skills: ["s17","s16","s20","s18","s28"]
   },
   {
@@ -1099,6 +1103,7 @@ var PIVOT_LABS = [
     venue: "Two-stage problem-solving lab",
     setup: "Teams develop a solution proposal for an organizational problem — then are required to abandon all prior work when an emergent threat resets the problem entirely.",
     pivotMoment: "The design pivot IS the PIVOT Moment. Leaders must manage the grief of lost work, reframe the disruption as opportunity, and rebuild team motivation — all in real time.",
+    disruptionType: "Scope",
     skills: ["s18","s17","s25","s28","s30"]
   },
   {
@@ -1107,6 +1112,7 @@ var PIVOT_LABS = [
     venue: "Live build + public demo",
     setup: "Using strictly limited materials, teams construct a complex system to solve a simple problem. Leaders channel creative conflict, manage divergent ideas, and keep the team focused.",
     pivotMoment: "A component fails during the live demonstration. Leaders must publicly improvise, maintain composure, and direct a demoralized team to recover — without resetting.",
+    disruptionType: "Operational",
     skills: ["s28","s17","s20","s9","s29"]
   },
   {
@@ -1115,6 +1121,7 @@ var PIVOT_LABS = [
     venue: "Live commercial pop-up · Pre-planned + live operations",
     setup: "Teams compete to operate a commercial or retail establishment. They plan their offerings in advance, then navigate live customer demand, supply disruptions, and environmental challenges.",
     pivotMoment: "A supply failure, health constraint, or competitor price war invalidates the pre-planned strategy during peak operations. Leaders must make real-time calls that affect team performance and competitive standing.",
+    disruptionType: "Operational",
     skills: ["s17","s20","s22","s27","s19"]
   },
   {
@@ -1123,6 +1130,7 @@ var PIVOT_LABS = [
     venue: "Live client engagement · Real consequences",
     setup: "Established STAR teams are deployed to their host-site context and given an emergent organizational problem requiring an entirely new plan developed under real-world time pressure.",
     pivotMoment: "The host organization introduces a second, conflicting organizational priority mid-engagement. Teams must re-scope, re-negotiate stakeholder expectations, and rebuild credibility under real consequences.",
+    disruptionType: "Stakeholder",
     skills: ["s8","s11","s17","s22","s7"]
   }
 ];
@@ -3267,11 +3275,8 @@ function UBPNetwork(props) {
                 <span style={{ fontSize: 16 }}>🧪</span>
                 <span style={{ fontSize: 13, fontWeight: 800, color: rgba(CB, 0.95), textTransform: "uppercase", letterSpacing: 1.5 }}>PIVOT Labs</span>
               </div>
-              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.78)", lineHeight: 1.6, marginBottom: 8 }}>
-                These aren't course descriptions. Each Lab is a <b style={{color:"#fff"}}>designed disruption</b> — a structured stress moment built into the experience that forces leaders to adapt under conditions where they can't plan their way through.
-              </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.55 }}>
-                The PIVOT Moment is what makes a lab <i>developmental</i> rather than just enriching. Skills are practiced under pressure, then consolidated in debrief.
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.78)", lineHeight: 1.6 }}>
+                Each Lab is a <b style={{color:"#fff"}}>designed disruption</b>: a stress moment built into the experience. Skills are practiced under pressure, then consolidated in debrief.
               </div>
             </div>
 
@@ -3289,14 +3294,24 @@ function UBPNetwork(props) {
                   {/* The Setup */}
                   <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 4 }}>THE SETUP</div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 12 }}>{lab.setup}</div>
-                  {/* PIVOT MOMENT — emphasized callout */}
-                  <div style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-                      <span style={{ fontSize: 14 }}>🌀</span>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>THE PIVOT MOMENT</span>
+                  {/* PIVOT MOMENT — DEMO reveals the design; live student app shows only the disruption-type teaser */}
+                  {showDemo ? (
+                    <div style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+                        <span style={{ fontSize: 14 }}>🌀</span>
+                        <span style={{ fontSize: 11, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>THE PIVOT MOMENT · DEMO REVEAL</span>
+                      </div>
+                      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.92)", lineHeight: 1.6 }}>{lab.pivotMoment}</div>
                     </div>
-                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.92)", lineHeight: 1.6 }}>{lab.pivotMoment}</div>
-                  </div>
+                  ) : (
+                    <div style={{ background: "rgba(255,204,68,0.06)", border: "1px dashed rgba(255,204,68,0.35)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 14 }}>🌀</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,204,68,0.85)", letterSpacing: 1.5, marginBottom: 2 }}>EXPECT A {lab.disruptionType.toUpperCase()} DISRUPTION</div>
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5, fontStyle: "italic" }}>Specifics unfold in real time — that's the design.</div>
+                      </div>
+                    </div>
+                  )}
                   {/* Skills practiced under pressure */}
                   <div style={{ marginBottom: 10 }}>
                     <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 6 }}>SKILLS PRACTICED UNDER PRESSURE</div>
@@ -6285,11 +6300,8 @@ function MBANetwork(props) {
                 <span style={{ fontSize: 16 }}>🧪</span>
                 <span style={{ fontSize: 13, fontWeight: 800, color: rgba(CB, 0.95), textTransform: "uppercase", letterSpacing: 1.5 }}>PIVOT Labs</span>
               </div>
-              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.78)", lineHeight: 1.6, marginBottom: 8 }}>
-                These aren't course descriptions. Each Lab is a <b style={{color:"#fff"}}>designed disruption</b> — a structured stress moment built into the experience that forces leaders to adapt under conditions where they can't plan their way through.
-              </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", lineHeight: 1.55 }}>
-                The PIVOT Moment is what makes a lab <i>developmental</i> rather than just enriching. Skills are practiced under pressure, then consolidated in debrief.
+              <div style={{ fontSize: 14, color: "rgba(255,255,255,0.78)", lineHeight: 1.6 }}>
+                Each Lab is a <b style={{color:"#fff"}}>designed disruption</b>: a stress moment built into the experience. Skills are practiced under pressure, then consolidated in debrief.
               </div>
             </div>
 
@@ -6307,14 +6319,24 @@ function MBANetwork(props) {
                   {/* The Setup */}
                   <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 4 }}>THE SETUP</div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 12 }}>{lab.setup}</div>
-                  {/* PIVOT MOMENT — emphasized callout */}
-                  <div style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-                      <span style={{ fontSize: 14 }}>🌀</span>
-                      <span style={{ fontSize: 11, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>THE PIVOT MOMENT</span>
+                  {/* PIVOT MOMENT — DEMO reveals the design; live student app shows only the disruption-type teaser */}
+                  {showDemo ? (
+                    <div style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+                        <span style={{ fontSize: 14 }}>🌀</span>
+                        <span style={{ fontSize: 11, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>THE PIVOT MOMENT · DEMO REVEAL</span>
+                      </div>
+                      <div style={{ fontSize: 13, color: "rgba(255,255,255,0.92)", lineHeight: 1.6 }}>{lab.pivotMoment}</div>
                     </div>
-                    <div style={{ fontSize: 13, color: "rgba(255,255,255,0.92)", lineHeight: 1.6 }}>{lab.pivotMoment}</div>
-                  </div>
+                  ) : (
+                    <div style={{ background: "rgba(255,204,68,0.06)", border: "1px dashed rgba(255,204,68,0.35)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 14 }}>🌀</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,204,68,0.85)", letterSpacing: 1.5, marginBottom: 2 }}>EXPECT A {lab.disruptionType.toUpperCase()} DISRUPTION</div>
+                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5, fontStyle: "italic" }}>Specifics unfold in real time — that's the design.</div>
+                      </div>
+                    </div>
+                  )}
                   {/* Skills practiced under pressure */}
                   <div style={{ marginBottom: 10 }}>
                     <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 6 }}>SKILLS PRACTICED UNDER PRESSURE</div>
