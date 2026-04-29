@@ -650,9 +650,6 @@ function UBPJourney(props) {
   var _anim=useState(false),anim=_anim[0],setAnim=_anim[1];
   var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
   var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
-  var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
-  var _onbName=useState(""),onbName=_onbName[0],setOnbName=_onbName[1];
-  function saveOnbName(){ if(onbName && onbName.trim()) try{ localStorage.setItem("ubp_user_name", onbName.trim()); }catch(e){} }
   var _preset=useState("y2"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
   var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
   var _ass = useState(null); var assessment = _ass[0], setAssessment = _ass[1];
@@ -672,12 +669,9 @@ function UBPJourney(props) {
     }catch(e){}
     try{
       var saved=localStorage.getItem("ubp_northstar");
-      var skipped=localStorage.getItem("ubp_onb_skipped");
       var validIds=UBP_PATHS.map(function(p){return p.id;});
       if(saved && validIds.indexOf(saved)>=0){ setNs(saved); }
-      else if(saved){ localStorage.removeItem("ubp_northstar"); if(!skipped)setTimeout(function(){setShowOnboarding(true);},400); }
-      else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
-      if (!skipped && !localStorage.getItem("ubp_user_name")) { setTimeout(function(){setShowOnboarding(true);}, 400); }
+      else if(saved){ localStorage.removeItem("ubp_northstar"); }
     }catch(e){}
   },[]);
 
@@ -693,10 +687,6 @@ function UBPJourney(props) {
   function pickNorthStar(id){
     setNs(id);
     try{ if(id)localStorage.setItem("ubp_northstar",id); else localStorage.removeItem("ubp_northstar"); }catch(e){}
-  }
-  function dismissOnboarding(save){
-    setShowOnboarding(false);
-    try{ if(!save)localStorage.setItem("ubp_onb_skipped","1"); }catch(e){}
   }
   useEffect(function(){
     var el=scrollRef.current;if(!el)return;
@@ -1062,18 +1052,6 @@ function UBPJourney(props) {
       </div>
 
       <PIVOTAssessment open={showAssessment} form={assessmentForm} initial={assessment && assessment.form===assessmentForm ? assessment.responses : {}} onSave={saveAssessment} onClose={function(){setShowAssessment(false);}}/>
-
-      {/* First-login onboarding overlay */}
-      {showOnboarding&&(
-        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:"rgba(2,4,12,0.94)",zIndex:100,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"30px 24px",fontFamily:FONT}}>
-          <div style={{fontSize:22,fontWeight:800,color:"#fff",marginBottom:10,letterSpacing:0.3}}>Pick Your North Star</div>
-          <div style={{fontSize:14,color:"rgba(255,255,255,0.7)",textAlign:"center",marginBottom:26,maxWidth:320,lineHeight:1.55}}>This becomes the goal your skills point toward. You can change it anytime.</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,width:"100%",maxWidth:340,marginBottom:18}}>
-            {UBP_PATHS.map(function(p){return <button key={p.id} onClick={function(){pickNorthStar(p.id);dismissOnboarding(true);}} style={{padding:"16px 12px",borderRadius:12,background:rgba(p.color,0.18),border:"1.5px solid "+rgba(p.color,0.55),color:p.color,fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:FONT,lineHeight:1.25}}>{p.label}<div style={{fontSize:10,fontWeight:500,color:rgba(p.color,0.7),marginTop:3}}>{p.goalLabel}</div></button>;})}
-          </div>
-          <div onClick={function(){dismissOnboarding(false);}} style={{fontSize:13,color:"rgba(255,255,255,0.45)",cursor:"pointer",padding:"8px 14px"}}>Skip for now</div>
-        </div>
-      )}
     </div>
   );
 }
@@ -4003,9 +3981,6 @@ function MBAJourney(props) {
   var _anim=useState(false),anim=_anim[0],setAnim=_anim[1];
   var _refl=useState({}),reflections=_refl[0],setReflections=_refl[1];
   var _draft=useState(""),draft=_draft[0],setDraft=_draft[1];
-  var _onb=useState(false),showOnboarding=_onb[0],setShowOnboarding=_onb[1];
-  var _onbName=useState(""),onbName=_onbName[0],setOnbName=_onbName[1];
-  function saveOnbName(){ if(onbName && onbName.trim()) try{ localStorage.setItem("mba_user_name", onbName.trim()); }catch(e){} }
   var _preset=useState("today"),earnedPreset=_preset[0],setEarnedPreset=_preset[1];
   var _demo=useState(false),showDemo=_demo[0],setShowDemo=_demo[1];
   var _ass = useState(null); var assessment = _ass[0], setAssessment = _ass[1];
@@ -4025,13 +4000,9 @@ function MBAJourney(props) {
     }catch(e){}
     try{
       var saved=localStorage.getItem("mba_northstar");
-      var skipped=localStorage.getItem("mba_onb_skipped");
       var validIds=PATHS.map(function(p){return p.id;});
       if(saved && validIds.indexOf(saved)>=0){ setNs(saved); }
-      else if(saved){ localStorage.removeItem("mba_northstar"); if(!skipped)setTimeout(function(){setShowOnboarding(true);},400); }
-      else if(!skipped){ setTimeout(function(){setShowOnboarding(true);},400); }
-      /* Also trigger onboarding if name is missing (for users who joined before name capture existed) */
-      if (!skipped && !localStorage.getItem("mba_user_name")) { setTimeout(function(){setShowOnboarding(true);}, 400); }
+      else if(saved){ localStorage.removeItem("mba_northstar"); }
     }catch(e){}
   },[]);
 
@@ -4047,10 +4018,6 @@ function MBAJourney(props) {
   function pickNorthStar(id){
     setNs(id);
     try{ if(id)localStorage.setItem("mba_northstar",id); else localStorage.removeItem("mba_northstar"); }catch(e){}
-  }
-  function dismissOnboarding(save){
-    setShowOnboarding(false);
-    try{ if(!save)localStorage.setItem("mba_onb_skipped","1"); }catch(e){}
   }
   useEffect(function(){
     var el=scrollRef.current;if(!el)return;
@@ -4416,18 +4383,6 @@ function MBAJourney(props) {
       </div>
 
       <PIVOTAssessment open={showAssessment} form={assessmentForm} initial={assessment && assessment.form===assessmentForm ? assessment.responses : {}} onSave={saveAssessment} onClose={function(){setShowAssessment(false);}}/>
-
-      {/* First-login onboarding overlay */}
-      {showOnboarding&&(
-        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,background:"rgba(2,4,12,0.94)",zIndex:100,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"30px 24px",fontFamily:FONT}}>
-          <div style={{fontSize:22,fontWeight:800,color:"#fff",marginBottom:10,letterSpacing:0.3}}>Pick Your North Star</div>
-          <div style={{fontSize:14,color:"rgba(255,255,255,0.7)",textAlign:"center",marginBottom:26,maxWidth:320,lineHeight:1.55}}>This becomes the goal your skills point toward. You can change it anytime.</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,width:"100%",maxWidth:340,marginBottom:18}}>
-            {PATHS.map(function(p){return <button key={p.id} onClick={function(){pickNorthStar(p.id);dismissOnboarding(true);}} style={{padding:"16px 12px",borderRadius:12,background:rgba(p.color,0.18),border:"1.5px solid "+rgba(p.color,0.55),color:p.color,fontWeight:700,fontSize:14,cursor:"pointer",fontFamily:FONT,lineHeight:1.25}}>{p.label}<div style={{fontSize:10,fontWeight:500,color:rgba(p.color,0.7),marginTop:3}}>{p.goalLabel}</div></button>;})}
-          </div>
-          <div onClick={function(){dismissOnboarding(false);}} style={{fontSize:13,color:"rgba(255,255,255,0.45)",cursor:"pointer",padding:"8px 14px"}}>Skip for now</div>
-        </div>
-      )}
     </div>
   );
 }
@@ -6791,6 +6746,215 @@ function MBAAssistant(props) {
 }
 
 /* ══════════════════════════════════════════════════════════════
+   ONBOARDING — Name → North Star → Assessment offer
+   ══════════════════════════════════════════════════════════════ */
+
+function PIVOTOnboarding(props) {
+  var program = props.program;            /* "ubp" | "mba" */
+  var onComplete = props.onComplete || function(){};
+  var paths = program === "ubp" ? UBP_PATHS : PATHS;
+  var CB = program === "ubp" ? "#4B9CD3" : "#7BAFD4";
+
+  var _step = useState(0); var step = _step[0], setStep = _step[1];
+  var _name = useState(""); var name = _name[0], setName = _name[1];
+  var _ns = useState(null); var ns = _ns[0], setNs = _ns[1];
+  var _showA = useState(false); var showAssessment = _showA[0], setShowAssessment = _showA[1];
+  var _form = useState("short"); var assessmentForm = _form[0], setAssessmentForm = _form[1];
+  var _fade = useState(false); var fade = _fade[0], setFade = _fade[1];
+
+  useEffect(function(){
+    /* Pre-populate name field if user previously typed one */
+    try { var v = localStorage.getItem(program+"_user_name"); if (v && v.trim()) setName(v.trim()); } catch(e){}
+    setTimeout(function(){ setFade(true); }, 60);
+  }, []);
+
+  function persistAndFinish(saveAssessmentPayload) {
+    try {
+      if (name && name.trim()) localStorage.setItem(program+"_user_name", name.trim());
+      if (ns) localStorage.setItem(program+"_northstar", ns);
+      if (saveAssessmentPayload) localStorage.setItem(program+"_pivot_assessment", JSON.stringify(saveAssessmentPayload));
+      localStorage.setItem(program+"_onboarded", "1");
+    } catch(e){}
+    setFade(false);
+    setTimeout(function(){ onComplete(); }, 300);
+  }
+
+  function nextFromName(){ setStep(1); }
+  function nextFromNorthStar(){ setStep(2); }
+  function startForm(form){ setAssessmentForm(form); setShowAssessment(true); }
+  function onAssessmentSave(payload){ setShowAssessment(false); persistAndFinish(payload); }
+  function onAssessmentClose(){ setShowAssessment(false); persistAndFinish(null); /* skip ahead */ }
+
+  var totalSteps = 3;
+  var canContinueName = name && name.trim().length > 0;
+
+  return (
+    <div style={{
+      width:"100%", maxWidth:430, margin:"0 auto",
+      height:"calc(var(--vh, 1vh) * 100)", minHeight:700,
+      background:"linear-gradient(170deg,#0a1628 0%,#060d1a 40%,#040810 100%)",
+      display:"flex", flexDirection:"column", overflow:"hidden",
+      fontFamily:FONT, position:"relative",
+      opacity: fade ? 1 : 0, transition:"opacity 0.5s ease",
+    }}>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+
+      {/* Progress dots */}
+      <div style={{padding:"22px 24px 0", display:"flex", justifyContent:"center", gap:6}}>
+        {[0,1,2].map(function(i){
+          var on = i <= step;
+          return <div key={"d"+i} style={{
+            width: on ? 22 : 6, height:6, borderRadius:3,
+            background: on ? CB : "rgba(255,255,255,0.18)",
+            transition:"all 0.3s ease",
+          }}/>;
+        })}
+      </div>
+
+      <div style={{flex:1, overflowY:"auto", padding:"40px 28px 24px", display:"flex", flexDirection:"column", justifyContent:"center"}}>
+
+        {/* STEP 1 — Name */}
+        {step === 0 && (
+          <div style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+            <div style={{fontSize:11, fontWeight:700, color:rgba(CB,0.6), letterSpacing:2.5, textTransform:"uppercase", marginBottom:18}}>Welcome to PIVOT</div>
+            <div style={{fontSize:26, fontWeight:800, color:"#fff", marginBottom:12, textAlign:"center", letterSpacing:0.3}}>What should we call you?</div>
+            <div style={{fontSize:14, color:"rgba(255,255,255,0.6)", textAlign:"center", lineHeight:1.55, marginBottom:30, maxWidth:320}}>
+              Your name helps us personalize your journey. This stays on your device.
+            </div>
+            <input
+              type="text"
+              value={name}
+              onChange={function(e){setName(e.target.value);}}
+              placeholder="Your full name"
+              maxLength={60}
+              autoFocus
+              style={{
+                width:"100%", maxWidth:320, padding:"14px 16px",
+                borderRadius:12, background:"rgba(255,255,255,0.05)",
+                border:"1px solid "+rgba(CB,0.3),
+                color:"#fff", fontSize:16, fontWeight:600,
+                fontFamily:FONT, outline:"none", textAlign:"center",
+                marginBottom:24,
+              }}
+            />
+            <button onClick={canContinueName ? nextFromName : null} disabled={!canContinueName} style={{
+              width:"100%", maxWidth:320, padding:"14px 0",
+              borderRadius:12,
+              background: canContinueName ? rgba(CB, 0.22) : "rgba(255,255,255,0.04)",
+              border:"1px solid "+(canContinueName ? rgba(CB,0.6) : "rgba(255,255,255,0.1)"),
+              color: canContinueName ? "#fff" : "rgba(255,255,255,0.3)",
+              fontSize:15, fontWeight:700, fontFamily:FONT,
+              cursor: canContinueName ? "pointer" : "not-allowed",
+              letterSpacing:0.3,
+            }}>Continue →</button>
+            <div onClick={function(){ setName(""); setStep(1); }} style={{marginTop:18, fontSize:13, color:"rgba(255,255,255,0.45)", cursor:"pointer", padding:"8px 14px"}}>Skip</div>
+          </div>
+        )}
+
+        {/* STEP 2 — North Star */}
+        {step === 1 && (
+          <div>
+            <div style={{fontSize:11, fontWeight:700, color:rgba(CB,0.6), letterSpacing:2.5, textTransform:"uppercase", marginBottom:14, textAlign:"center"}}>Pick Your North Star</div>
+            <div style={{fontSize:22, fontWeight:800, color:"#fff", marginBottom:10, textAlign:"center", lineHeight:1.3}}>What are you aiming at?</div>
+            <div style={{fontSize:13, color:"rgba(255,255,255,0.6)", textAlign:"center", lineHeight:1.55, marginBottom:24, padding:"0 8px"}}>
+              This becomes the goal your skills point toward. You can change it anytime in Readiness.
+            </div>
+            <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:20}}>
+              {paths.map(function(p){
+                var on = ns === p.id;
+                return <button key={p.id} onClick={function(){ setNs(p.id); }} style={{
+                  padding:"14px 10px", borderRadius:12,
+                  background: on ? rgba(p.color, 0.28) : rgba(p.color, 0.10),
+                  border: "1.5px solid "+(on ? p.color : rgba(p.color, 0.4)),
+                  color: p.color, fontWeight:700, fontSize:14,
+                  cursor:"pointer", fontFamily:FONT, lineHeight:1.25,
+                  transition:"all 0.18s ease",
+                }}>
+                  {p.label}
+                  <div style={{fontSize:10, fontWeight:500, color: rgba(p.color, 0.75), marginTop:3}}>{p.goalLabel}</div>
+                </button>;
+              })}
+            </div>
+            <button onClick={ns ? nextFromNorthStar : null} disabled={!ns} style={{
+              width:"100%", padding:"14px 0", borderRadius:12,
+              background: ns ? rgba(CB, 0.22) : "rgba(255,255,255,0.04)",
+              border:"1px solid "+(ns ? rgba(CB,0.6) : "rgba(255,255,255,0.1)"),
+              color: ns ? "#fff" : "rgba(255,255,255,0.3)",
+              fontSize:15, fontWeight:700, fontFamily:FONT,
+              cursor: ns ? "pointer" : "not-allowed", letterSpacing:0.3,
+            }}>Continue →</button>
+            <div style={{display:"flex", justifyContent:"center", gap:18, marginTop:14}}>
+              <div onClick={function(){setStep(0);}} style={{fontSize:13, color:"rgba(255,255,255,0.45)", cursor:"pointer", padding:"6px 10px"}}>← Back</div>
+              <div onClick={function(){ setNs(null); setStep(2); }} style={{fontSize:13, color:"rgba(255,255,255,0.45)", cursor:"pointer", padding:"6px 10px"}}>Skip</div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3 — Assessment offer */}
+        {step === 2 && (
+          <div>
+            <div style={{fontSize:11, fontWeight:700, color:rgba(CB,0.6), letterSpacing:2.5, textTransform:"uppercase", marginBottom:14, textAlign:"center"}}>PIVOT Self-Assessment</div>
+            <div style={{fontSize:22, fontWeight:800, color:"#fff", marginBottom:10, textAlign:"center", lineHeight:1.3}}>Set your baseline</div>
+            <div style={{fontSize:13, color:"rgba(255,255,255,0.65)", textAlign:"center", lineHeight:1.6, marginBottom:8, padding:"0 4px"}}>
+              Rate yourself across the 5 PIVOT dimensions. This becomes the foundation of your radar.
+            </div>
+            <div style={{fontSize:12, color:"rgba(255,204,68,0.85)", textAlign:"center", lineHeight:1.55, marginBottom:22, padding:"0 8px", fontStyle:"italic"}}>
+              Be brutally honest. Your radar is only as useful as the data you give it.
+            </div>
+
+            <button onClick={function(){startForm("short");}} style={{
+              width:"100%", padding:"16px 18px", borderRadius:14,
+              background: rgba(CB, 0.14),
+              border:"1.5px solid "+rgba(CB,0.5),
+              cursor:"pointer", fontFamily:FONT,
+              marginBottom:10, textAlign:"left",
+            }}>
+              <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:4}}>
+                <span style={{fontSize:15, fontWeight:800, color:"#fff"}}>Short Form</span>
+                <span style={{fontSize:11, fontWeight:700, color:rgba(CB,0.85), letterSpacing:1}}>~1 MIN · 15 ITEMS</span>
+              </div>
+              <div style={{fontSize:12, color:"rgba(255,255,255,0.6)", lineHeight:1.5}}>One signal per facet. A fast directional read.</div>
+            </button>
+
+            <button onClick={function(){startForm("long");}} style={{
+              width:"100%", padding:"16px 18px", borderRadius:14,
+              background: rgba(CB, 0.06),
+              border:"1px solid "+rgba(CB,0.3),
+              cursor:"pointer", fontFamily:FONT,
+              marginBottom:18, textAlign:"left",
+            }}>
+              <div style={{display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom:4}}>
+                <span style={{fontSize:15, fontWeight:800, color:"#fff"}}>Long Form</span>
+                <span style={{fontSize:11, fontWeight:700, color:rgba(CB,0.7), letterSpacing:1}}>~5 MIN · 60 ITEMS</span>
+              </div>
+              <div style={{fontSize:12, color:"rgba(255,255,255,0.6)", lineHeight:1.5}}>Full coverage across all 30 facets. Highest fidelity.</div>
+            </button>
+
+            <div onClick={function(){ persistAndFinish(null); }} style={{
+              textAlign:"center", padding:"12px 14px",
+              fontSize:13, color:"rgba(255,255,255,0.5)", cursor:"pointer",
+            }}>Skip for now — I'll take it later</div>
+
+            <div style={{display:"flex", justifyContent:"center", marginTop:6}}>
+              <div onClick={function(){setStep(1);}} style={{fontSize:13, color:"rgba(255,255,255,0.4)", cursor:"pointer", padding:"6px 10px"}}>← Back</div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Assessment modal — close = skip ahead */}
+      <PIVOTAssessment
+        open={showAssessment}
+        form={assessmentForm}
+        initial={{}}
+        onSave={onAssessmentSave}
+        onClose={onAssessmentClose}
+      />
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
    ROOT APP — Launch + Program Router
    ══════════════════════════════════════════════════════════════ */
 
@@ -6801,12 +6965,18 @@ function PIVOTApp() {
   var screen = _screen[0], setScreen = _screen[1];
   var _fadeIn = useState(false);
   var fadeIn = _fadeIn[0], setFadeIn = _fadeIn[1];
+  var _onb = useState(false); var needsOnboarding = _onb[0], setNeedsOnboarding = _onb[1];
 
   function handleProgramSelect(prog) {
     setProgram(prog);
     setScreen(prog === "mba" ? "progress" : "index");
+    var done = false;
+    try { done = !!localStorage.getItem(prog + "_onboarded"); } catch(e){}
+    setNeedsOnboarding(!done);
     setTimeout(function () { setFadeIn(true); }, 50);
   }
+
+  function finishOnboarding() { setNeedsOnboarding(false); }
 
   if (!program) {
     return (
@@ -6815,6 +6985,10 @@ function PIVOTApp() {
         <PIVOTLaunch onSelect={handleProgramSelect} />
       </div>
     );
+  }
+
+  if (needsOnboarding) {
+    return <PIVOTOnboarding program={program} onComplete={finishOnboarding} />;
   }
 
   function handleSwitch(s) { setScreen(s); }
