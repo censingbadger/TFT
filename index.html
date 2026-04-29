@@ -2980,13 +2980,63 @@ var UBP_EVENTS = [
     featured: false,
   },
   {
-    title: "Global Programs Info Session",
+    title: "Global Programs Info Session — Somalia GIE",
     date: "Mar 18, 2026",
-    desc: "Learn about summer and semester study abroad options, Phillips Ambassadors, TREBLE, and global immersion electives.",
+    desc: "Learn about the Spring 2027 Global Immersion Elective to Somalia (Mogadishu + Hargeisa). Frontier markets, post-conflict economic development, and entrepreneurial ecosystems. Plus summer study abroad, Phillips Ambassadors, and TREBLE.",
     dims: ["V", "T"],
     skills: ["s15","s27","s30","s14"],
     tag: "Virtual",
     spots: "Open",
+    featured: false,
+  },
+  {
+    title: "KFBS Case Competition Finals",
+    date: "Feb 28, 2026",
+    desc: "Top 6 student teams pitch live to a panel of UNC alumni judges from Bain, Goldman, and Lenovo. Open to the full UBP cohort as audience. Sign up to judge the prelim round on Feb 24.",
+    dims: ["V", "I"],
+    skills: ["s14","s17","s12","s11"],
+    tag: "Case Comp",
+    spots: "Open audience",
+    featured: false,
+  },
+  {
+    title: "Hult Prize @ Carolina — Regional",
+    date: "Mar 7, 2026",
+    desc: "Pitch a venture solving a global social challenge. Winning team advances to the Hult Prize Global Accelerator with a shot at the $1M prize. Coaching + workshops in the two weeks leading up.",
+    dims: ["P", "V"],
+    skills: ["s1","s14","s17","s28"],
+    tag: "Case Comp",
+    spots: "16 teams",
+    featured: false,
+  },
+  {
+    title: "Goldman Sachs UBP Reception",
+    date: "Feb 11, 2026",
+    desc: "Closed recruiting reception for UBP students targeting Summer 2026 / 2027 internships. Bring your handshake, your story, and one specific question per banker. Resume drop closes Feb 9.",
+    dims: ["O", "I"],
+    skills: ["s7","s11","s8","s4"],
+    tag: "Recruiting",
+    spots: "Resume required",
+    featured: true,
+  },
+  {
+    title: "Carolina Consulting Club — Case Workshop",
+    date: "Feb 19, 2026",
+    desc: "Four-week case prep series kicks off. MBB-style frameworks, market sizing drills, and live mock interviews with second-years. Best fit for first-years targeting consulting Summer 2027.",
+    dims: ["O", "V"],
+    skills: ["s13","s16","s20","s18"],
+    tag: "Recruiting",
+    spots: "40 spots",
+    featured: false,
+  },
+  {
+    title: "Boyd Graduate Recruiting Reception (Tech)",
+    date: "Mar 4, 2026",
+    desc: "Meet PMs, APMs, and engineering managers from Google, Microsoft, IBM, and Red Hat. Hosted by the Tech Club. Strong fit for students on the Tech / PM pathway. Bring 30-second elevator pitch.",
+    dims: ["T", "O"],
+    skills: ["s13","s17","s27","s7"],
+    tag: "Recruiting",
+    spots: "Open RSVP",
     featured: false,
   },
 ];
@@ -3399,16 +3449,21 @@ function UBPNetwork(props) {
 /* ── Chat Messages — UBP Internship Prep Scenario ── */
 var UBP_chatMessages = [
   {
+    role: "user",
+    content: "Hey — I've got a Goldman Sachs IB superday next Tuesday and a thing with my STAR partner Priya I've been avoiding. Where should I start?",
+    time: "3:42 PM"
+  },
+  {
     role: "ai",
     content: null,
     blocks: [
-      { type: "text", content: "Hey Jordan — I just pulled your reflection from the BUSI 200 STAR project debrief. There's a moment in there that’s gold for finance recruiting season. You also flagged a team thing on Monday with your STAR partner. What do you want to work on first?" }
+      { type: "text", content: "Both matter, but they unlock different things. Quick read — your reflection from last week’s BUSI 200 STAR project debrief has a moment that’s gold for the superday, so the recruiting prep is closer than you think. The Priya thing is a real-time leadership move — fixing it sharpens you for the superday too. Want to start there?" }
     ],
     time: "3:42 PM"
   },
   {
     role: "user",
-    content: "The team thing. My STAR partner Priya pushed back hard on my financial model and I went quiet. Now neither of us has brought it up.",
+    content: "Yeah, the team thing first. Priya pushed back hard on my financial model and I went quiet. Now neither of us has brought it up.",
     time: "3:43 PM"
   },
   {
@@ -3423,7 +3478,7 @@ var UBP_chatMessages = [
   },
   {
     role: "user",
-    content: "Helpful. I also have a Goldman Sachs IB superday next week. They’ll probably ask ‘tell me about a time a project went sideways and what you did.’ I don’t have a clean story.",
+    content: "Helpful. Now back to the superday — they’ll probably ask ‘tell me about a time a project went sideways and what you did.’ I don’t have a clean story.",
     time: "3:46 PM"
   },
   {
@@ -3935,7 +3990,7 @@ var MBA_EXPERIENCES = [
   { id:"e10", label:"Strategy",                     type:"course",     bucket:3, x:55, done:false, skills:["s13","s14","s15"] },
   { id:"e11", label:"Leading Groups & Teams",       type:"course",     bucket:3, x:60, done:false, skills:["s9","s10","s23"] },
   { id:"e12", label:"Negotiations",                 type:"course",     bucket:3, x:65, done:false, skills:["s8","s12","s11"] },
-  { id:"e13", label:"Global Immersion: London",     type:"immersion",  bucket:4, x:73, done:false, skills:["s27","s30"] },
+  { id:"e13", label:"Global Immersion: Somalia",    type:"immersion",  bucket:4, x:73, done:false, skills:["s27","s30"] },
   { id:"e14", label:"STAR Capstone",                type:"course",     bucket:4, x:78, done:false, skills:["s21","s23","s24"] },
   { id:"e15", label:"Leadership Philosophy",        type:"reflection", bucket:4, x:83, done:false, skills:["s4","s5","s6"] },
   { id:"e16", label:"Graduation",                   type:"assessment", bucket:5, x:92, done:false, skills:["s20","s28","s29"] },
@@ -4424,8 +4479,8 @@ var MBA_FEED = [
   {
     type: "experience",
     dim: "V",
-    title: "Recommended: London Global Immersion",
-    body: "Students with your PIVOT profile who went into consulting found the London GIE (fintech + strategy) transformative for Vision development. Your Vision is trending up — this would accelerate it. Applications close March 1.",
+    title: "Recommended: Somalia Global Immersion",
+    body: "Students with your PIVOT profile who took the Somalia GIE (frontier markets + impact) report it as the most developmental experience of their MBA. Real ambiguity, real consequences, real adaptation. Your Vision is trending up — this would accelerate it. Applications close March 1.",
     action: "Learn More",
     tag: "Global",
     time: "Suggested",
@@ -4521,7 +4576,7 @@ var MBA_TOKENS = {
       { icon: "📊", label: "PIVOT Assessment #2", date: "Jan 2026", detail: "Mid-program reassessment — Vision +0.3 from baseline" },
     ],
     locked: [
-      { icon: "🌍", label: "Global Immersion: London", hint: "Spring GIE focused on fintech and strategy" },
+      { icon: "🌍", label: "Global Immersion: Somalia", hint: "Spring GIE — frontier markets and adaptive leadership in a genuinely complex context" },
       { icon: "📖", label: "Strategy & Innovation", hint: "Advanced strategy elective on disruption and business model design" },
       { icon: "📖", label: "Healthcare Strategy", hint: "Elective on strategic challenges in healthcare systems" },
       { icon: "🏆", label: "Case Competition", hint: "Participate in Deloitte Case Competition or equivalent" },
@@ -5902,9 +5957,9 @@ var MBA_EVENTS = [
     featured: false,
   },
   {
-    title: "Global Immersion Info Session: India",
+    title: "Global Immersion Info Session: Somalia",
     date: "Feb 20, 2026",
-    desc: "Two-week immersion in Mumbai and Bangalore. Focus on technology strategy, social enterprise, and cross-cultural leadership. Application opens March 1. Strong fit for your Vision trajectory.",
+    desc: "Two-week immersion in Mogadishu and Hargeisa. Frontier markets, post-conflict economic development, diaspora-led entrepreneurship, and adaptive leadership in genuinely complex contexts. Application opens March 1. Strong fit for your Vision trajectory.",
     dims: ["V", "T"],
     skills: ["s15","s27","s30","s11"],
     tag: "Virtual",
@@ -5923,9 +5978,9 @@ var MBA_EVENTS = [
   },
   /* Items moved over from the old Dashboard feed — recommended for this student's profile */
   {
-    title: "Global Immersion Elective: London",
+    title: "Global Immersion Elective: Somalia",
     date: "Mar 1, 2026 (Applications close)",
-    desc: "Students with your PIVOT profile who went into consulting found the London GIE (fintech + strategy) transformative for Vision development. Your Vision is trending up — this would accelerate it.",
+    desc: "Students with your PIVOT profile who took the Somalia GIE (frontier markets + impact) report it as the most developmental experience of their MBA. Real ambiguity, real consequences, real adaptation. Your Vision is trending up — this would accelerate it.",
     dims: ["V", "O"],
     skills: ["s13","s15","s22","s17"],
     tag: "Recommended",
@@ -5951,6 +6006,56 @@ var MBA_EVENTS = [
     tag: "Recruiting",
     spots: "Available",
     featured: false,
+  },
+  {
+    title: "BCG Case Workshop",
+    date: "Feb 12, 2026",
+    desc: "Live case-cracking session led by BCG Project Leaders. Two cases under timed conditions, group debrief, and direct feedback on framework, structure, and presence. Attendance counts toward closed-list interview consideration.",
+    dims: ["O", "I"],
+    skills: ["s13","s16","s20","s18"],
+    tag: "Recruiting",
+    spots: "28 spots left",
+    featured: false,
+  },
+  {
+    title: "Bain Coffee Chats — Round 2",
+    date: "Feb 17, 2026",
+    desc: "Closed coffee chats with Bain Associate Consultants and Managers. 15-minute slots, sign up for two. Best for second-rounders building conviction with the Carolina team.",
+    dims: ["I", "P"],
+    skills: ["s7","s8","s11","s4"],
+    tag: "Recruiting",
+    spots: "Lottery",
+    featured: false,
+  },
+  {
+    title: "KFBS Real Estate Challenge",
+    date: "Mar 6–8, 2026",
+    desc: "48-hour case competition: structure a $400M mixed-use development pitch to a panel of REIT partners. Open to all MBAs; teams of 4. Strong fit for finance/operations and product-strategy pathways.",
+    dims: ["V", "O"],
+    skills: ["s14","s17","s20","s28"],
+    tag: "Case Comp",
+    spots: "12 teams",
+    featured: false,
+  },
+  {
+    title: "Net Impact Case Competition",
+    date: "Mar 21, 2026",
+    desc: "ESG and stakeholder strategy case sponsored by Patagonia and IFC. Teams pitch a defensible long-term plan with explicit stakeholder trade-offs. Winners get an interview pipeline at impact-aligned firms.",
+    dims: ["P", "V"],
+    skills: ["s1","s14","s17","s12"],
+    tag: "Case Comp",
+    spots: "10 teams",
+    featured: false,
+  },
+  {
+    title: "Goldman Sachs MBA Reception",
+    date: "Feb 26, 2026",
+    desc: "Closed recruiting reception for second-year MBAs targeting Associate roles in IBD and Asset Management. Resume drop closes Feb 22. Bring three thoughtful, sector-specific questions — not the generic ones.",
+    dims: ["O", "I"],
+    skills: ["s7","s8","s4","s11"],
+    tag: "Recruiting",
+    spots: "Resume required",
+    featured: true,
   },
 ];
 
@@ -6362,19 +6467,24 @@ function MBANetwork(props) {
 /* ── Chat Messages — MBA Consulting Interview + Transformation Growth Scenario ── */
 var MBA_chatMessages = [
   {
+    role: "user",
+    content: "Hey — Deloitte Strategy final round is Friday and there's a tension with Marcus on the Lenovo team I haven't dealt with. Where should I focus?",
+    time: "2:15 PM"
+  },
+  {
     role: "ai",
     content: null,
     blocks: [
       {
         type: "text",
-        content: "Hey Mike — I just pulled your journal entry from the Adaptive Leadership PIVOT Lab on March 4. There's a moment in there that’s interview gold. You also flagged a team tension on Monday with Marcus. What do you want to work on first?"
+        content: "Both matter, but they unlock different things. Quick read — your journal entry from the Adaptive Leadership PIVOT Lab on March 4 has a moment that’s interview gold, so the Deloitte prep is closer than you think. The Marcus tension is a real-time leadership move — fixing it sharpens you for the final round too. Want to start there?"
       }
     ],
     time: "2:15 PM"
   },
   {
     role: "user",
-    content: "Let's start with the tension. Marcus pushed back on my framework on the Lenovo team and I shut him down. Things have been weird since and I'm not sure how to bring it up.",
+    content: "Yeah let's start with the tension. Marcus pushed back on my framework on the Lenovo team and I shut him down. Things have been weird since and I'm not sure how to bring it up.",
     time: "2:16 PM"
   },
   {
@@ -6399,7 +6509,7 @@ var MBA_chatMessages = [
   },
   {
     role: "user",
-    content: "That helps. Switching gears — Deloitte Strategy final round is Friday. I need a story for \"tell me about a time you led when the plan fell apart.\" I keep coming up dry.",
+    content: "That helps. Now back to Friday — I need a story for \"tell me about a time you led when the plan fell apart.\" I keep coming up dry.",
     time: "2:19 PM"
   },
   {
