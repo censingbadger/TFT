@@ -3088,6 +3088,8 @@ function UBP_DimDot(props) {
 function UBPNetwork(props) {
   var CB = "#4B9CD3";
   var _demo_toggle = useState(false); var showDemo = _demo_toggle[0], setShowDemo = _demo_toggle[1];
+  var _expLabs = useState({}); var expandedLabs = _expLabs[0], setExpandedLabs = _expLabs[1];
+  function toggleLab(id){ var n = Object.assign({}, expandedLabs); if (n[id]) delete n[id]; else n[id] = true; setExpandedLabs(n); }
   var _ep_global = useState("y2"); var earnedPreset = _ep_global[0], setEarnedPreset = _ep_global[1];
   function pickPreset(id){ setEarnedPreset(id); try{ localStorage.setItem("ubp_preset", id); }catch(e){} }
   useEffect(function(){
@@ -3294,22 +3296,21 @@ function UBPNetwork(props) {
                   {/* The Setup */}
                   <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 4 }}>THE SETUP</div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 12 }}>{lab.setup}</div>
-                  {/* PIVOT MOMENT — DEMO reveals the design; live student app shows only the disruption-type teaser */}
-                  {showDemo ? (
-                    <div style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
+                  {/* PIVOT MOMENT — click teaser to reveal; the reveal is labelled "for demo only" */}
+                  {expandedLabs[lab.id] ? (
+                    <div onClick={function(){toggleLab(lab.id);}} style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12, cursor: "pointer" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                         <span style={{ fontSize: 14 }}>🌀</span>
-                        <span style={{ fontSize: 11, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>THE PIVOT MOMENT · DEMO REVEAL</span>
+                        <span style={{ fontSize: 10, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>DESCRIPTION FOR DEMO ONLY</span>
+                        <span style={{ marginLeft: "auto", fontSize: 11, color: "rgba(255,204,68,0.7)" }}>▲ Hide</span>
                       </div>
                       <div style={{ fontSize: 13, color: "rgba(255,255,255,0.92)", lineHeight: 1.6 }}>{lab.pivotMoment}</div>
                     </div>
                   ) : (
-                    <div style={{ background: "rgba(255,204,68,0.06)", border: "1px dashed rgba(255,204,68,0.35)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                    <div onClick={function(){toggleLab(lab.id);}} style={{ background: "rgba(255,204,68,0.06)", border: "1px dashed rgba(255,204,68,0.35)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
                       <span style={{ fontSize: 14 }}>🌀</span>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,204,68,0.85)", letterSpacing: 1.5, marginBottom: 2 }}>EXPECT A {lab.disruptionType.toUpperCase()} DISRUPTION</div>
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5, fontStyle: "italic" }}>Specifics unfold in real time — that's the design.</div>
-                      </div>
+                      <div style={{ flex: 1, fontSize: 11, fontWeight: 800, color: "rgba(255,204,68,0.85)", letterSpacing: 1.5 }}>EXPECT A {lab.disruptionType.toUpperCase()} DISRUPTION</div>
+                      <span style={{ fontSize: 11, color: "rgba(255,204,68,0.65)" }}>▼ Reveal</span>
                     </div>
                   )}
                   {/* Skills practiced under pressure */}
@@ -6113,6 +6114,8 @@ function MBA_DimDot(props) {
 function MBANetwork(props) {
   var CB = "#7BAFD4";
   var _demo_toggle = useState(false); var showDemo = _demo_toggle[0], setShowDemo = _demo_toggle[1];
+  var _expLabs = useState({}); var expandedLabs = _expLabs[0], setExpandedLabs = _expLabs[1];
+  function toggleLab(id){ var n = Object.assign({}, expandedLabs); if (n[id]) delete n[id]; else n[id] = true; setExpandedLabs(n); }
   var _ep_global = useState("today"); var earnedPreset = _ep_global[0], setEarnedPreset = _ep_global[1];
   function pickPreset(id){ setEarnedPreset(id); try{ localStorage.setItem("mba_preset", id); }catch(e){} }
   useEffect(function(){
@@ -6319,22 +6322,21 @@ function MBANetwork(props) {
                   {/* The Setup */}
                   <div style={{ fontSize: 10, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.3, marginBottom: 4 }}>THE SETUP</div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, marginBottom: 12 }}>{lab.setup}</div>
-                  {/* PIVOT MOMENT — DEMO reveals the design; live student app shows only the disruption-type teaser */}
-                  {showDemo ? (
-                    <div style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12 }}>
+                  {/* PIVOT MOMENT — click teaser to reveal; the reveal is labelled "for demo only" */}
+                  {expandedLabs[lab.id] ? (
+                    <div onClick={function(){toggleLab(lab.id);}} style={{ background: "linear-gradient(135deg, rgba(255,204,68,0.10), rgba(255,107,107,0.04))", border: "1px solid rgba(255,204,68,0.4)", borderRadius: 12, padding: "12px 14px", marginBottom: 12, cursor: "pointer" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
                         <span style={{ fontSize: 14 }}>🌀</span>
-                        <span style={{ fontSize: 11, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>THE PIVOT MOMENT · DEMO REVEAL</span>
+                        <span style={{ fontSize: 10, fontWeight: 800, color: "#FFCC44", letterSpacing: 1.5 }}>DESCRIPTION FOR DEMO ONLY</span>
+                        <span style={{ marginLeft: "auto", fontSize: 11, color: "rgba(255,204,68,0.7)" }}>▲ Hide</span>
                       </div>
                       <div style={{ fontSize: 13, color: "rgba(255,255,255,0.92)", lineHeight: 1.6 }}>{lab.pivotMoment}</div>
                     </div>
                   ) : (
-                    <div style={{ background: "rgba(255,204,68,0.06)", border: "1px dashed rgba(255,204,68,0.35)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10 }}>
+                    <div onClick={function(){toggleLab(lab.id);}} style={{ background: "rgba(255,204,68,0.06)", border: "1px dashed rgba(255,204,68,0.35)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
                       <span style={{ fontSize: 14 }}>🌀</span>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,204,68,0.85)", letterSpacing: 1.5, marginBottom: 2 }}>EXPECT A {lab.disruptionType.toUpperCase()} DISRUPTION</div>
-                        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)", lineHeight: 1.5, fontStyle: "italic" }}>Specifics unfold in real time — that's the design.</div>
-                      </div>
+                      <div style={{ flex: 1, fontSize: 11, fontWeight: 800, color: "rgba(255,204,68,0.85)", letterSpacing: 1.5 }}>EXPECT A {lab.disruptionType.toUpperCase()} DISRUPTION</div>
+                      <span style={{ fontSize: 11, color: "rgba(255,204,68,0.65)" }}>▼ Reveal</span>
                     </div>
                   )}
                   {/* Skills practiced under pressure */}
