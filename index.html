@@ -2262,7 +2262,7 @@ function UBPIndex(props) {
         <div style={{ padding: "0 16px 8px" }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 10 }}>Experience Tokens</div>
           {DIMS.map(function (d) {
-            return <UBP_TokenBar key={d} dim={d} data={UBP_TOKENS[d]} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
+            return <UBP_TokenBar key={d} dim={d} data={UBP_TOKENS[d]} attrs={myAttrs} earnedMap={myEarned} path={selectedPath} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
           })}
         </div>
 
