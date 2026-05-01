@@ -594,14 +594,17 @@ var ATTRIBUTES = [
   { dim:"T", baseline:2.6, current:3.0 },
 ];
 
-/* Career "north stars" — name/identity only. */
+/* Career "north stars" — name/identity + per-dim target profile (the
+   "ideal" PIVOT shape for that career, used as the dashed pentagon on
+   the radar). Targets are derived from the original career-priority
+   model and preserved here as a static table. */
 var PATHS = [
-  { id:"consulting",   label:"Consulting",       color:"#7BAFD4", goalLabel:"Management Consulting" },
-  { id:"banking",      label:"Banking",          color:PC.O,      goalLabel:"Investment Banking" },
-  { id:"tech",         label:"Tech",             color:PC.T,      goalLabel:"Technology Leader" },
-  { id:"pm",           label:"Product Mgmt",     color:PC.V,      goalLabel:"Product Management" },
-  { id:"entrepreneur", label:"Entrepreneurship", color:PC.P,      goalLabel:"Founder" },
-  { id:"realestate",   label:"Real Estate",      color:"#C9A96E", goalLabel:"Real Estate Leader" },
+  { id:"consulting",   label:"Consulting",       color:"#7BAFD4", goalLabel:"Management Consulting", target:{P:58, I:85, V:98, O:85, T:58} },
+  { id:"banking",      label:"Banking",          color:PC.O,      goalLabel:"Investment Banking",    target:{P:58, I:85, V:58, O:99, T:72} },
+  { id:"tech",         label:"Tech",             color:PC.T,      goalLabel:"Technology Leader",     target:{P:45, I:58, V:72, O:85, T:99} },
+  { id:"pm",           label:"Product Mgmt",     color:PC.V,      goalLabel:"Product Management",    target:{P:45, I:98, V:99, O:58, T:58} },
+  { id:"entrepreneur", label:"Entrepreneurship", color:PC.P,      goalLabel:"Founder",               target:{P:45, I:45, V:98, O:72, T:99} },
+  { id:"realestate",   label:"Real Estate",      color:"#C9A96E", goalLabel:"Real Estate Leader",    target:{P:58, I:85, V:72, O:99, T:58} },
 ];
 
 /* Readiness math — pilot uses self-assessed attributes (first 50%) plus
@@ -940,13 +943,15 @@ function MBAProgress(props) {
             })}
           </div>
 
-          {/* Radar: inner = self-assessed attributes, outer = attributes + earned tokens */}
-          <PIVOTRadar size={260} attrs={myAttrs} color={radarColor}/>
+          {/* Radar: inner = attributes, outer = attributes + tokens, dashed = career ideal */}
+          <PIVOTRadar size={260} attrs={myAttrs} target={selectedPath ? selectedPath.target : null} color={radarColor}/>
 
           <div style={{ marginTop: 6, textAlign:"center", padding:"0 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.5 }}>YOUR PIVOT READINESS</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.5 }}>READINESS FOR {selectedPath ? selectedPath.goalLabel.toUpperCase() : "LEADERSHIP"}</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 4, maxWidth: 320, marginLeft:"auto", marginRight:"auto" }}>
-              Inner shape is your self-rated attributes (up to 50%). Outer fill grows as you earn experience tokens (up to the remaining 50%).
+              {selectedPath
+                ? "Inner shape is your self-rated attributes (up to 50%). Outer fill grows as you earn experience tokens (up to the remaining 50%). The dashed pentagon is the ideal profile for " + selectedPath.label + "."
+                : "Inner shape is your self-rated attributes (up to 50%). Outer fill grows as you earn experience tokens (up to the remaining 50%). Pick a North Star above to overlay the ideal profile for that career."}
             </div>
           </div>
         </div>
