@@ -604,13 +604,100 @@ var PATHS = [
   { id:"realestate",   label:"Real Estate",      color:"#C9A96E", goalLabel:"Real Estate Leader" },
 ];
 
-/* Readiness math — pilot uses the attribute self-assessment only.
-   Scales attribute (0..5) to the full 0..100 of the radar. */
+/* Readiness math — pilot uses self-assessed attributes (first 50%) plus
+   earned experience tokens (next 50%). Skills are not used in the pilot. */
 function computeReadiness(dim, earnedMap, attrs){
   var attr = (attrs && attrs[dim] != null) ? attrs[dim] : 0;
-  var attrPct = Math.max(0, Math.min(100, (attr/5)*100));
-  return { attrPct: attrPct, skillPct: 0, totalPct: attrPct };
+  var attrPct = Math.max(0, Math.min(50, (attr/5)*50));
+  var data = (typeof MBA_TOKENS !== "undefined") ? MBA_TOKENS[dim] : null;
+  var tokenPct = 0;
+  if (data && data.total) {
+    tokenPct = Math.max(0, Math.min(50, (data.earned.length / data.total) * 50));
+  }
+  return { attrPct: attrPct, skillPct: tokenPct, totalPct: attrPct + tokenPct };
 }
+
+/* Per-dimension experience tokens. `earned` are demo tokens already on the
+   student's transcript; `locked` are upcoming experiences they could pursue. */
+var MBA_TOKENS = {
+  P: {
+    total: 8,
+    earned: [
+      { icon: "📊", label: "PIVOT Assessment #1", date: "Aug 2025", detail: "Baseline self-assessment across all five PIVOT dimensions" },
+      { icon: "📖", label: "Leading & Managing (Core)", date: "Fall 2025", detail: "Core MBA course on organizational leadership and team dynamics" },
+      { icon: "🎯", label: "Executive Coaching Session #1", date: "Oct 2025", detail: "Purpose clarity — refined from 'make an impact' to 'build systems that make orgs more human'" },
+      { icon: "✍️", label: "Values Inventory Reflection", date: "Nov 2025", detail: "Personal values mapping and leadership identity exercise" },
+      { icon: "👥", label: "Net Impact Social Enterprise", date: "Jan 2026", detail: "Pro-bono consulting for local nonprofit — connected work to community purpose" },
+    ],
+    locked: [
+      { icon: "✍️", label: "Year 1 Reflection Letter", hint: "Write a letter to your pre-MBA self (due this week)" },
+      { icon: "✍️", label: "Leadership Philosophy Statement", hint: "Articulate your evolving leadership philosophy (Year 2)" },
+      { icon: "📊", label: "PIVOT Assessment #3 (Senior)", hint: "Final assessment to see full growth arc before graduation" },
+    ],
+  },
+  I: {
+    total: 9,
+    earned: [
+      { icon: "📖", label: "Negotiations Practicum", date: "Fall 2025", detail: "Intensive negotiations with live simulations — learned to hold tension without folding" },
+      { icon: "👥", label: "Consulting Club VP", date: "Fall 2025", detail: "Led 120-member club — recruiting events, case workshops, alumni panels" },
+      { icon: "💬", label: "Peer Coaching Circle", date: "Jan 2026", detail: "6-person biweekly coaching group — moved from 'fix it' mode to 'be present' mode" },
+      { icon: "💬", label: "360° Peer Feedback", date: "Feb 2026", detail: "Multi-rater feedback exchange with peer coaching partner" },
+    ],
+    locked: [
+      { icon: "📖", label: "Leading Groups & Teams", hint: "Complete this elective to deepen group dynamics expertise" },
+      { icon: "📖", label: "Storytelling to Influence", hint: "Elective on narrative leadership and persuasion" },
+      { icon: "🌍", label: "Global Immersion Team Lead", hint: "Lead a team during a Global Immersion Elective" },
+      { icon: "👥", label: "STAR Capstone Team Lead", hint: "Lead a STAR consulting team in Year 2" },
+      { icon: "💬", label: "Cross-Program Collaboration", hint: "Team project with Evening or Executive MBA students" },
+    ],
+  },
+  V: {
+    total: 8,
+    earned: [
+      { icon: "📖", label: "Strategy & Competition (Core)", date: "Fall 2025", detail: "Frameworks for competitive analysis and strategic positioning" },
+      { icon: "🌍", label: "Global Immersion: Tokyo", date: "Jan 2026", detail: "Two-week immersion studying Japanese corporate governance and innovation" },
+      { icon: "📊", label: "PIVOT Assessment #2", date: "Jan 2026", detail: "Mid-program reassessment — Vision +0.3 from baseline" },
+    ],
+    locked: [
+      { icon: "🌍", label: "Global Immersion: Somalia", hint: "Spring GIE — frontier markets and adaptive leadership in a complex context" },
+      { icon: "📖", label: "Strategy & Innovation", hint: "Advanced strategy elective on disruption and business model design" },
+      { icon: "📖", label: "Healthcare Strategy", hint: "Elective on strategic challenges in healthcare systems" },
+      { icon: "🏆", label: "Case Competition", hint: "Participate in Deloitte Case Competition or equivalent" },
+      { icon: "✍️", label: "Industry Vision Paper", hint: "Forward-looking analysis for a concentration course" },
+    ],
+  },
+  O: {
+    total: 9,
+    earned: [
+      { icon: "📖", label: "Consulting Skills & Frameworks", date: "Fall 2025", detail: "Core consulting methodology and structured problem-solving" },
+      { icon: "📖", label: "Analytics for Decision Making", date: "Spring 2026", detail: "Data-driven strategic decisions under uncertainty" },
+      { icon: "👥", label: "Consulting Club VP", date: "Fall 2025", detail: "Led recruiting events, case prep workshops, and alumni engagement" },
+      { icon: "📖", label: "Financial Accounting (Core)", date: "Fall 2025", detail: "Core course on financial statement analysis" },
+      { icon: "🎯", label: "Executive Coaching Session #4", date: "Jan 2026", detail: "Resilience after a failed group project — 'failure is data, not identity'" },
+    ],
+    locked: [
+      { icon: "💼", label: "Summer Internship", hint: "Complete summer associate role and submit reflection" },
+      { icon: "📖", label: "Corporate Financial Strategy", hint: "Advanced finance elective" },
+      { icon: "🏆", label: "STAR Capstone Project Lead", hint: "Lead a STAR consulting team as a second-year" },
+      { icon: "📖", label: "Concentration Completion", hint: "Complete all courses in a concentration pathway" },
+    ],
+  },
+  T: {
+    total: 8,
+    earned: [
+      { icon: "🎯", label: "Executive Coaching Session #4", date: "Jan 2026", detail: "Breakthrough — 'failure is data, not identity.' Biggest single gain (+0.4)" },
+      { icon: "📖", label: "Negotiations Practicum", date: "Fall 2025", detail: "Video playback of negotiation style revealed accommodation default" },
+      { icon: "🌍", label: "Global Immersion: Tokyo", date: "Jan 2026", detail: "Expanded mental model — Western urgency isn't universal (nemawashi)" },
+    ],
+    locked: [
+      { icon: "📖", label: "Leading Change", hint: "Elective on navigating organizational transformation" },
+      { icon: "📖", label: "Crisis Leadership Simulation", hint: "72-hour crisis simulation with live media pressure" },
+      { icon: "✍️", label: "Failure & Resilience Reflection", hint: "Structured reflection on a significant setback" },
+      { icon: "🌍", label: "Study Away / Global Immersion #2", hint: "Second global experience to deepen cross-cultural adaptability" },
+      { icon: "📊", label: "PIVOT Assessment #3", hint: "Final assessment to capture full Transformation arc" },
+    ],
+  },
+};
 
 /* ══════════════════════════════════════════════════════════════
    MBA — PROGRESS (merged Dashboard + Index)
@@ -627,7 +714,88 @@ var MBA_SELF_R = [
 
 /* ── Reusable Components ── */
 
+function MBA_TokenBar(props) {
+  var dim = props.dim;
+  var data = props.data;
+  var expanded = props.expanded;
+  var onToggle = props.onToggle;
+  var attrs = props.attrs || {};
+  var earned = data.earned.length;
+  var total = data.total;
+  var color = PC[dim];
+  /* Stack: attributes fill first 50%, tokens the next 50% */
+  var r = computeReadiness(dim, {}, attrs);
 
+  return (
+    <div style={{ marginBottom: 6 }}>
+      <div
+        onClick={onToggle}
+        style={{
+          display: "flex", alignItems: "center", gap: 12, padding: "14px 16px",
+          background: rgba(color, 0.06), borderRadius: expanded ? "14px 14px 0 0" : 14,
+          border: "1px solid " + rgba(color, expanded ? 0.25 : 0.1),
+          cursor: "pointer", transition: "all 0.2s",
+        }}
+      >
+        <div style={{
+          width: 36, height: 36, borderRadius: "50%",
+          background: "linear-gradient(135deg," + rgba(color, 0.3) + "," + rgba(color, 0.08) + ")",
+          border: "2px solid " + rgba(color, 0.5),
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 15, fontWeight: 700, color: color,
+        }}>{dim}</div>
+        <div style={{ flex: 1 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 16, fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{DIM_NAMES[dim]}</span>
+            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+              <span style={{ fontWeight: 700, color: "#fff" }}>{Math.round(r.totalPct)}%</span>
+              <span style={{ margin: "0 6px", color: "rgba(255,255,255,0.2)" }}>·</span>
+              <span>{earned}/{total} tokens</span>
+            </span>
+          </div>
+          {/* Bar: background + token fill + attribute fill + 50% attribute ceiling tick */}
+          <div style={{ position: "relative", height: 10, background: "rgba(255,255,255,0.05)", borderRadius: 5 }}>
+            <div style={{ position:"absolute", left:"50%", top:-2, bottom:-2, width:1, background:"rgba(255,255,255,0.22)" }}></div>
+            <div style={{ position:"absolute", left:r.attrPct+"%", top:0, height:"100%", width:Math.max(0,(r.totalPct-r.attrPct))+"%", background: rgba(color,0.45), transition:"width 0.8s ease" }}></div>
+            <div style={{ position:"absolute", left:0, top:0, height:"100%", width:r.attrPct+"%", borderRadius: "5px 0 0 5px", background: rgba(color,0.95), transition:"width 0.8s ease" }}></div>
+          </div>
+        </div>
+        <div style={{ fontSize: 13, color: "rgba(255,255,255,0.3)", transform: expanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▼</div>
+      </div>
+      {expanded && (
+        <div style={{
+          background: rgba(color, 0.03), border: "1px solid " + rgba(color, 0.12),
+          borderTop: "none", borderRadius: "0 0 14px 14px", padding: "12px 16px",
+        }}>
+          {data.earned.map(function (t, i) {
+            return (
+              <div key={"e" + i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10 }}>
+                <span style={{ fontSize: 18 }}>{t.icon}</span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>{t.label}</div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>{t.date} — {t.detail}</div>
+                </div>
+                <span style={{ marginLeft: "auto", fontSize: 13, color: rgba(color, 0.6), fontWeight: 600 }}>✓</span>
+              </div>
+            );
+          })}
+          {data.locked.map(function (t, i) {
+            return (
+              <div key={"l" + i} style={{ display: "flex", alignItems: "flex-start", gap: 10, marginBottom: 10, opacity: 0.35 }}>
+                <span style={{ fontSize: 18 }}>{t.icon}</span>
+                <div>
+                  <div style={{ fontSize: 14, fontWeight: 500, color: "rgba(255,255,255,0.6)" }}>{t.label}</div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 2 }}>{t.hint}</div>
+                </div>
+                <span style={{ marginLeft: "auto", fontSize: 13, color: "rgba(255,255,255,0.2)" }}>🔒</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function MBA_SelfReflection(props) {
   var CB = "#7BAFD4";
@@ -674,6 +842,8 @@ function MBAProgress(props) {
   var avatarInitials = getInitials(userName);
   var _nav = useState("progress");
   var activeNav = _nav[0], setActiveNav = _nav[1];
+  var _exp = useState(null);
+  var expanded = _exp[0], setExpanded = _exp[1];
   var _selfOpen = useState(false);
   var selfOpen = _selfOpen[0], setSelfOpen = _selfOpen[1];
   var _anim = useState(false);
@@ -770,13 +940,13 @@ function MBAProgress(props) {
             })}
           </div>
 
-          {/* Self-assessment radar (5 PIVOT domains) */}
+          {/* Radar: inner = self-assessed attributes, outer = attributes + earned tokens */}
           <PIVOTRadar size={260} attrs={myAttrs} color={radarColor}/>
 
           <div style={{ marginTop: 6, textAlign:"center", padding:"0 16px" }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.5 }}>YOUR PIVOT SELF-ASSESSMENT</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: 1.5 }}>YOUR PIVOT READINESS</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginTop: 4, maxWidth: 320, marginLeft:"auto", marginRight:"auto" }}>
-              Each axis shows your self-rated score (0–100%) on one of the five PIVOT domains. Retake the assessment any time to see how you're shifting.
+              Inner shape is your self-rated attributes (up to 50%). Outer fill grows as you earn experience tokens (up to the remaining 50%).
             </div>
           </div>
         </div>
@@ -804,6 +974,21 @@ function MBAProgress(props) {
             </div>
           </div>
         )}
+
+        {/* ── Experience Tokens ── */}
+        <div style={{ padding: "0 16px 8px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", marginBottom: 6 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1 }}>Experience Tokens</div>
+          </div>
+          <div style={{ display:"flex", flexWrap:"wrap", gap:10, padding:"8px 10px", borderRadius:10, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", marginBottom:10 }}>
+            <div style={{ fontSize:11, color:"rgba(255,255,255,0.6)", lineHeight:1.5 }}>
+              Each bar shows one PIVOT dimension. The saturated portion is your <span style={{color:"#fff",fontWeight:700}}>attribute self-rating</span> (capped at 50%). The lighter portion grows as you earn <span style={{color:"#fff",fontWeight:700}}>experience tokens</span> in that dimension. Tap any bar to see the tokens behind it.
+            </div>
+          </div>
+          {DIMS.map(function (d) {
+            return <MBA_TokenBar key={d} dim={d} data={MBA_TOKENS[d]} attrs={myAttrs} expanded={expanded === d} onToggle={function () { setExpanded(expanded === d ? null : d); }} />;
+          })}
+        </div>
 
         {/* ── Self-Reflection Pulse ── */}
         <MBA_SelfReflection ratings={MBA_SELF_R} open={selfOpen} onToggle={function () { setSelfOpen(!selfOpen); }} />
